@@ -1,19 +1,42 @@
 package logistics.entities;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotNull;
+
+import java.util.LinkedList;
+import java.util.List;
 
 @Entity
-public class Customer {
-    @Id
-    private int id;
-    private String name;
+public class Customer extends User {
+    private String address;
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<Order> orders;
 
     public Customer() {
     }
 
-    public Customer(String name) {
-        this.name = name;
+    public Customer(String name, String email, String password, String address) {
+        super(name, email, password);
+        this.address = address;
+        orders = new LinkedList<>();
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 }
 

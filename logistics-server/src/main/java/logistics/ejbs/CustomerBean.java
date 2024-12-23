@@ -10,9 +10,8 @@ public class CustomerBean {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public void createCustomer(String name) {
-        // Create a new customer
-        var customer = new Customer(name);
+    public void createCustomer(String name, String email, String password, String address) {
+        Customer customer = new Customer(name, email, password, address);
         entityManager.persist(customer);
     }
 }

@@ -1,16 +1,17 @@
 package logistics.entities;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.OneToOne;
 
-import java.util.Date;
-
-@Entity
-public class Reading {
+public class Stock {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @OneToOne
+    private Product product;
+    @OneToOne
+    private Warehouse warehouse;
+    private Long quantity;
 }

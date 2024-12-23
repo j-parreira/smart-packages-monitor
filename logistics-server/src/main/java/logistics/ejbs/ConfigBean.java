@@ -13,6 +13,6 @@ public class ConfigBean {
 
     @PostConstruct
     public void populateDB() {
-        customerBean.createCustomer("Carlos");
+        customerBean.createCustomer("Alice", "alice@mail.pt", "1234", "Lisbon");
     }
 }

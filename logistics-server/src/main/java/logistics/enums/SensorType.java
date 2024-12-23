@@ -1,8 +1,8 @@
 package logistics.enums;
 
 public enum SensorType {
-        TEMPERATURE,
-        GPS,
-        PRESSURE,
-        ACCELEROMETER,
+    TEMPERATURE,
+    GPS,
+    PRESSURE,
+    ACCELERATION,
 }
