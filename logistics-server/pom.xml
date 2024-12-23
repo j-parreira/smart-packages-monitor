@@ -4,10 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>pt.ipleiria.estg.dei.ei.dae</groupId>
-    <artifactId>logistics</artifactId>
+    <groupId>dae</groupId>
+    <artifactId>logistics-server</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>logistics-backend</name>
+    <name>logistics-server</name>
     <packaging>war</packaging>
 
     <properties>
@@ -61,7 +61,7 @@
                 <version>3.4.0</version>
                 <configuration>
                     <outputDirectory>target</outputDirectory>
-                    <warName>logistics</warName>
+                    <warName>logistics-server</warName>
                 </configuration>
             </plugin>
         </plugins>
