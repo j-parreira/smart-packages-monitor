@@ -1,7 +1,9 @@
 package logistics.entities;
 
+import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotNull;
 
+@Entity
 public class Manager extends Employee {
     @NotNull
     private String office;

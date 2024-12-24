@@ -21,7 +21,7 @@ public class Order {
     Customer customer;
 
     @NotNull
-    @ManyToMany(mappedBy = "order")
+    @ManyToMany
     List<Product> products;
 
     @OneToMany(mappedBy = "order")

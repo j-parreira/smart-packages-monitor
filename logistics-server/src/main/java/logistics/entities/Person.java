@@ -4,10 +4,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-public abstract class User {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+public abstract class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @NotNull
     private String name;
@@ -18,10 +19,10 @@ public abstract class User {
     @NotNull
     private String password;
 
-    public User() {
+    public Person() {
     }
 
-    public User(String name, String email, String password) {
+    public Person(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;

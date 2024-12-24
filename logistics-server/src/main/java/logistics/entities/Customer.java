@@ -1,6 +1,5 @@
 package logistics.entities;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
@@ -9,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Entity
-public class Customer extends User {
+public class Customer extends Person {
     @NotNull
     private String address;
 

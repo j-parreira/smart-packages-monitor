@@ -1,12 +1,11 @@
 package logistics.entities;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-public class Employee extends User {
+public class Employee extends Person {
     @NotNull
     @ManyToOne
     Warehouse warehouse;
