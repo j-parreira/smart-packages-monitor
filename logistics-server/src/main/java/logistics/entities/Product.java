@@ -4,39 +4,43 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import logistics.enums.ProductType;
 
+import java.util.LinkedList;
+import java.util.List;
+
 @Entity
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @NotNull
     private String name;
-    @ManyToOne
-    Warehouse warehouse;
+
     @NotNull
     ProductType type;
-    @ManyToOne
-    Order order;
-    @ManyToOne
-    Volume volume;
+
+    @ManyToMany
+    List<Order> orders;
+
+    @ManyToMany
+    List<Volume> volumes;
+
+    @OneToMany(mappedBy = "product")
+    List<Stock> stocks;
 
     public Product() {
     }
 
-    public Product(String name, Warehouse warehouse, ProductType type) {
+    public Product(String name, ProductType type) {
         this.name = name;
-        this.warehouse = warehouse;
         this.type = type;
-        this.order = null;
-        this.volume = null;
+        this.orders = new LinkedList<>();
+        this.volumes = new LinkedList<>();
+        this.stocks = new LinkedList<>();
     }
 
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -47,14 +51,6 @@ public class Product {
         this.name = name;
     }
 
-    public Warehouse getWarehouse() {
-        return warehouse;
-    }
-
-    public void setWarehouse(Warehouse warehouse) {
-        this.warehouse = warehouse;
-    }
-
     public ProductType getType() {
         return type;
     }
@@ -63,19 +59,27 @@ public class Product {
         this.type = type;
     }
 
-    public Order getOrder() {
-        return order;
+    public List<Order> getOrders() {
+        return orders;
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 
-    public Volume getVolume() {
-        return volume;
+    public List<Volume> getVolumes() {
+        return volumes;
     }
 
-    public void setVolume(Volume volume) {
-        this.volume = volume;
+    public void setVolumes(List<Volume> volumes) {
+        this.volumes = volumes;
+    }
+
+    public List<Stock> getStocks() {
+        return stocks;
+    }
+
+    public void setStocks(List<Stock> stocks) {
+        this.stocks = stocks;
     }
 }

@@ -2,25 +2,21 @@ package logistics.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import org.hibernate.annotations.CreationTimestamp;
-
-import java.util.Date;
 
 @Entity
 public abstract class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @NotNull
     private String name;
+
     @NotNull
     private String email;
+
     @NotNull
     private String password;
-    @NotNull
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
 
     public User() {
     }
@@ -29,6 +25,10 @@ public abstract class User {
         this.name = name;
         this.email = email;
         this.password = password;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getName() {

@@ -7,8 +7,8 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Employee extends User {
+    @NotNull
     @ManyToOne
-    @JoinColumn(name = "warehouse_id")
     Warehouse warehouse;
 
     public Employee() {
