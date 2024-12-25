@@ -4,6 +4,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(
+                name = "getAllPersons",
+                query = "SELECT p FROM Person p ORDER BY p.name"
+        )
+})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Person {
     @Id

@@ -1,9 +1,17 @@
 package logistics.entities;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(
+                name = "getAllManagers",
+                query = "SELECT m FROM Manager m ORDER BY m.name"
+        )
+})
 public class Manager extends Employee {
     @NotNull
     private String office;

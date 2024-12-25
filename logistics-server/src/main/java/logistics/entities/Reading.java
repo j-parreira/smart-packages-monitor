@@ -5,13 +5,18 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(
+                name = "Reading.getBySensor",
+                query = "SELECT r FROM Reading r WHERE r.sensor = : sensor ORDER BY r.timestamp"
+        )
+})
 public class Reading {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @NotNull
     @ManyToOne
@@ -42,7 +47,7 @@ public class Reading {
         this.timestamp = LocalDateTime.now();
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

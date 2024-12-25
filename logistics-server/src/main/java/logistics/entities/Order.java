@@ -11,10 +11,16 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(
+                name = "getAllOrders",
+                query = "SELECT o FROM Order o ORDER BY o.createdAt"
+        )
+})
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @NotNull
     @ManyToOne
@@ -49,7 +55,7 @@ public class Order {
         this.paymentType = paymentType;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

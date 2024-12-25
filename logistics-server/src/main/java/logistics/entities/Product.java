@@ -8,10 +8,16 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(
+                name = "getAllProducts",
+                query = "SELECT p FROM Product p ORDER BY p.name"
+        )
+})
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @NotNull
     private String name;
@@ -39,7 +45,7 @@ public class Product {
         this.stocks = new LinkedList<>();
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

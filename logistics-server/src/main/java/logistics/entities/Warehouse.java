@@ -7,10 +7,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Entity
+@NamedQuery(
+        name = "getAllWarehouses",
+        query = "SELECT w FROM Warehouse w ORDER BY w.name"
+)
+
 public class Warehouse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @NotNull
     private String name;
@@ -30,7 +35,7 @@ public class Warehouse {
         this.stocks = new LinkedList<>();
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

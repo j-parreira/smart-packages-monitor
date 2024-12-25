@@ -10,10 +10,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@NamedQuery(
+        name = "getAllVolumesInOrder",
+        query = "SELECT v FROM Volume v WHERE v.order = :order"
+)
+
 public class Volume {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @NotNull
     private VolumeType type;
@@ -62,7 +67,7 @@ public class Volume {
         this.arrivedAt = null;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

@@ -3,15 +3,26 @@ package logistics.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import logistics.enums.SensorType;
+import logistics.enums.VolumeType;
 
 import java.util.LinkedList;
 import java.util.List;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(
+                name = "getAllSensorsInVolume",
+                query = "SELECT s FROM Sensor s WHERE s.volume.id = :volumeId"
+        )
+})
 public class Sensor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
+
+    @NotNull
+    @ManyToOne
+    private Volume volume;
 
     @NotNull
     private SensorType type;
@@ -41,7 +52,7 @@ public class Sensor {
         this.readings = new LinkedList<>();
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

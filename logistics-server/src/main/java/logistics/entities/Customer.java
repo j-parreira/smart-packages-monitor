@@ -1,14 +1,23 @@
 package logistics.entities;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
 @Entity
-public class Customer extends Person {
+@NamedQueries({
+        @NamedQuery(
+                name = "getAllCustomers",
+                query = "SELECT c FROM Customer c ORDER BY c.name"
+        ),
+})
+public class Customer extends Person implements Serializable {
     @NotNull
     private String address;
 

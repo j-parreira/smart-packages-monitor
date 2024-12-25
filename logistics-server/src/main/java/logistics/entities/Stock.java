@@ -3,10 +3,16 @@ package logistics.entities;
 import jakarta.persistence.*;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(
+                name = "getStocksByProduct",
+                query = "SELECT s FROM Stock s WHERE s.product.id = :productId"
+        )
+})
 public class Stock {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne
     private Product product;
@@ -25,7 +31,7 @@ public class Stock {
         this.quantity = quantity;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
