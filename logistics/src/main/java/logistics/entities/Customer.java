@@ -6,7 +6,6 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 
-import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,7 +16,7 @@ import java.util.List;
                 query = "SELECT c FROM Customer c ORDER BY c.name"
         ),
 })
-public class Customer extends Person implements Serializable {
+public class Customer extends Person {
     @NotNull
     private String address;
 

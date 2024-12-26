@@ -1,8 +1,9 @@
 package logistics.dtos;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class OrderDTO {
+public class OrderDTO implements Serializable {
 
     private Long id;
     private Long Customer;

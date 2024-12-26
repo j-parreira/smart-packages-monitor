@@ -5,6 +5,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import logistics.entities.Customer;
 
+import java.util.List;
+
 @Stateless
 public class CustomerBean {
     @PersistenceContext
@@ -13,5 +15,9 @@ public class CustomerBean {
     public void createCustomer(String name, String email, String password, String address) {
         Customer customer = new Customer(name, email, password, address);
         entityManager.persist(customer);
+    }
+
+    public List<Customer> getAllCustomers() {
+        return entityManager.createNamedQuery("getAllCustomers", Customer.class).getResultList();
     }
 }

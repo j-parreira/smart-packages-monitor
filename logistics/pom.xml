@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>dae</groupId>
-    <artifactId>logistics-server</artifactId>
+    <artifactId>logistics</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>logistics-server</name>
+    <name>logistics</name>
     <packaging>war</packaging>
 
     <properties>
@@ -61,7 +61,7 @@
                 <version>3.4.0</version>
                 <configuration>
                     <outputDirectory>target</outputDirectory>
-                    <warName>logistics-server</warName>
+                    <warName>logistics</warName>
                 </configuration>
             </plugin>
         </plugins>

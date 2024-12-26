@@ -3,7 +3,7 @@
 ifneq (,$(wildcard ./.env))
     include .env
     export
-    APPLICATION_NAME ?= logistics-server
+    APPLICATION_NAME ?= logistics
 endif
 
 up:
