@@ -1,12 +1,14 @@
 package logistics.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "readings")
 @NamedQueries({
         @NamedQuery(
                 name = "Reading.getBySensor",
@@ -18,16 +20,16 @@ public class Reading {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotBlank
     @ManyToOne
     private Sensor sensor;
 
-    @NotNull
+    @NotBlank
     private double valueOne;
 
     private double valueTwo;
 
-    @NotNull
+    @NotBlank
     @CreationTimestamp
     private LocalDateTime timestamp;
 

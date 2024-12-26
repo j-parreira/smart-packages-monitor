@@ -1,8 +1,13 @@
 package logistics.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
+@Table(name = "stocks",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"product_id", "warehouse_id"})
+        })
 @NamedQueries({
         @NamedQuery(
                 name = "getStocksByProduct",
@@ -14,12 +19,15 @@ public class Stock {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
     @ManyToOne
     private Product product;
 
+    @NotBlank
     @ManyToOne
     private Warehouse warehouse;
 
+    @NotBlank
     private Long quantity;
 
     public Stock() {

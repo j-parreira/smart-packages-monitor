@@ -1,9 +1,7 @@
 package logistics.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.NamedQueries;
-import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.LinkedList;
@@ -17,7 +15,7 @@ import java.util.List;
         ),
 })
 public class Customer extends Person {
-    @NotNull
+    @NotBlank
     private String address;
 
     @OneToMany(mappedBy = "customer")

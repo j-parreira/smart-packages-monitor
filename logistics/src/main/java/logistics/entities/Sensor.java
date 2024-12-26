@@ -1,6 +1,7 @@
 package logistics.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import logistics.enums.SensorType;
 import logistics.enums.VolumeType;
@@ -9,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Entity
+@Table(name = "sensors")
 @NamedQueries({
         @NamedQuery(
                 name = "getAllSensorsInVolume",
@@ -20,17 +22,17 @@ public class Sensor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotBlank
     @ManyToOne
     private Volume volume;
 
-    @NotNull
+    @NotBlank
     private SensorType type;
 
-    @NotNull
+    @NotBlank
     private boolean isActive;
 
-    @NotNull
+    @NotBlank
     private long timeInterval;
 
     private float maxThreshold;

@@ -1,6 +1,7 @@
 package logistics.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import logistics.enums.OrderStatus;
 import logistics.enums.VolumeType;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@Table(name = "volumes")
 @NamedQuery(
         name = "getAllVolumesInOrder",
         query = "SELECT v FROM Volume v WHERE v.order = :order"
@@ -20,35 +22,36 @@ public class Volume {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotBlank
     private VolumeType type;
 
-    @NotNull
+    @NotBlank
     private int volumeNumber;
 
-    @NotNull
+    @NotBlank
     @ManyToMany
     private List<Product> products;
 
-    @NotNull
+    @NotBlank
     @OneToMany
     private List<Sensor> sensors;
 
-    @NotNull
+    @NotBlank
     @ManyToOne
     private Employee dispatchedBy;
 
-    @NotNull
+    @NotBlank
     private OrderStatus status;
 
-    @NotNull
+    @NotBlank
     @ManyToOne
     private Order order;
 
-    @NotNull
+    @NotBlank
     @CreationTimestamp
     private LocalDateTime dispatchedAt;
 
+    @NotBlank
     @CreationTimestamp
     private LocalDateTime arrivedAt;
 

@@ -3,6 +3,8 @@ package logistics.entities;
 import jakarta.persistence.Entity;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
@@ -13,7 +15,7 @@ import jakarta.validation.constraints.NotNull;
         )
 })
 public class Manager extends Employee {
-    @NotNull
+    @NotBlank
     private String office;
 
     public Manager() {

@@ -1,9 +1,7 @@
 package logistics.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedQueries;
-import jakarta.persistence.NamedQuery;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
@@ -14,7 +12,7 @@ import jakarta.validation.constraints.NotNull;
         )
 })
 public class Employee extends Person {
-    @NotNull
+    @NotBlank
     @ManyToOne
     Warehouse warehouse;
 

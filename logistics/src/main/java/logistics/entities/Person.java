@@ -1,9 +1,14 @@
 package logistics.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
+@Table(name = "persons", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "email")
+})
 @NamedQueries({
         @NamedQuery(
                 name = "getAllPersons",
@@ -16,13 +21,14 @@ public abstract class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotBlank
     private String name;
 
-    @NotNull
+    @Email
+    @NotBlank
     private String email;
 
-    @NotNull
+    @NotBlank
     private String password;
 
     public Person() {

@@ -1,6 +1,7 @@
 package logistics.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import logistics.enums.OrderStatus;
 import logistics.enums.PaymentType;
@@ -11,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Entity
+@Table(name = "orders")
 @NamedQueries({
         @NamedQuery(
                 name = "getAllOrders",
@@ -22,26 +24,26 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotBlank
     @ManyToOne
     Customer customer;
 
-    @NotNull
+    @NotBlank
     @ManyToMany
     List<Product> products;
 
     @OneToMany(mappedBy = "order")
     List<Volume> volumes;
 
-    @NotNull
+    @NotBlank
     OrderStatus status;
 
     @CreationTimestamp
+    @NotBlank
     private LocalDateTime createdAt;
 
-    @NotNull
+    @NotBlank
     PaymentType paymentType;
-
 
     public Order() {
     }
@@ -101,5 +103,23 @@ public class Order {
 
     public void setPaymentType(PaymentType paymentType) {
         this.paymentType = paymentType;
+    }
+
+    public void addProduct(Product product) {
+        products.add(product);
+    }
+
+    public Product removeProduct(Product product) {
+        products.remove(product);
+        return product;
+    }
+
+    public void addVolume(Volume volume) {
+        volumes.add(volume);
+    }
+
+    public Volume removeVolume(Volume volume) {
+        volumes.remove(volume);
+        return volume;
     }
 }

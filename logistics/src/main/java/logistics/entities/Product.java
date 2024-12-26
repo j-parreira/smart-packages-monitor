@@ -1,6 +1,7 @@
 package logistics.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import logistics.enums.ProductType;
 
@@ -8,6 +9,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Entity
+@Table(name = "products",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "name")
+        })
 @NamedQueries({
         @NamedQuery(
                 name = "getAllProducts",
@@ -19,10 +24,10 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotBlank
     private String name;
 
-    @NotNull
+    @NotBlank
     ProductType type;
 
     @ManyToMany
@@ -88,4 +93,5 @@ public class Product {
     public void setStocks(List<Stock> stocks) {
         this.stocks = stocks;
     }
+
 }
