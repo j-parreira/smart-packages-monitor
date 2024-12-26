@@ -2,23 +2,22 @@ package logistics.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import logistics.enums.ProductType;
 
 import java.util.LinkedList;
 import java.util.List;
 
 @Entity
-@Table(name = "products",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "name")
-        })
 @NamedQueries({
         @NamedQuery(
                 name = "getAllProducts",
                 query = "SELECT p FROM Product p ORDER BY p.name"
         )
 })
+@Table(name = "products",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "name")
+        })
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +39,9 @@ public class Product {
     List<Stock> stocks;
 
     public Product() {
+        this.orders = new LinkedList<>();
+        this.volumes = new LinkedList<>();
+        this.stocks = new LinkedList<>();
     }
 
     public Product(String name, ProductType type) {
@@ -94,4 +96,27 @@ public class Product {
         this.stocks = stocks;
     }
 
+    public void addOrder(Order order) {
+        this.orders.add(order);
+    }
+
+    public void removeOrder(Order order) {
+        this.orders.remove(order);
+    }
+
+    public void addVolume(Volume volume) {
+        this.volumes.add(volume);
+    }
+
+    public void removeVolume(Volume volume) {
+        this.volumes.remove(volume);
+    }
+
+    public void addStock(Stock stock) {
+        this.stocks.add(stock);
+    }
+
+    public void removeStock(Stock stock) {
+        this.stocks.remove(stock);
+    }
 }

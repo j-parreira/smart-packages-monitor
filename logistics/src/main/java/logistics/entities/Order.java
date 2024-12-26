@@ -2,7 +2,6 @@ package logistics.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import logistics.enums.OrderStatus;
 import logistics.enums.PaymentType;
 import org.hibernate.annotations.CreationTimestamp;
@@ -12,13 +11,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Entity
-@Table(name = "orders")
 @NamedQueries({
         @NamedQuery(
                 name = "getAllOrders",
                 query = "SELECT o FROM Order o ORDER BY o.createdAt"
         )
 })
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,6 +45,8 @@ public class Order {
     PaymentType paymentType;
 
     public Order() {
+        this.products = new LinkedList<>();
+        this.volumes = new LinkedList<>();
     }
 
     public Order(Customer customer, List<Product> products, PaymentType paymentType) {
@@ -106,20 +107,18 @@ public class Order {
     }
 
     public void addProduct(Product product) {
-        products.add(product);
+        this.products.add(product);
     }
 
-    public Product removeProduct(Product product) {
-        products.remove(product);
-        return product;
+    public void removeProduct(Product product) {
+        this.products.remove(product);
     }
 
     public void addVolume(Volume volume) {
-        volumes.add(volume);
+        this.volumes.add(volume);
     }
 
-    public Volume removeVolume(Volume volume) {
-        volumes.remove(volume);
-        return volume;
+    public void removeVolume(Volume volume) {
+        this.volumes.remove(volume);
     }
 }

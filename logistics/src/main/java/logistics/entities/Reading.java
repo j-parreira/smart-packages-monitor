@@ -8,13 +8,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "readings")
 @NamedQueries({
         @NamedQuery(
                 name = "Reading.getBySensor",
                 query = "SELECT r FROM Reading r WHERE r.sensor = : sensor ORDER BY r.timestamp"
         )
 })
+@Table(name = "readings")
 public class Reading {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -10,13 +10,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Entity
-@Table(name = "sensors")
 @NamedQueries({
         @NamedQuery(
                 name = "getAllSensorsInVolume",
                 query = "SELECT s FROM Sensor s WHERE s.volume.id = :volumeId"
         )
 })
+@Table(name = "sensors")
 public class Sensor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,10 +43,12 @@ public class Sensor {
     private List<Reading> readings;
 
     public Sensor() {
+        this.readings = new LinkedList<>();
     }
 
-    public Sensor(SensorType type, boolean isActive, long timeInterval, float maxThreshold, float minThreshold) {
+    public Sensor(SensorType type, Volume volume, boolean isActive, long timeInterval, float maxThreshold, float minThreshold) {
         this.type = type;
+        this.volume = volume;
         this.isActive = isActive;
         this.timeInterval = timeInterval;
         this.maxThreshold = maxThreshold;
@@ -56,6 +58,14 @@ public class Sensor {
 
     public Long getId() {
         return id;
+    }
+
+    public void getVolume(Volume volume) {
+        this.volume = volume;
+    }
+
+    public void setVolume(Volume volume) {
+        this.volume = volume;
     }
 
     public SensorType getType() {
@@ -104,5 +114,13 @@ public class Sensor {
 
     public void setReadings(List<Reading> readings) {
         this.readings = readings;
+    }
+
+    public void addReading(Reading reading) {
+        this.readings.add(reading);
+    }
+
+    public void removeReading(Reading reading) {
+        this.readings.remove(reading);
     }
 }

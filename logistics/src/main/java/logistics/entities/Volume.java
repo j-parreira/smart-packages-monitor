@@ -8,15 +8,15 @@ import logistics.enums.VolumeType;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
-@Table(name = "volumes")
 @NamedQuery(
         name = "getAllVolumesInOrder",
         query = "SELECT v FROM Volume v WHERE v.order = :order"
 )
-
+@Table(name = "volumes")
 public class Volume {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,6 +56,8 @@ public class Volume {
     private LocalDateTime arrivedAt;
 
     public Volume() {
+        this.products = new LinkedList<>();
+        this.sensors = new LinkedList<>();
     }
 
     public Volume(VolumeType type, int volumeNumber, List<Product> products, List<Sensor> sensors, Employee dispatchedBy, OrderStatus status, Order order) {
@@ -144,5 +146,21 @@ public class Volume {
 
     public void setArrivedAt(LocalDateTime arrivedAt) {
         this.arrivedAt = arrivedAt;
+    }
+
+    public void addProduct(Product product) {
+        this.products.add(product);
+    }
+
+    public void removeProduct(Product product) {
+        this.products.remove(product);
+    }
+
+    public void addSensor(Sensor sensor) {
+        this.sensors.add(sensor);
+    }
+
+    public void removeSensor(Sensor sensor) {
+        this.sensors.remove(sensor);
     }
 }

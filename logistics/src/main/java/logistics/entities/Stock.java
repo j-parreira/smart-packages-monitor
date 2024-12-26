@@ -4,16 +4,16 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "stocks",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"product_id", "warehouse_id"})
-        })
 @NamedQueries({
         @NamedQuery(
                 name = "getStocksByProduct",
                 query = "SELECT s FROM Stock s WHERE s.product.id = :productId"
         )
 })
+@Table(name = "stocks",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"product_id", "warehouse_id"})
+        })
 public class Stock {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -2,18 +2,12 @@ package logistics.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 import java.util.LinkedList;
 import java.util.List;
 
 @Entity
-@NamedQueries({
-        @NamedQuery(
-                name = "getAllCustomers",
-                query = "SELECT c FROM Customer c ORDER BY c.name"
-        ),
-})
+@NamedQueries({@NamedQuery(name = "getAllCustomers", query = "SELECT c FROM Customer c ORDER BY c.name"),})
 public class Customer extends Person {
     @NotBlank
     private String address;
@@ -22,6 +16,7 @@ public class Customer extends Person {
     private List<Order> orders;
 
     public Customer() {
+        orders = new LinkedList<>();
     }
 
     public Customer(String name, String email, String password, String address) {
@@ -44,6 +39,14 @@ public class Customer extends Person {
 
     public void setOrders(List<Order> orders) {
         this.orders = orders;
+    }
+
+    public void addOrder(Order order) {
+        orders.add(order);
+    }
+
+    public void removeOrder(Order order) {
+        orders.remove(order);
     }
 }
 
