@@ -10,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @NamedQueries({
@@ -29,20 +30,22 @@ public class Order {
     Customer customer;
 
     @NotNull
-    @ManyToMany
+    @ManyToMany(mappedBy = "orders")
     List<Product> products;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE)
     List<Volume> volumes;
 
-    @NotBlank
+    @NotNull
     OrderStatus status;
 
     @CreationTimestamp
-    @NotBlank
+    @NotNull
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @NotBlank
+    @NotNull
+    @Column(name = "payment_type")
     PaymentType paymentType;
 
     public Order() {
@@ -121,5 +124,25 @@ public class Order {
 
     public void removeVolume(Volume volume) {
         this.volumes.remove(volume);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Order order = (Order) o;
+        return Objects.equals(id, order.id) && Objects.equals(customer, order.customer) && Objects.equals(products, order.products) && Objects.equals(volumes, order.volumes) && status == order.status && Objects.equals(createdAt, order.createdAt) && paymentType == order.paymentType;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(id);
+        result = 31 * result + Objects.hashCode(customer);
+        result = 31 * result + Objects.hashCode(products);
+        result = 31 * result + Objects.hashCode(volumes);
+        result = 31 * result + Objects.hashCode(status);
+        result = 31 * result + Objects.hashCode(createdAt);
+        result = 31 * result + Objects.hashCode(paymentType);
+        return result;
     }
 }

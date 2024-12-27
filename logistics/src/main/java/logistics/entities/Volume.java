@@ -10,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @NamedQuery(
@@ -22,14 +23,15 @@ public class Volume {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotNull
     private VolumeType type;
 
-    @NotBlank
+    @NotNull
+    @Column(name = "volume_number")
     private int volumeNumber;
 
     @NotNull
-    @ManyToMany
+    @ManyToMany(mappedBy = "volumes")
     private List<Product> products;
 
     @NotNull
@@ -38,21 +40,23 @@ public class Volume {
 
     @NotNull
     @ManyToOne
+    @Column(name = "dispatched_by")
     private Employee dispatchedBy;
 
-    @NotBlank
+    @NotNull
     private OrderStatus status;
 
     @NotNull
     @ManyToOne
     private Order order;
 
-    @NotBlank
+    @NotNull
     @CreationTimestamp
+    @Column(name = "dispatched_at")
     private LocalDateTime dispatchedAt;
 
-    @NotBlank
     @CreationTimestamp
+    @Column(name = "arrived_at")
     private LocalDateTime arrivedAt;
 
     public Volume() {
@@ -162,5 +166,28 @@ public class Volume {
 
     public void removeSensor(Sensor sensor) {
         this.sensors.remove(sensor);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Volume volume = (Volume) o;
+        return volumeNumber == volume.volumeNumber && Objects.equals(id, volume.id) && type == volume.type && Objects.equals(products, volume.products) && Objects.equals(sensors, volume.sensors) && Objects.equals(dispatchedBy, volume.dispatchedBy) && status == volume.status && Objects.equals(order, volume.order) && Objects.equals(dispatchedAt, volume.dispatchedAt) && Objects.equals(arrivedAt, volume.arrivedAt);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(id);
+        result = 31 * result + Objects.hashCode(type);
+        result = 31 * result + volumeNumber;
+        result = 31 * result + Objects.hashCode(products);
+        result = 31 * result + Objects.hashCode(sensors);
+        result = 31 * result + Objects.hashCode(dispatchedBy);
+        result = 31 * result + Objects.hashCode(status);
+        result = 31 * result + Objects.hashCode(order);
+        result = 31 * result + Objects.hashCode(dispatchedAt);
+        result = 31 * result + Objects.hashCode(arrivedAt);
+        return result;
     }
 }

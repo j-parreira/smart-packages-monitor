@@ -8,6 +8,7 @@ import logistics.enums.VolumeType;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @NamedQueries({
@@ -30,13 +31,17 @@ public class Sensor {
     private SensorType type;
 
     @NotBlank
+    @Column(name = "is_active")
     private boolean isActive;
 
     @NotBlank
+    @Column(name = "time_interval")
     private long timeInterval;
 
+    @Column(name = "max_threshold")
     private float maxThreshold;
 
+    @Column(name = "min_threshold")
     private float minThreshold;
 
     @OneToMany(mappedBy = "sensor")
@@ -122,5 +127,26 @@ public class Sensor {
 
     public void removeReading(Reading reading) {
         this.readings.remove(reading);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Sensor sensor = (Sensor) o;
+        return isActive == sensor.isActive && timeInterval == sensor.timeInterval && Float.compare(maxThreshold, sensor.maxThreshold) == 0 && Float.compare(minThreshold, sensor.minThreshold) == 0 && Objects.equals(id, sensor.id) && Objects.equals(volume, sensor.volume) && type == sensor.type && Objects.equals(readings, sensor.readings);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(id);
+        result = 31 * result + Objects.hashCode(volume);
+        result = 31 * result + Objects.hashCode(type);
+        result = 31 * result + Boolean.hashCode(isActive);
+        result = 31 * result + Long.hashCode(timeInterval);
+        result = 31 * result + Float.hashCode(maxThreshold);
+        result = 31 * result + Float.hashCode(minThreshold);
+        result = 31 * result + Objects.hashCode(readings);
+        return result;
     }
 }

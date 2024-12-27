@@ -1,18 +1,24 @@
 package logistics.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
-@NamedQueries({@NamedQuery(name = "getAllCustomers", query = "SELECT c FROM Customer c ORDER BY c.name"),})
-public class Customer extends Person {
-    @NotBlank
+@NamedQueries({
+        @NamedQuery(
+                name = "getAllCustomers",
+                query = "SELECT c FROM Customer c ORDER BY c.name"
+        ),
+})
+public class Customer extends User {
+    @NotNull
     private String address;
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.REMOVE)
     private List<Order> orders;
 
     public Customer() {
@@ -47,6 +53,21 @@ public class Customer extends Person {
 
     public void removeOrder(Order order) {
         orders.remove(order);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Customer customer = (Customer) o;
+        return Objects.equals(address, customer.address) && Objects.equals(orders, customer.orders);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(address);
+        result = 31 * result + Objects.hashCode(orders);
+        return result;
     }
 }
 

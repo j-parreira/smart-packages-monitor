@@ -2,9 +2,11 @@ package logistics.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @NamedQuery(
@@ -20,7 +22,7 @@ public class Warehouse {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotNull
     private String name;
 
     @OneToMany(mappedBy = "warehouse")
@@ -82,5 +84,22 @@ public class Warehouse {
 
     public void removeStock(Stock stock) {
         this.stocks.remove(stock);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Warehouse warehouse = (Warehouse) o;
+        return Objects.equals(id, warehouse.id) && Objects.equals(name, warehouse.name) && Objects.equals(employees, warehouse.employees) && Objects.equals(stocks, warehouse.stocks);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(id);
+        result = 31 * result + Objects.hashCode(name);
+        result = 31 * result + Objects.hashCode(employees);
+        result = 31 * result + Objects.hashCode(stocks);
+        return result;
     }
 }

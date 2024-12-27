@@ -1,11 +1,11 @@
 package logistics.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @NamedQueries({
@@ -14,7 +14,7 @@ import java.util.List;
                 query = "SELECT e FROM Employee e ORDER BY e.name"
         )
 })
-public class Employee extends Person {
+public class Employee extends User {
     @NotNull
     @ManyToOne
     Warehouse warehouse;
@@ -54,5 +54,20 @@ public class Employee extends Person {
 
     public void removeVolume(Volume volume) {
         this.volumes.remove(volume);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Employee employee = (Employee) o;
+        return Objects.equals(warehouse, employee.warehouse) && Objects.equals(volumes, employee.volumes);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(warehouse);
+        result = 31 * result + Objects.hashCode(volumes);
+        return result;
     }
 }

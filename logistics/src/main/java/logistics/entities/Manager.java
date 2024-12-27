@@ -3,7 +3,9 @@ package logistics.entities;
 import jakarta.persistence.Entity;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+import java.util.Objects;
 
 @Entity
 @NamedQueries({
@@ -13,7 +15,7 @@ import jakarta.validation.constraints.NotBlank;
         )
 })
 public class Manager extends Employee {
-    @NotBlank
+    @NotNull
     private String office;
 
     public Manager() {
@@ -30,5 +32,21 @@ public class Manager extends Employee {
 
     public void setOffice(String office) {
         this.office = office;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Manager manager = (Manager) o;
+        return Objects.equals(office, manager.office);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(office);
+        return result;
     }
 }

@@ -3,14 +3,13 @@ package logistics.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "persons", uniqueConstraints = {
+@Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = "email")
 })
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class Person {
+public abstract class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,10 +24,10 @@ public abstract class Person {
     @NotBlank
     private String password;
 
-    public Person() {
+    public User() {
     }
 
-    public Person(String name, String email, String password) {
+    public User(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;

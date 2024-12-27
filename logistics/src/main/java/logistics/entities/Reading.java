@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @NamedQueries({
@@ -25,8 +26,10 @@ public class Reading {
     private Sensor sensor;
 
     @NotBlank
+    @Column(name = "value_one")
     private double valueOne;
 
+    @Column(name = "value_two")
     private double valueTwo;
 
     @NotBlank
@@ -83,5 +86,23 @@ public class Reading {
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Reading reading = (Reading) o;
+        return Double.compare(valueOne, reading.valueOne) == 0 && Double.compare(valueTwo, reading.valueTwo) == 0 && Objects.equals(id, reading.id) && Objects.equals(sensor, reading.sensor) && Objects.equals(timestamp, reading.timestamp);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(id);
+        result = 31 * result + Objects.hashCode(sensor);
+        result = 31 * result + Double.hashCode(valueOne);
+        result = 31 * result + Double.hashCode(valueTwo);
+        result = 31 * result + Objects.hashCode(timestamp);
+        return result;
     }
 }

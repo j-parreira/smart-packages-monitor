@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.Objects;
+
 @Entity
 @NamedQueries({
         @NamedQuery(
@@ -74,5 +76,22 @@ public class Stock {
 
     public void removeQuantity(Long quantity) {
         this.quantity -= quantity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Stock stock = (Stock) o;
+        return Objects.equals(id, stock.id) && Objects.equals(product, stock.product) && Objects.equals(warehouse, stock.warehouse) && Objects.equals(quantity, stock.quantity);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(id);
+        result = 31 * result + Objects.hashCode(product);
+        result = 31 * result + Objects.hashCode(warehouse);
+        result = 31 * result + Objects.hashCode(quantity);
+        return result;
     }
 }

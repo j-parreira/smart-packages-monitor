@@ -6,6 +6,7 @@ import logistics.enums.ProductType;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @NamedQueries({
@@ -30,9 +31,19 @@ public class Product {
     ProductType type;
 
     @ManyToMany
+    @JoinTable(
+            name = "product_order",
+            joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "order_id", referencedColumnName = "id")
+    )
     List<Order> orders;
 
     @ManyToMany
+    @JoinTable(
+            name = "product_volume",
+            joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "volume_id", referencedColumnName = "id")
+    )
     List<Volume> volumes;
 
     @OneToMany(mappedBy = "product")
@@ -118,5 +129,24 @@ public class Product {
 
     public void removeStock(Stock stock) {
         this.stocks.remove(stock);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Product product = (Product) o;
+        return Objects.equals(id, product.id) && Objects.equals(name, product.name) && type == product.type && Objects.equals(orders, product.orders) && Objects.equals(volumes, product.volumes) && Objects.equals(stocks, product.stocks);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(id);
+        result = 31 * result + Objects.hashCode(name);
+        result = 31 * result + Objects.hashCode(type);
+        result = 31 * result + Objects.hashCode(orders);
+        result = 31 * result + Objects.hashCode(volumes);
+        result = 31 * result + Objects.hashCode(stocks);
+        return result;
     }
 }
