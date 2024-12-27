@@ -35,12 +35,12 @@ public class Volume {
     private List<Product> products;
 
     @NotNull
-    @OneToMany
+    @OneToMany(mappedBy = "volume")
     private List<Sensor> sensors;
 
     @NotNull
     @ManyToOne
-    @Column(name = "dispatched_by")
+    @JoinColumn(name = "dispatched_by", nullable = false)
     private Employee dispatchedBy;
 
     @NotNull
