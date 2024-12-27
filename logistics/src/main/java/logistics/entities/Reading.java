@@ -4,15 +4,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
 @Entity
 @NamedQueries({
         @NamedQuery(
-                name = "Reading.getBySensor",
-                query = "SELECT r FROM Reading r WHERE r.sensor = : sensor ORDER BY r.timestamp"
+                name = "getReadingsBySensor",
+                query = "SELECT r FROM Reading r WHERE r.sensor = :sensor ORDER BY r.timestamp"
         )
 })
 @Table(name = "readings", uniqueConstraints = {

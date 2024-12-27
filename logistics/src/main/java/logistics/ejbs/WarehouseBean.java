@@ -11,11 +11,12 @@ public class WarehouseBean {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public boolean exists(Long id) {
-        Query query = entityManager.createQuery("SELECT COUNT(w.id) FROM Warehouse w WHERE w.id = :id", Long.class);
-        query.setParameter("id", id);
+    public boolean exists(String name) {
+        Query query = entityManager.createQuery("SELECT COUNT(w.id) FROM Warehouse w WHERE w.name = :name", Long.class);
+        query.setParameter("name", name);
         return (Long)query.getSingleResult() > 0L;
     }
+
 
 
 }

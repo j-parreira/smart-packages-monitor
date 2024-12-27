@@ -15,7 +15,7 @@ import java.util.Objects;
 @Entity
 @NamedQuery(
         name = "getAllVolumesInOrder",
-        query = "SELECT v FROM Volume v WHERE v.order = :order"
+        query = "SELECT v FROM Volume v WHERE v.order.id = :orderId"
 )
 @Table(name = "volumes", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"order_id", "volume_number"})
