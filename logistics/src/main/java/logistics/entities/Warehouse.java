@@ -24,6 +24,9 @@ public class Warehouse extends Versionable {
     @NotNull
     private String name;
 
+    @NotNull
+    private String location;
+
     @OneToMany(mappedBy = "warehouse")
     private List<Employee> employees;
 
@@ -35,8 +38,9 @@ public class Warehouse extends Versionable {
         this.stocks = new LinkedList<>();
     }
 
-    public Warehouse(String name) {
+    public Warehouse(String name, String location) {
         this.name = name;
+        this.location = location;
         this.employees = new LinkedList<>();
         this.stocks = new LinkedList<>();
     }
@@ -51,6 +55,14 @@ public class Warehouse extends Versionable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public List<Employee> getEmployees() {
@@ -90,13 +102,14 @@ public class Warehouse extends Versionable {
         if (o == null || getClass() != o.getClass()) return false;
 
         Warehouse warehouse = (Warehouse) o;
-        return Objects.equals(id, warehouse.id) && Objects.equals(name, warehouse.name) && Objects.equals(employees, warehouse.employees) && Objects.equals(stocks, warehouse.stocks);
+        return Objects.equals(id, warehouse.id) && Objects.equals(name, warehouse.name) && Objects.equals(location, warehouse.location) && Objects.equals(employees, warehouse.employees) && Objects.equals(stocks, warehouse.stocks);
     }
 
     @Override
     public int hashCode() {
         int result = Objects.hashCode(id);
         result = 31 * result + Objects.hashCode(name);
+        result = 31 * result + Objects.hashCode(location);
         result = 31 * result + Objects.hashCode(employees);
         result = 31 * result + Objects.hashCode(stocks);
         return result;

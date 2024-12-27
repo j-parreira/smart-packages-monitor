@@ -12,6 +12,7 @@ import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.ext.Provider;
+import logistics.ejbs.UserBean;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Principal;
@@ -37,7 +38,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         requestContext.setSecurityContext(new SecurityContext() {
             @Override
             public Principal getUserPrincipal() {
-                return user::getUsername;
+                return user::getEmail;
             }
 
             @Override

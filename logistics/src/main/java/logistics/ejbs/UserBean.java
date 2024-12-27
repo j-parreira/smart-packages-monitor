@@ -16,14 +16,14 @@ public class UserBean {
     @Inject
     private Hasher hasher;
 
-    public User findOrFail(String username) {
-        var user = entityManager.getReference(User.class, username);
+    public User findOrFail(String email) {
+        var user = entityManager.getReference(User.class, email);
         Hibernate.initialize(user);
         return user;
     }
 
-    public boolean canLogin(String username, String password) {
-        var user = findOrFail(username);
+    public boolean canLogin(String email, String password) {
+        var user = findOrFail(email);
         return user != null && user.getPassword().equals(hasher.hash(password));
     }
 }

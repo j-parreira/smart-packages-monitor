@@ -1,0 +1,23 @@
+meta {
+  name: Login Customer
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{api_url}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email":"c1@mail.pt",
+    "password":"123"
+  }
+}
+
+tests {
+  var token = res.getBody().token
+  bru.setEnvVar("token",token)
+}
