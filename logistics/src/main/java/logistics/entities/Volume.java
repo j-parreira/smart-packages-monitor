@@ -18,7 +18,7 @@ import java.util.Objects;
         query = "SELECT v FROM Volume v WHERE v.order = :order"
 )
 @Table(name = "volumes")
-public class Volume {
+public class Volume extends Versionable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -16,7 +16,7 @@ import java.util.Objects;
         )
 })
 @Table(name = "readings")
-public class Reading {
+public class Reading extends Versionable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

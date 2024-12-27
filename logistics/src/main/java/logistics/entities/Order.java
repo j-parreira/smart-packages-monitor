@@ -20,7 +20,7 @@ import java.util.Objects;
         )
 })
 @Table(name = "orders")
-public class Order {
+public class Order extends Versionable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

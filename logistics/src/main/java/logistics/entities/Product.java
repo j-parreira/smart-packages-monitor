@@ -19,7 +19,7 @@ import java.util.Objects;
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "name")
         })
-public class Product {
+public class Product extends Versionable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

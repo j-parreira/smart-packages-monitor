@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotBlank;
         @UniqueConstraint(columnNames = "email")
 })
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class User {
+public abstract class User extends Versionable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

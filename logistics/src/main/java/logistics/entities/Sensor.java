@@ -18,7 +18,7 @@ import java.util.Objects;
         )
 })
 @Table(name = "sensors")
-public class Sensor {
+public class Sensor extends Versionable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

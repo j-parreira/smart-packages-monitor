@@ -17,7 +17,7 @@ import java.util.Objects;
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"product_id", "warehouse_id"})
         })
-public class Stock {
+public class Stock extends Versionable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
