@@ -7,7 +7,7 @@ import logistics.enums.OrderStatus;
 import logistics.enums.PaymentType;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -42,7 +42,7 @@ public class Order extends Versionable {
     @CreationTimestamp
     @NotNull
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private Date createdAt;
 
     @NotNull
     @Column(name = "payment_type")
@@ -58,7 +58,7 @@ public class Order extends Versionable {
         this.products = products;
         this.volumes = new LinkedList<>();
         this.status = OrderStatus.PROCESSING;
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = new Date();
         this.paymentType = paymentType;
     }
 
@@ -98,7 +98,7 @@ public class Order extends Versionable {
         this.status = status;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 

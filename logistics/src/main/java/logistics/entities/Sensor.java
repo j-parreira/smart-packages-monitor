@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import logistics.enums.SensorType;
-import logistics.enums.VolumeType;
 
 import java.util.LinkedList;
 import java.util.List;

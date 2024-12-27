@@ -7,7 +7,7 @@ import logistics.enums.OrderStatus;
 import logistics.enums.VolumeType;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -53,11 +53,11 @@ public class Volume extends Versionable {
     @NotNull
     @CreationTimestamp
     @Column(name = "dispatched_at")
-    private LocalDateTime dispatchedAt;
+    private Date dispatchedAt;
 
     @CreationTimestamp
     @Column(name = "arrived_at")
-    private LocalDateTime arrivedAt;
+    private Date arrivedAt;
 
     public Volume() {
         this.products = new LinkedList<>();
@@ -72,7 +72,7 @@ public class Volume extends Versionable {
         this.dispatchedBy = dispatchedBy;
         this.status = status;
         this.order = order;
-        this.dispatchedAt = LocalDateTime.now();
+        this.dispatchedAt = new Date();
         this.arrivedAt = null;
     }
 
@@ -136,19 +136,19 @@ public class Volume extends Versionable {
         this.order = order;
     }
 
-    public LocalDateTime getDispatchedAt() {
+    public Date getDispatchedAt() {
         return dispatchedAt;
     }
 
-    public void setDispatchedAt(LocalDateTime dispatchedAt) {
+    public void setDispatchedAt(Date dispatchedAt) {
         this.dispatchedAt = dispatchedAt;
     }
 
-    public LocalDateTime getArrivedAt() {
+    public Date getArrivedAt() {
         return arrivedAt;
     }
 
-    public void setArrivedAt(LocalDateTime arrivedAt) {
+    public void setArrivedAt(Date arrivedAt) {
         this.arrivedAt = arrivedAt;
     }
 

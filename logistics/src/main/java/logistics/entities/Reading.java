@@ -1,11 +1,11 @@
 package logistics.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -21,20 +21,20 @@ public class Reading extends Versionable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotNull
     @ManyToOne
     private Sensor sensor;
 
-    @NotBlank
+    @NotNull
     @Column(name = "value_one")
     private double valueOne;
 
     @Column(name = "value_two")
     private double valueTwo;
 
-    @NotBlank
+    @NotNull
     @CreationTimestamp
-    private LocalDateTime timestamp;
+    private Date timestamp;
 
     public Reading() {
     }
@@ -42,14 +42,14 @@ public class Reading extends Versionable {
     public Reading(Sensor sensor, double valueOne) {
         this.sensor = sensor;
         this.valueOne = valueOne;
-        this.timestamp = LocalDateTime.now();
+        this.timestamp = new Date();
     }
 
     public Reading(Sensor sensor, double valueOne, double valueTwo) {
         this.sensor = sensor;
         this.valueOne = valueOne;
         this.valueTwo = valueTwo;
-        this.timestamp = LocalDateTime.now();
+        this.timestamp = new Date();
     }
 
     public Long getId() {
@@ -80,12 +80,8 @@ public class Reading extends Versionable {
         this.valueTwo = valueTwo;
     }
 
-    public LocalDateTime getTimestamp() {
+    public Date getTimestamp() {
         return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
     }
 
     @Override
