@@ -18,4 +18,9 @@ public class CustomerBean {
         query.setParameter("email", email);
         return (Long)query.getSingleResult() > 0L;
     }
+
+    public List<Customer> getAllCustomers() {
+        Query query = entityManager.createQuery("SELECT c FROM Customer c", Customer.class);
+        return query.getResultList();
+    }
 }
