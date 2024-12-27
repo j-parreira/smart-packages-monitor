@@ -2,6 +2,7 @@ package logistics.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @NamedQueries({
@@ -19,11 +20,11 @@ public class Stock {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotNull
     @ManyToOne
     private Product product;
 
-    @NotBlank
+    @NotNull
     @ManyToOne
     private Warehouse warehouse;
 
@@ -65,5 +66,13 @@ public class Stock {
 
     public void setQuantity(Long quantity) {
         this.quantity = quantity;
+    }
+
+    public void addQuantity(Long quantity) {
+        this.quantity += quantity;
+    }
+
+    public void removeQuantity(Long quantity) {
+        this.quantity -= quantity;
     }
 }

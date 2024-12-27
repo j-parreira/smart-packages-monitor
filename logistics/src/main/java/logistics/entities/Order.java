@@ -2,6 +2,7 @@ package logistics.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import logistics.enums.OrderStatus;
 import logistics.enums.PaymentType;
 import org.hibernate.annotations.CreationTimestamp;
@@ -23,11 +24,11 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotNull
     @ManyToOne
     Customer customer;
 
-    @NotBlank
+    @NotNull
     @ManyToMany
     List<Product> products;
 

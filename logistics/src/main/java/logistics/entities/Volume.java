@@ -28,22 +28,22 @@ public class Volume {
     @NotBlank
     private int volumeNumber;
 
-    @NotBlank
+    @NotNull
     @ManyToMany
     private List<Product> products;
 
-    @NotBlank
+    @NotNull
     @OneToMany
     private List<Sensor> sensors;
 
-    @NotBlank
+    @NotNull
     @ManyToOne
     private Employee dispatchedBy;
 
     @NotBlank
     private OrderStatus status;
 
-    @NotBlank
+    @NotNull
     @ManyToOne
     private Order order;
 
