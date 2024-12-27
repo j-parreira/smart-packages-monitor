@@ -17,7 +17,9 @@ import java.util.Objects;
         name = "getAllVolumesInOrder",
         query = "SELECT v FROM Volume v WHERE v.order = :order"
 )
-@Table(name = "volumes")
+@Table(name = "volumes", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"order_id", "volume_number"})
+})
 public class Volume extends Versionable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

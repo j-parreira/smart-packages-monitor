@@ -19,7 +19,9 @@ import java.util.Objects;
                 query = "SELECT o FROM Order o ORDER BY o.createdAt"
         )
 })
-@Table(name = "orders")
+@Table(name = "orders", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"customer_id", "created_at"})
+})
 public class Order extends Versionable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

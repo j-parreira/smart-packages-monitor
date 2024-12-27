@@ -15,7 +15,9 @@ import java.util.Objects;
                 query = "SELECT r FROM Reading r WHERE r.sensor = : sensor ORDER BY r.timestamp"
         )
 })
-@Table(name = "readings")
+@Table(name = "readings", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"sensor_id", "timestamp"})
+})
 public class Reading extends Versionable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

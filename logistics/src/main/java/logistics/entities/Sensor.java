@@ -16,7 +16,9 @@ import java.util.Objects;
                 query = "SELECT s FROM Sensor s WHERE s.volume.id = :volumeId"
         )
 })
-@Table(name = "sensors")
+@Table(name = "sensors", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"volume_id", "type"})
+})
 public class Sensor extends Versionable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
