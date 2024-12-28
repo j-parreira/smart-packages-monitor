@@ -8,10 +8,16 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@NamedQuery(
-        name = "getAllWarehouses",
-        query = "SELECT w FROM Warehouse w ORDER BY w.name"
-)
+@NamedQueries({
+        @NamedQuery(
+                name = "getAllWarehouses",
+                query = "SELECT w FROM Warehouse w ORDER BY w.name"
+        ),
+        @NamedQuery(
+                name = "getWarehouseByName",
+                query = "SELECT w FROM Warehouse w WHERE w.name = :name ORDER BY w.name"
+        )
+})
 @Table(name = "warehouses",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "name")
