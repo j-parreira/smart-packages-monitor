@@ -11,24 +11,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CustomerDTO implements Serializable {
-    @NotNull
     private Long id;
-
-    @NotNull
-    @Size(min = 3, max = 100)
     private String name;
-
-    @NotNull
-    @Email
     private String email;
-
-    @NotNull
     private String password;
-
-    @NotNull
-    @Size(min = 3, max = 100)
     private String address;
-
     private List<OrderDTO> orders;
 
     public CustomerDTO() {
@@ -46,6 +33,10 @@ public class CustomerDTO implements Serializable {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

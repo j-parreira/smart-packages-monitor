@@ -13,6 +13,14 @@ import java.util.Objects;
         @NamedQuery(
                 name = "getAllProducts",
                 query = "SELECT p FROM Product p ORDER BY p.name"
+        ),
+        @NamedQuery(
+                name = "getProductByName",
+                query = "SELECT p FROM Product p WHERE p.name = :name"
+        ),
+        @NamedQuery(
+                name = "getProductTotalStock",
+                query = "SELECT SUM(s.quantity) FROM Stock s WHERE s.product = :product"
         )
 })
 @Table(name = "products",

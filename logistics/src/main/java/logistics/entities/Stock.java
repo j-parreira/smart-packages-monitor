@@ -9,8 +9,20 @@ import java.util.Objects;
 @Entity
 @NamedQueries({
         @NamedQuery(
-                name = "getStocksByProduct",
+                name = "getAllStocks",
+                query = "SELECT s FROM Stock s"
+        ),
+        @NamedQuery(
+                name = "getStockByProduct",
                 query = "SELECT s FROM Stock s WHERE s.product.id = :productId"
+        ),
+        @NamedQuery(
+                name = "getStockByWarehouse",
+                query = "SELECT s FROM Stock s WHERE s.warehouse.id = :warehouseId"
+        ),
+        @NamedQuery(
+                name = "getStockByProductAndWarehouse",
+                query = "SELECT s FROM Stock s WHERE s.product.id = :productId AND s.warehouse.id = :warehouseId"
         )
 })
 @Table(name = "stocks",
@@ -44,6 +56,10 @@ public class Stock extends Versionable {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Product getProduct() {

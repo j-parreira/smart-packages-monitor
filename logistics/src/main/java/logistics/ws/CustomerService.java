@@ -1,8 +1,6 @@
 package logistics.ws;
 
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
-import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
@@ -16,8 +14,6 @@ import logistics.exceptions.MyConstraintViolationException;
 import logistics.exceptions.MyEntityExistsException;
 import logistics.exceptions.MyEntityNotFoundException;
 import logistics.security.Authenticated;
-
-import java.util.List;
 
 @Path("customers")
 @Produces({MediaType.APPLICATION_JSON})
@@ -58,14 +54,13 @@ public class CustomerService {
     // POST /api/customers/
     @POST
     @Path("/")
-    public Response createCustomer(@Valid CustomerDTO customerDTO) throws MyConstraintViolationException, MyEntityExistsException, MyEntityNotFoundException {
-        customerBean.create(
+    public Response createCustomer(CustomerDTO customerDTO) throws MyConstraintViolationException, MyEntityExistsException, MyEntityNotFoundException {
+        var customer = customerBean.create(
                 customerDTO.getName(),
                 customerDTO.getEmail(),
                 customerDTO.getPassword(),
                 customerDTO.getAddress()
         );
-        var customer = customerBean.findByEmail(customerDTO.getEmail());
         return Response.status(Response.Status.CREATED)
                 .entity(CustomerDTO.fromEntity(customer))
                 .build();
@@ -74,12 +69,10 @@ public class CustomerService {
     // PUT /api/customers/{id}
     @PUT
     @Path("{id}")
-    public Response updateCustomer(@PathParam("id") long id, @Valid CustomerDTO customerDTO) throws MyConstraintViolationException, MyEntityNotFoundException {
-        var customer = customerBean.find(id);
-        customerBean.update(
+    public Response updateCustomer(@PathParam("id") long id,CustomerDTO customerDTO) throws MyConstraintViolationException, MyEntityNotFoundException {
+        var customer = customerBean.update(
                 id,
                 customerDTO.getName(),
-                customerDTO.getEmail(),
                 customerDTO.getPassword(),
                 customerDTO.getAddress()
         );

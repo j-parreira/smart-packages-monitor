@@ -28,7 +28,7 @@ public class CustomerBean {
         return (Long) query.getSingleResult() > 0L;
     }
 
-    public void create(String name, String email, String password, String address) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
+    public Customer create(String name, String email, String password, String address) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
         if (exists(findByEmail(email).getId())) {
             throw new MyEntityExistsException("Customer already exists");
         }
@@ -36,6 +36,7 @@ public class CustomerBean {
             Customer customer = new Customer(name, email, hasher.hash(password), address);
             entityManager.persist(customer);
             entityManager.flush();
+            return customer;
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(e);
         }
@@ -69,18 +70,18 @@ public class CustomerBean {
         return customer;
     }
 
-    public void update(Long id, String name, String email, String password, String address) throws MyEntityNotFoundException, MyConstraintViolationException {
+    public Customer update(Long id, String name, String password, String address) throws MyEntityNotFoundException, MyConstraintViolationException {
         if (!exists(id)) {
             throw new MyEntityNotFoundException("Customer not found");
         }
         try {
             Customer customer = find(id);
             customer.setName(name);
-            //customer.setEmail(email);
             customer.setPassword(hasher.hash(password));
             customer.setAddress(address);
             entityManager.merge(customer);
             entityManager.flush();
+            return customer;
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(e);
         }

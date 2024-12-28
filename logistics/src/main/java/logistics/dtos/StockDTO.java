@@ -11,14 +11,8 @@ import java.util.stream.Collectors;
 
 public class StockDTO implements Serializable {
     private Long id;
-
-    @NotNull
     private Product product;
-
-    @NotNull
     private Warehouse warehouse;
-
-    @NotNull
     private Long quantity;
 
     public StockDTO() {
@@ -33,6 +27,10 @@ public class StockDTO implements Serializable {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Product getProduct() {
