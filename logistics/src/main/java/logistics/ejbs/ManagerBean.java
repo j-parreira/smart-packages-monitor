@@ -29,7 +29,7 @@ public class ManagerBean {
     }
 
     public void create(String name, String email, String password, Warehouse warehouse, String office) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
-        if (exists(findByEmail(name).getId())) {
+        if (exists(findByEmail(email).getId())) {
             throw new MyEntityExistsException("Manager already exists");
         }
         try {

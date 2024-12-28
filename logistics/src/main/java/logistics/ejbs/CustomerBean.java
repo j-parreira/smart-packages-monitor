@@ -29,7 +29,7 @@ public class CustomerBean {
     }
 
     public void create(String name, String email, String password, String address) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
-        if (exists(findByEmail(name).getId())) {
+        if (exists(findByEmail(email).getId())) {
             throw new MyEntityExistsException("Customer already exists");
         }
         try {

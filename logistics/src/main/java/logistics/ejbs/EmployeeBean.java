@@ -30,7 +30,7 @@ public class EmployeeBean {
     }
 
     public void create(String name, String email, String password, Warehouse warehouse) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
-        if (exists(findByEmail(name).getId())) {
+        if (exists(findByEmail(email).getId())) {
             throw new MyEntityExistsException("Employee already exists");
         }
         try {
