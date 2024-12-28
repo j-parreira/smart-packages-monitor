@@ -85,11 +85,15 @@ public class WarehouseBean {
         }
     }
 
-    public void delete(long id) throws MyEntityNotFoundException {
-        var warehouse = this.find(id);
-        if (!entityManager.contains(warehouse)) {
-            warehouse = entityManager.merge(warehouse);
+    public void delete(long id) throws MyEntityNotFoundException, MyConstraintViolationException {
+        try {
+            var warehouse = find(id);
+            if (!entityManager.contains(warehouse)) {
+                warehouse = entityManager.merge(warehouse);
+            }
+            entityManager.remove(warehouse);
+        } catch (ConstraintViolationException e) {
+            throw new MyConstraintViolationException(e);
         }
-        entityManager.remove(warehouse);
     }
 }

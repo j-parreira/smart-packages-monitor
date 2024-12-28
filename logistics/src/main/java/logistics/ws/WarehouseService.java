@@ -92,7 +92,7 @@ public class WarehouseService {
     // DELETE /api/warehouses/{id}
     @DELETE
     @Path("{id}")
-    public Response deleteWarehouse(@PathParam("id") long id) throws MyEntityNotFoundException {
+    public Response deleteWarehouse(@PathParam("id") long id) throws MyEntityNotFoundException, MyConstraintViolationException {
         warehouseBean.delete(id);
         return Response.noContent().build();
     }

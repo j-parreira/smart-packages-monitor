@@ -89,7 +89,7 @@ public class CustomerService {
     // DELETE /api/customers/{id}
     @DELETE
     @Path("{id}")
-    public Response deleteCustomer(@PathParam("id") long id) throws MyEntityNotFoundException {
+    public Response deleteCustomer(@PathParam("id") long id) throws MyEntityNotFoundException, MyConstraintViolationException {
         customerBean.delete(id);
         return Response.noContent().build();
     }

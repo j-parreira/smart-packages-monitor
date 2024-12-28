@@ -25,6 +25,7 @@ public class CustomerDTO implements Serializable {
     private String password;
 
     @NotNull
+    @Size(min = 3, max = 100)
     private String address;
 
     private List<OrderDTO> orders;

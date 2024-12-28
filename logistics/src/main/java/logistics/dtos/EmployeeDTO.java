@@ -1,5 +1,6 @@
 package logistics.dtos;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import logistics.entities.Employee;
@@ -19,11 +20,10 @@ public class EmployeeDTO implements Serializable {
     private String name;
 
     @NotNull
-    @Size(min = 3, max = 100)
+    @Email
     private String email;
 
     @NotNull
-    @Size(min = 3, max = 100)
     private String password;
 
     @NotNull

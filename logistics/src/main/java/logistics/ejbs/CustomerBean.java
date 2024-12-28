@@ -86,11 +86,15 @@ public class CustomerBean {
         }
     }
 
-    public void delete(Long id) throws MyEntityNotFoundException {
-        var customer = find(id);
-        if (!entityManager.contains(customer)) {
-            customer = entityManager.merge(customer);
+    public void delete(Long id) throws MyEntityNotFoundException, MyConstraintViolationException {
+        try {
+            var customer = find(id);
+            if (!entityManager.contains(customer)) {
+                customer = entityManager.merge(customer);
+            }
+            entityManager.remove(customer);
+        } catch (ConstraintViolationException e) {
+            throw new MyConstraintViolationException(e);
         }
-        entityManager.remove(customer);
     }
 }
