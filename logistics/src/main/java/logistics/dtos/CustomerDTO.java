@@ -1,20 +1,36 @@
 package logistics.dtos;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import logistics.entities.Customer;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CustomerDTO implements Serializable {
     private Long id;
+
+    @NotNull
+    @Size(min = 3, max = 100)
     private String name;
+
+    @NotNull
+    @Email
     private String email;
+
+    @NotNull
     private String password;
+
+    @NotNull
     private String address;
+
     private List<OrderDTO> orders;
 
     public CustomerDTO() {
+        this.orders = new LinkedList<>();
     }
 
     public CustomerDTO(Long id, String name, String email, String password, String address) {
@@ -23,29 +39,11 @@ public class CustomerDTO implements Serializable {
         this.email = email;
         this.password = password;
         this.address = address;
-        this.orders = null;
-    }
-
-    public static CustomerDTO from(Customer customer) {
-        return new CustomerDTO(
-                customer.getId(),
-                customer.getName(),
-                customer.getEmail(),
-                customer.getPassword(),
-                customer.getAddress()
-        );
-    }
-
-    public static List<CustomerDTO> from(List<Customer> customers) {
-        return customers.stream().map(CustomerDTO::from).collect(Collectors.toList());
+        this.orders = new LinkedList<>();
     }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -86,5 +84,19 @@ public class CustomerDTO implements Serializable {
 
     public void setOrders(List<OrderDTO> orders) {
         this.orders = orders;
+    }
+
+    public static CustomerDTO fromEntity(Customer customer) {
+        return new CustomerDTO(
+                customer.getId(),
+                customer.getName(),
+                customer.getEmail(),
+                customer.getPassword(),
+                customer.getAddress()
+        );
+    }
+
+    public static List<CustomerDTO> fromEntity(List<Customer> customers) {
+        return customers.stream().map(CustomerDTO::fromEntity).collect(Collectors.toList());
     }
 }

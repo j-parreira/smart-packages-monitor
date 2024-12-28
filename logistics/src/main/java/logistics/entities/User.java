@@ -5,9 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "email")
-})
+@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class User extends Versionable {
     @Id

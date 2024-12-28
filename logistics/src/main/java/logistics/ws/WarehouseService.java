@@ -21,7 +21,6 @@ import logistics.dtos.StockDTO;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @Authenticated
-@RolesAllowed({"Manager", "Employee"})
 public class WarehouseService {
     @Context
     private SecurityContext securityContext;
@@ -47,7 +46,6 @@ public class WarehouseService {
     // GET /api/warehouses/{id}/employees
     @GET
     @Path("{id}/employees")
-    @RolesAllowed({"Manager"})
     public Response getWarehouseEmployees(@PathParam("id") long id) throws MyEntityNotFoundException {
         var warehouse = warehouseBean.findWithEmployees(id);
         WarehouseDTO warehouseDTO = WarehouseDTO.fromEntity(warehouse);
@@ -68,7 +66,6 @@ public class WarehouseService {
     // POST /api/warehouses/
     @POST
     @Path("/")
-    @RolesAllowed({"Manager"})
     public Response createWarehouse(@Valid WarehouseDTO warehouseDTO) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
         warehouseBean.create(
                 warehouseDTO.getName(),
@@ -83,8 +80,7 @@ public class WarehouseService {
     // PUT /api/warehouses/{id}
     @PUT
     @Path("{id}")
-    @RolesAllowed({"Manager"})
-    public Response updateWarehouse(@PathParam("id") long id,@Valid WarehouseDTO warehouseDTO) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
+    public Response updateWarehouse(@PathParam("id") long id,@Valid WarehouseDTO warehouseDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
         var warehouse = warehouseBean.update(
                 id,
                 warehouseDTO.getName(),
@@ -96,7 +92,6 @@ public class WarehouseService {
     // DELETE /api/warehouses/{id}
     @DELETE
     @Path("{id}")
-    @RolesAllowed({"Manager"})
     public Response deleteWarehouse(@PathParam("id") long id) throws MyEntityNotFoundException {
         warehouseBean.delete(id);
         return Response.noContent().build();

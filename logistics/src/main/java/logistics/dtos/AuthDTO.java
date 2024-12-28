@@ -1,12 +1,15 @@
 package logistics.dtos;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 import java.io.Serializable;
 
 public class AuthDTO implements Serializable {
     @NotBlank
+    @Email
     private String username;
+
     @NotBlank
     private String password;
 
