@@ -34,7 +34,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         }
         // Get token from the HTTP Authorization header
         String token = header.substring("Bearer".length()).trim();
-        var user = userBean.findOrFail(getUsername(token));
+        var user = userBean.findOrFail(getEmailFromToken(token));
         requestContext.setSecurityContext(new SecurityContext() {
             @Override
             public Principal getUserPrincipal() {
@@ -58,7 +58,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         });
     }
 
-    private String getUsername(String token) {
+    private String getEmailFromToken(String token) {
         var key = new SecretKeySpec(TokenIssuer.SECRET_KEY, TokenIssuer.ALGORITHM);
         try {
             return Jwts.parser()

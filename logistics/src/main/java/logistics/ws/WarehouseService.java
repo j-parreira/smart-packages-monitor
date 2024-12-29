@@ -20,6 +20,7 @@ import logistics.dtos.StockDTO;
 @Path("warehouses")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
+@Authenticated
 public class WarehouseService {
     @Context
     private SecurityContext securityContext;

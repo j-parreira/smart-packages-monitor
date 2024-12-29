@@ -43,8 +43,8 @@ public class Volume extends Versionable {
     private long volumeNumber;
 
     @NotNull
-    @ManyToMany(mappedBy = "volumes")
-    private List<Product> products;
+    @ManyToOne
+    private Product product;
 
     @NotNull
     @OneToMany(mappedBy = "volume")
@@ -72,14 +72,13 @@ public class Volume extends Versionable {
     private Date arrivedAt;
 
     public Volume() {
-        this.products = new LinkedList<>();
         this.sensors = new LinkedList<>();
     }
 
-    public Volume(VolumeType type, long volumeNumber, List<Product> products, List<Sensor> sensors, Employee dispatchedBy, VolumeStatus status, Order order) {
+    public Volume(VolumeType type, long volumeNumber, Product product, List<Sensor> sensors, Employee dispatchedBy, VolumeStatus status, Order order) {
         this.type = type;
         this.volumeNumber = volumeNumber;
-        this.products = products;
+        this.product = product;
         this.sensors = sensors;
         this.dispatchedBy = dispatchedBy;
         this.status = status;
@@ -112,12 +111,12 @@ public class Volume extends Versionable {
         this.volumeNumber = volumeNumber;
     }
 
-    public List<Product> getProducts() {
-        return products;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setProducts(List<Product> products) {
-        this.products = products;
+    public void setProducts(Product product) {
+        this.product = product;
     }
 
     public List<Sensor> getSensors() {
@@ -168,14 +167,6 @@ public class Volume extends Versionable {
         this.arrivedAt = arrivedAt;
     }
 
-    public void addProduct(Product product) {
-        this.products.add(product);
-    }
-
-    public void removeProduct(Product product) {
-        this.products.remove(product);
-    }
-
     public void addSensor(Sensor sensor) {
         this.sensors.add(sensor);
     }
@@ -189,7 +180,7 @@ public class Volume extends Versionable {
         if (o == null || getClass() != o.getClass()) return false;
 
         Volume volume = (Volume) o;
-        return volumeNumber == volume.volumeNumber && Objects.equals(id, volume.id) && type == volume.type && Objects.equals(products, volume.products) && Objects.equals(sensors, volume.sensors) && Objects.equals(dispatchedBy, volume.dispatchedBy) && status == volume.status && Objects.equals(order, volume.order) && Objects.equals(dispatchedAt, volume.dispatchedAt) && Objects.equals(arrivedAt, volume.arrivedAt);
+        return volumeNumber == volume.volumeNumber && Objects.equals(id, volume.id) && type == volume.type && Objects.equals(product, volume.product) && Objects.equals(sensors, volume.sensors) && Objects.equals(dispatchedBy, volume.dispatchedBy) && status == volume.status && Objects.equals(order, volume.order) && Objects.equals(dispatchedAt, volume.dispatchedAt) && Objects.equals(arrivedAt, volume.arrivedAt);
     }
 
     @Override
@@ -197,7 +188,7 @@ public class Volume extends Versionable {
         int result = Objects.hashCode(id);
         result = 31 * result + Objects.hashCode(type);
         result = 31 * result + Long.hashCode(volumeNumber);
-        result = 31 * result + Objects.hashCode(products);
+        result = 31 * result + Objects.hashCode(product);
         result = 31 * result + Objects.hashCode(sensors);
         result = 31 * result + Objects.hashCode(dispatchedBy);
         result = 31 * result + Objects.hashCode(status);

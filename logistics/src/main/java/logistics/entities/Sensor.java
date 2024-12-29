@@ -18,10 +18,6 @@ import java.util.Objects;
         @NamedQuery(
                 name = "getAllSensorsInVolume",
                 query = "SELECT s FROM Sensor s WHERE s.volume.id = :volumeId"
-        ),
-        @NamedQuery(
-                name = "getSensorByVolumeAndType",
-                query = "SELECT s FROM Sensor s WHERE s.volume.id = :volumeId AND s.type = :type"
         )
 })
 @Table(name = "sensors", uniqueConstraints = {
@@ -32,18 +28,17 @@ public class Sensor extends Versionable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     @ManyToOne
     private Volume volume;
 
-    @NotBlank
+    @NotNull
     private SensorType type;
 
-    @NotBlank
+    @NotNull
     @Column(name = "is_active")
     private boolean isActive;
 
-    @NotBlank
+    @NotNull
     @Column(name = "time_interval")
     private long timeInterval;
 
@@ -60,8 +55,8 @@ public class Sensor extends Versionable {
         this.readings = new LinkedList<>();
     }
 
-    public Sensor(Volume volume, SensorType type, boolean isActive, float maxThreshold, float minThreshold, long timeInterval) {
-        this.volume = volume;
+    public Sensor(SensorType type, boolean isActive, float maxThreshold, float minThreshold, long timeInterval) {
+        this.volume = null;
         this.type = type;
         this.isActive = isActive;
         this.maxThreshold = maxThreshold;

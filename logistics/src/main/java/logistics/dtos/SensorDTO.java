@@ -110,7 +110,6 @@ public class SensorDTO implements Serializable {
 
     public static Sensor toEntity(SensorDTO sensorDTO) {
         Sensor sensor = new Sensor(
-                VolumeDTO.toEntity(sensorDTO.getVolume()),
                 sensorDTO.getType(),
                 sensorDTO.isActive(),
                 sensorDTO.getMaxThreshold(),

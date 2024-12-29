@@ -6,6 +6,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
+import logistics.dtos.ReadingDTO;
 import logistics.dtos.SensorDTO;
 import logistics.dtos.VolumeDTO;
 import logistics.ejbs.SensorBean;
@@ -13,10 +14,12 @@ import logistics.entities.Sensor;
 import logistics.exceptions.MyConstraintViolationException;
 import logistics.exceptions.MyEntityExistsException;
 import logistics.exceptions.MyEntityNotFoundException;
+import logistics.security.Authenticated;
 
 @Path("sensors")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
+@Authenticated
 public class SensorService {
     @Context
     private SecurityContext securityContext;
@@ -61,7 +64,6 @@ public class SensorService {
     @Path("/")
     public Response createSensor(SensorDTO sensorDTO) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
         var sensor = sensorBean.create(
-                VolumeDTO.toEntity(sensorDTO.getVolume()),
                 sensorDTO.getType(),
                 sensorDTO.isActive(),
                 sensorDTO.getMaxThreshold(),

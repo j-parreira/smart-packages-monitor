@@ -19,6 +19,7 @@ import logistics.security.Authenticated;
 @Path("managers")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
+@Authenticated
 public class ManagerService {
     @Context
     private SecurityContext securityContext;
@@ -65,6 +66,7 @@ public class ManagerService {
                 id,
                 managerDTO.getName(),
                 managerDTO.getPassword(),
+                managerDTO.getEmail(),
                 WarehouseDTO.toEntity(managerDTO.getWarehouse()),
                 managerDTO.getOffice()
         );

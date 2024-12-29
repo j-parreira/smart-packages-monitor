@@ -18,6 +18,7 @@ import logistics.security.Authenticated;
 @Path("stocks")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
+@Authenticated
 public class StockService {
     @Context
     private SecurityContext securityContext;

@@ -16,12 +16,12 @@ public class TokenIssuer {
     protected static final String ALGORITHM = "HMACSHA384";
     public static final long EXPIRY_MINS = 60L;
 
-    public String issue(String username) {
+    public String issue(String email) {
         var expiryPeriod = LocalDateTime.now().plusMinutes(EXPIRY_MINS);
         var expirationDateTime = Date.from(expiryPeriod.atZone(ZoneId.systemDefault()).toInstant());
         Key key = new SecretKeySpec(SECRET_KEY, ALGORITHM);
         return Jwts.builder()
-                .subject(username)
+                .subject(email)
                 .issuedAt(new Date())
                 .expiration(expirationDateTime)
                 .signWith(key)

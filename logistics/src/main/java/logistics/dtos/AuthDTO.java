@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class AuthDTO implements Serializable {
     @NotBlank
     @Email
-    private String username;
+    private String email;
 
     @NotBlank
     private String password;
@@ -16,17 +16,17 @@ public class AuthDTO implements Serializable {
     public AuthDTO() {
     }
 
-    public AuthDTO(String username, String password) {
-        this.username = username;
+    public AuthDTO(String email, String password) {
+        this.email = email;
         this.password = password;
     }
 
-    public @NotBlank String getUsername() {
-        return username;
+    public @NotBlank String getEmail() {
+        return email;
     }
 
-    public void setUsername(@NotBlank String username) {
-        this.username = username;
+    public void setEmail(@NotBlank String email) {
+        this.email = email;
     }
 
     public @NotBlank String getPassword() {

@@ -10,6 +10,10 @@ import java.util.Objects;
 @Entity
 @NamedQueries({
         @NamedQuery(
+                name = "getAllReadings",
+                query = "SELECT r FROM Reading r ORDER BY r.timestamp"
+        ),
+        @NamedQuery(
                 name = "getReadingsBySensor",
                 query = "SELECT r FROM Reading r WHERE r.sensor = :sensor ORDER BY r.timestamp"
         )
@@ -38,12 +42,6 @@ public class Reading extends Versionable {
     private Date timestamp;
 
     public Reading() {
-    }
-
-    public Reading(Sensor sensor, double valueOne) {
-        this.sensor = sensor;
-        this.valueOne = valueOne;
-        this.timestamp = new Date();
     }
 
     public Reading(Sensor sensor, double valueOne, double valueTwo) {

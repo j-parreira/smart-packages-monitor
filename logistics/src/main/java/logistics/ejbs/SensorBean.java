@@ -26,12 +26,9 @@ public class SensorBean {
         return (Long) query.getSingleResult() > 0L;
     }
 
-    public Sensor create(Volume volume, SensorType type, boolean isActive, float maxThreshold, float minThreshold, long timeInterval) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
-        if (exists(findByVolumeAndType(volume.getId(), type).getId())) {
-            throw new MyEntityExistsException("Sensor already exists");
-        }
+    public Sensor create(SensorType type, boolean isActive, float maxThreshold, float minThreshold, long timeInterval) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
         try {
-            Sensor sensor = new Sensor(volume, type, isActive, maxThreshold, minThreshold, timeInterval);
+            Sensor sensor = new Sensor(type, isActive, maxThreshold, minThreshold, timeInterval);
             entityManager.persist(sensor);
             entityManager.flush();
             return sensor;
@@ -60,17 +57,6 @@ public class SensorBean {
             throw new MyEntityNotFoundException("Sensor not found");
         }
         return sensor;
-    }
-
-    public Sensor findByVolumeAndType(long volumeId, SensorType type) throws MyEntityNotFoundException {
-        var query = entityManager.createNamedQuery("getSensorByVolumeAndType", Sensor.class);
-        query.setParameter("volumeId", volumeId);
-        query.setParameter("type", type);
-        List<Sensor> sensors = query.getResultList();
-        if (sensors.isEmpty()) {
-            throw new MyEntityNotFoundException("Sensor not found");
-        }
-        return sensors.get(0);
     }
 
     public Sensor findWithReadings(long id) throws MyEntityNotFoundException {

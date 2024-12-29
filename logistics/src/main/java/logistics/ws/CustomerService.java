@@ -19,6 +19,7 @@ import logistics.security.Authenticated;
 @Path("customers")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
+@Authenticated
 public class CustomerService {
     @Context
     private SecurityContext securityContext;
@@ -73,6 +74,7 @@ public class CustomerService {
         var customer = customerBean.update(
                 id,
                 customerDTO.getName(),
+                customerDTO.getEmail(),
                 customerDTO.getPassword(),
                 customerDTO.getAddress()
         );

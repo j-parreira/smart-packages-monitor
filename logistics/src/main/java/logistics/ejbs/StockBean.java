@@ -26,13 +26,18 @@ public class StockBean {
     }
 
     public Stock create(Product product, Warehouse warehouse, Long quantity) throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
-        if(exists(findByProductAndWarehouse(product.getId(), warehouse.getId()).getId())) {
+        Stock existingStock = findByProductAndWarehouse(product.getId(), warehouse.getId());
+        if (existingStock != null) {
             throw new MyEntityExistsException("Stock already exists");
         }
-        Stock stock = new Stock(product, warehouse, quantity);
-        entityManager.persist(stock);
-        entityManager.flush();
-        return stock;
+        try {
+            Stock stock = new Stock(product, warehouse, quantity);
+            entityManager.persist(stock);
+            entityManager.flush();
+            return stock;
+        } catch (ConstraintViolationException e) {
+            throw new MyConstraintViolationException(e);
+        }
     }
 
     public List<Stock> findAll() {
@@ -47,15 +52,12 @@ public class StockBean {
         return stock;
     }
 
-    public Stock findByProductAndWarehouse(long productId, long warehouseId) throws MyEntityNotFoundException {
+    public Stock findByProductAndWarehouse(long productId, long warehouseId) {
         var query = entityManager.createNamedQuery("getStockByProductAndWarehouse", Stock.class);
         query.setParameter("productId", productId);
         query.setParameter("warehouseId", warehouseId);
         List<Stock> stocks = query.getResultList();
-        if (stocks.isEmpty()) {
-            throw new MyEntityNotFoundException("Stock not found");
-        }
-        return stocks.get(0);
+        return stocks.isEmpty() ? null : stocks.get(0);
     }
 
     public List<Stock> findByProduct(long productId) {

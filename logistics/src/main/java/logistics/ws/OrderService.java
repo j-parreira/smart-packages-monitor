@@ -21,6 +21,7 @@ import logistics.ejbs.OrderBean;
 @Path("orders")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
+@Authenticated
 public class OrderService {
     @Context
     private SecurityContext securityContext;

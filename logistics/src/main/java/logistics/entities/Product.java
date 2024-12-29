@@ -2,6 +2,7 @@ package logistics.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import logistics.enums.ProductType;
 
 import java.util.LinkedList;
@@ -35,7 +36,8 @@ public class Product extends Versionable {
     @NotBlank
     private String name;
 
-    @NotBlank
+    @NotNull
+    @Enumerated(EnumType.STRING)
     ProductType type;
 
     @ManyToMany
@@ -46,12 +48,7 @@ public class Product extends Versionable {
     )
     List<Order> orders;
 
-    @ManyToMany
-    @JoinTable(
-            name = "product_volume",
-            joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "volume_id", referencedColumnName = "id")
-    )
+    @OneToMany(mappedBy = "product")
     List<Volume> volumes;
 
     @OneToMany(mappedBy = "product")

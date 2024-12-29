@@ -14,7 +14,7 @@ public class VolumeDTO implements Serializable {
     private Long id;
     private VolumeType type;
     private long volumeNumber;
-    private List<ProductDTO> products;
+    private ProductDTO product;
     private List<SensorDTO> sensors;
     private EmployeeDTO dispatchedBy;
     private VolumeStatus status;
@@ -23,14 +23,13 @@ public class VolumeDTO implements Serializable {
     private Date arrivedAt;
 
     public VolumeDTO() {
-        this.products = new LinkedList<>();
         this.sensors = new LinkedList<>();
     }
 
-    public VolumeDTO(VolumeType type, long volumeNumber, EmployeeDTO dispatchedBy, VolumeStatus status, OrderDTO order, Date dispatchedAt, Date arrivedAt) {
+    public VolumeDTO(VolumeType type, long volumeNumber, ProductDTO product, EmployeeDTO dispatchedBy, VolumeStatus status, OrderDTO order, Date dispatchedAt, Date arrivedAt) {
         this.type = type;
         this.volumeNumber = volumeNumber;
-        this.products = new LinkedList<>();
+        this.product = product;
         this.sensors = new LinkedList<>();
         this.dispatchedBy = dispatchedBy;
         this.status = status;
@@ -63,12 +62,12 @@ public class VolumeDTO implements Serializable {
         this.volumeNumber = volumeNumber;
     }
 
-    public List<ProductDTO> getProducts() {
-        return products;
+    public ProductDTO getProduct() {
+        return product;
     }
 
-    public void setProducts(List<ProductDTO> products) {
-        this.products = products;
+    public void setProducts(ProductDTO product) {
+        this.product = product;
     }
 
     public List<SensorDTO> getSensors() {
@@ -123,6 +122,7 @@ public class VolumeDTO implements Serializable {
         return new VolumeDTO(
                 volume.getType(),
                 volume.getVolumeNumber(),
+                ProductDTO.fromEntity(volume.getProduct()),
                 EmployeeDTO.fromEntity(volume.getDispatchedBy()),
                 volume.getStatus(),
                 OrderDTO.fromEntity(volume.getOrder()),
@@ -135,7 +135,7 @@ public class VolumeDTO implements Serializable {
         Volume volume = new Volume(
                 volumeDTO.getType(),
                 volumeDTO.getVolumeNumber(),
-                ProductDTO.toEntity(volumeDTO.getProducts()),
+                ProductDTO.toEntity(volumeDTO.getProduct()),
                 SensorDTO.toEntity(volumeDTO.getSensors()),
                 EmployeeDTO.toEntity(volumeDTO.getDispatchedBy()),
                 volumeDTO.getStatus(),

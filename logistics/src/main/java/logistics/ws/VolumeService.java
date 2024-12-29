@@ -12,10 +12,12 @@ import logistics.ejbs.VolumeBean;
 import logistics.exceptions.MyConstraintViolationException;
 import logistics.exceptions.MyEntityExistsException;
 import logistics.exceptions.MyEntityNotFoundException;
+import logistics.security.Authenticated;
 
 @Path("volumes")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
+@Authenticated
 public class VolumeService {
     @Context
     private SecurityContext securityContext;
@@ -42,9 +44,9 @@ public class VolumeService {
     @GET
     @Path("{id}/products")
     public Response getVolumeProducts(@PathParam("id") long id) throws MyEntityNotFoundException {
-        var volume = volumeBean.findWithProducts(id);
+        var volume = volumeBean.findWithProduct(id);
         var volumeDTO = VolumeDTO.fromEntity(volume);
-        volumeDTO.setProducts(ProductDTO.fromEntity(volume.getProducts()));
+        volumeDTO.setProducts(ProductDTO.fromEntity(volume.getProduct()));
         return Response.ok(volumeDTO).build();
     }
 
@@ -65,7 +67,7 @@ public class VolumeService {
         var volume = volumeBean.create(
                 volumeDTO.getType(),
                 volumeDTO.getVolumeNumber(),
-                ProductDTO.toEntity(volumeDTO.getProducts()),
+                ProductDTO.toEntity(volumeDTO.getProduct()),
                 SensorDTO.toEntity(volumeDTO.getSensors()),
                 EmployeeDTO.toEntity(volumeDTO.getDispatchedBy()),
                 volumeDTO.getStatus(),

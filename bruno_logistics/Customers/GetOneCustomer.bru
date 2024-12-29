@@ -1,13 +1,17 @@
 meta {
-  name: GetAllCustomers
+  name: GetOneCustomer
   type: http
-  seq: 1
+  seq: 2
 }
 
 get {
-  url: {{api_url}}/customers
+  url: {{api_url}}/customers/:id
   body: none
   auth: none
+}
+
+params:path {
+  id: 10
 }
 
 headers {

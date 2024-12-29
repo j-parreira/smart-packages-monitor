@@ -23,14 +23,14 @@ public class EmployeeBean {
     @Inject
     private Hasher hasher;
 
-    public boolean exists(Long id) {
-        Query query = entityManager.createQuery("SELECT COUNT(e.id) FROM Employee e WHERE e.id = :id", Long.class);
-        query.setParameter("id", id);
-        return (Long)query.getSingleResult() > 0L;
+    public boolean exists(String email) {
+        Query query = entityManager.createQuery("SELECT COUNT(e.email) FROM Employee e WHERE e.email = :email", Long.class);
+        query.setParameter("email", email);
+        return (Long) query.getSingleResult() > 0L;
     }
 
     public Employee create(String name, String email, String password, Warehouse warehouse) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
-        if (exists(findByEmail(email).getId())) {
+        if (exists(email)) {
             throw new MyEntityExistsException("Employee already exists");
         }
         try {
@@ -71,8 +71,8 @@ public class EmployeeBean {
         return employee;
     }
 
-    public Employee update(Long id, String name, String password, Warehouse warehouse) throws MyEntityNotFoundException, MyConstraintViolationException {
-        if (!exists(id)) {
+    public Employee update(Long id, String name, String email, String password, Warehouse warehouse) throws MyEntityNotFoundException, MyConstraintViolationException {
+        if (!exists(email)) {
             throw new MyEntityNotFoundException("Employee not found");
         }
         try {

@@ -17,10 +17,11 @@ public class UserBean {
     private Hasher hasher;
 
     public User findOrFail(String email) {
-        var user = entityManager.getReference(User.class, email);
-        Hibernate.initialize(user);
-        return user;
+        var query = entityManager.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class);
+        query.setParameter("email", email);
+        return query.getResultStream().findFirst().orElse(null); // Return null if no result
     }
+
 
     public boolean canLogin(String email, String password) {
         var user = findOrFail(email);

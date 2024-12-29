@@ -12,12 +12,12 @@ post {
 
 body:json {
   {
-    "email":"a1@mail.pt",
+    "email":"m1@mail.pt",
     "password":"123"
   }
 }
 
 tests {
-  var token = res.getBody().token
-  bru.setEnvVar("token",token)
+  var token = res.getBody();
+  bru.setEnvVar("token",token);
 }

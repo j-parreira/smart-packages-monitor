@@ -19,14 +19,14 @@ public class ProductBean {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public boolean exists(Long id) {
-        Query query = entityManager.createQuery("SELECT COUNT(p.id) FROM Product p WHERE p.id = :id", Long.class);
-        query.setParameter("id", id);
+    public boolean exists(String name) {
+        Query query = entityManager.createQuery("SELECT COUNT(p.id) FROM Product p WHERE p.name = :name", Long.class);
+        query.setParameter("name", name);
         return (Long)query.getSingleResult() > 0L;
     }
 
     public Product create(String name, ProductType type) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
-        if (exists(findByName(name).getId())) {
+        if (exists(name)) {
             throw new MyEntityExistsException("Product already exists");
         }
         try {
@@ -87,7 +87,7 @@ public class ProductBean {
     }
 
     public Product update(long id, String name, ProductType type) throws MyEntityNotFoundException, MyConstraintViolationException {
-        if (!exists(id)) {
+        if (!exists(name)) {
             throw new MyEntityNotFoundException("Product not found");
         }
         try {

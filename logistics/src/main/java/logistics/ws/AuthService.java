@@ -22,8 +22,8 @@ public class AuthService {
     @POST
     @Path("/login")
     public Response authenticate(@Valid AuthDTO auth) {
-        if (userBean.canLogin(auth.getUsername(), auth.getPassword())) {
-            String token = issuer.issue(auth.getUsername());
+        if (userBean.canLogin(auth.getEmail(), auth.getPassword())) {
+            String token = issuer.issue(auth.getEmail());
             return Response.ok(token).build();
         }
         return Response.status(Response.Status.UNAUTHORIZED).build();

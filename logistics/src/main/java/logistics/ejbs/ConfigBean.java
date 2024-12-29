@@ -5,7 +5,7 @@ import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
 import logistics.entities.*;
-import logistics.enums.ProductType;
+import logistics.enums.*;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -33,6 +33,18 @@ public class ConfigBean {
 
     @EJB
     private StockBean stockBean;
+
+    @EJB
+    private OrderBean orderBean;
+
+    @EJB
+    private VolumeBean volumeBean;
+
+    @EJB
+    private SensorBean sensorBean;
+
+    @EJB
+    private ReadingBean readingBean;
 
     @PostConstruct
     public void populateDB() {
@@ -128,8 +140,53 @@ public class ConfigBean {
         List<Stock> stocks = stockBean.findAll();
 
         // Create Orders
+        try {
+            orderBean.create(customers.get(0), products, PaymentType.MBWAY);
+            orderBean.create(customers.get(1), products, PaymentType.MB);
+            orderBean.create(customers.get(2), products, PaymentType.PAYPAL);
+            orderBean.create(customers.get(3), products, PaymentType.MBWAY);
+            orderBean.create(customers.get(4), products, PaymentType.MBWAY);
+            orderBean.create(customers.get(5), products, PaymentType.MBWAY);
+        } catch (Exception e) {
+            System.err.println("Some exception happened while creating orders");
+            logger.severe(e.getMessage());
+        }
+        List<Order> orders = orderBean.findAll();
+
+        // Create Sensors
+        try {
+            sensorBean.create(SensorType.TEMPERATURE, true, 30, 10, 1000);
+            sensorBean.create(SensorType.ACCELERATION, true, 80, 20, 1000);
+            sensorBean.create(SensorType.HUMIDITY, true, 50, 30, 1000);
+            sensorBean.create(SensorType.GPS, true, 0, 0, 1000);
+        } catch (Exception e) {
+            System.err.println("Some exception happened while creating sensors");
+            logger.severe(e.getMessage());
+        }
+        List<Sensor> sensors = sensorBean.findAll();
 
         // Create Volumes
+        try {
+            volumeBean.create(VolumeType.WOODEN_CRATE, 1, products.get(1), sensors, employees.get(0), VolumeStatus.PROCESSING, orders.get(0));
+            volumeBean.create(VolumeType.WOODEN_CRATE, 2, products.get(0), sensors, employees.get(1), VolumeStatus.PROCESSING, orders.get(1));
+            volumeBean.create(VolumeType.WOODEN_CRATE, 3, products.get(2), sensors, employees.get(2), VolumeStatus.PROCESSING, orders.get(2));
+            volumeBean.create(VolumeType.WOODEN_CRATE, 4, products.get(3), sensors, employees.get(3), VolumeStatus.PROCESSING, orders.get(3));
+        } catch (Exception e) {
+            System.err.println("Some exception happened while creating volumes");
+            logger.severe(e.getMessage());
+        }
+        List<Volume> volumes = volumeBean.findAll();
 
+        // Create Readings
+        try {
+            readingBean.create(sensors.get(0), 25, 10);
+            readingBean.create(sensors.get(1), 75, 20);
+            readingBean.create(sensors.get(2), 45, 30);
+            readingBean.create(sensors.get(3), 0, 0);
+        } catch (Exception e) {
+            System.err.println("Some exception happened while creating readings");
+            logger.severe(e.getMessage());
+        }
+        List<Reading> readings = readingBean.findAll();
     }
 }

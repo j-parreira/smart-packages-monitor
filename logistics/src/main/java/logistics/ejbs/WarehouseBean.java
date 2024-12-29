@@ -18,14 +18,14 @@ public class WarehouseBean {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public boolean exists(Long id) {
-        Query query = entityManager.createQuery("SELECT COUNT(w.id) FROM Warehouse w WHERE w.id = :id", Long.class);
-        query.setParameter("id", id);
+    public boolean exists(String name) {
+        Query query = entityManager.createQuery("SELECT COUNT(w.name) FROM Warehouse w WHERE w.name = :name", Long.class);
+        query.setParameter("name", name);
         return (Long) query.getSingleResult() > 0L;
     }
 
     public Warehouse create(String name, String location) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
-        if (exists(findByName(name).getId())) {
+        if (exists(name)) {
             throw new MyEntityExistsException("Warehouse already exists");
         }
         try {
@@ -54,9 +54,6 @@ public class WarehouseBean {
         var query = entityManager.createNamedQuery("getWarehouseByName", Warehouse.class);
         query.setParameter("name", name);
         List<Warehouse> warehouses = query.getResultList();
-        if (warehouses.isEmpty()) {
-            throw new MyEntityNotFoundException("Warehouse not found");
-        }
         return warehouses.get(0);
     }
 
@@ -73,7 +70,7 @@ public class WarehouseBean {
     }
 
     public Warehouse update(long id, String name, String location) throws MyEntityNotFoundException, MyConstraintViolationException {
-        if (!exists(id)) {
+        if (!exists(name)) {
             throw new MyEntityNotFoundException("Warehouse not found");
         }
         try {

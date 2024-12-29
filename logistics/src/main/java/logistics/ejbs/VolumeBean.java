@@ -27,12 +27,13 @@ public class VolumeBean {
         return (Long)query.getSingleResult() > 0L;
     }
 
-    public Volume create(VolumeType type, long volumeNumber, List<Product> products, List<Sensor> sensors, Employee dispatchedBy, VolumeStatus status, Order order) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
-        if (exists(findByOrderAndVolumeNumber(order.getId(), volumeNumber).getId())) {
+    public Volume create(VolumeType type, long volumeNumber, Product product, List<Sensor> sensors, Employee dispatchedBy, VolumeStatus status, Order order) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
+        Volume existingVolume = findByOrderAndVolumeNumber(order.getId(), volumeNumber);
+        if (existingVolume != null) {
             throw new MyEntityExistsException("Volume already exists");
         }
         try {
-            Volume volume = new Volume(type, volumeNumber, products, sensors, dispatchedBy, status, order);
+            Volume volume = new Volume(type, volumeNumber, product, sensors, dispatchedBy, status, order);
             entityManager.persist(volume);
             entityManager.flush();
             return volume;
@@ -58,10 +59,7 @@ public class VolumeBean {
         query.setParameter("orderId", orderId);
         query.setParameter("volumeNumber", volumeNumber);
         List<Volume> volumes = query.getResultList();
-        if (volumes.isEmpty()) {
-            throw new MyEntityNotFoundException("Volume not found");
-        }
-        return volumes.get(0);
+        return volumes.isEmpty() ? null : volumes.get(0);
     }
 
     public List<Volume> findByOrder(long orderId) {
@@ -70,9 +68,9 @@ public class VolumeBean {
         return query.getResultList();
     }
 
-    public Volume findWithProducts(long id) throws MyEntityNotFoundException {
+    public Volume findWithProduct(long id) throws MyEntityNotFoundException {
         var volume = this.find(id);
-        Hibernate.initialize(volume.getProducts());
+        Hibernate.initialize(volume.getProduct());
         return volume;
     }
 

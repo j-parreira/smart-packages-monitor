@@ -22,14 +22,14 @@ public class ManagerBean {
     @Inject
     private Hasher hasher;
 
-    public boolean exists(Long id) {
-        Query query = entityManager.createQuery("SELECT COUNT(m.id) FROM Manager m WHERE m.id = :id", Long.class);
-        query.setParameter("id", id);
+    public boolean exists(String email) {
+        Query query = entityManager.createQuery("SELECT COUNT(m.email) FROM Manager m WHERE m.email = :email", Long.class);
+        query.setParameter("email", email);
         return (Long) query.getSingleResult() > 0L;
     }
 
     public Manager create(String name, String email, String password, Warehouse warehouse, String office) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
-        if (exists(findByEmail(email).getId())) {
+        if (exists(email)) {
             throw new MyEntityExistsException("Manager already exists");
         }
         try {
@@ -64,8 +64,8 @@ public class ManagerBean {
         return managers.get(0);
     }
 
-    public Manager update(Long id, String name, String password, Warehouse warehouse, String office) throws MyEntityNotFoundException, MyConstraintViolationException {
-        if (!exists(id)) {
+    public Manager update(Long id, String name, String email, String password, Warehouse warehouse, String office) throws MyEntityNotFoundException, MyConstraintViolationException {
+        if (!exists(email)) {
             throw new MyEntityNotFoundException("Manager not found");
         }
         try {

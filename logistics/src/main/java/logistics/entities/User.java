@@ -3,6 +3,7 @@ package logistics.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
@@ -12,14 +13,15 @@ public abstract class User extends Versionable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotNull
     private String name;
 
+    @NotNull
     @Email
-    @NotBlank
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @NotBlank
+    @NotNull
     private String password;
 
     public User() {

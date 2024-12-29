@@ -22,14 +22,14 @@ public class CustomerBean {
     @Inject
     private Hasher hasher;
 
-    public boolean exists(Long id) {
-        Query query = entityManager.createQuery("SELECT COUNT(c.id) FROM Customer c WHERE c.id = :id", Long.class);
-        query.setParameter("id", id);
+    public boolean exists(String email) {
+        Query query = entityManager.createQuery("SELECT COUNT(c.email) FROM Customer c WHERE c.email = :email", Long.class);
+        query.setParameter("email", email);
         return (Long) query.getSingleResult() > 0L;
     }
 
     public Customer create(String name, String email, String password, String address) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
-        if (exists(findByEmail(email).getId())) {
+        if (exists(email)) {
             throw new MyEntityExistsException("Customer already exists");
         }
         try {
@@ -70,8 +70,8 @@ public class CustomerBean {
         return customer;
     }
 
-    public Customer update(Long id, String name, String password, String address) throws MyEntityNotFoundException, MyConstraintViolationException {
-        if (!exists(id)) {
+    public Customer update(Long id, String name, String email, String password, String address) throws MyEntityNotFoundException, MyConstraintViolationException {
+        if (!exists(email)) {
             throw new MyEntityNotFoundException("Customer not found");
         }
         try {

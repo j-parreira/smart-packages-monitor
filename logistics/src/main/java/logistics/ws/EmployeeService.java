@@ -19,6 +19,7 @@ import logistics.security.Authenticated;
 @Path("employees")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
+@Authenticated
 public class EmployeeService {
     @Context
     private SecurityContext securityContext;
@@ -73,6 +74,7 @@ public class EmployeeService {
         var employee = employeeBean.update(
                 id,
                 employeeDTO.getName(),
+                employeeDTO.getEmail(),
                 employeeDTO.getPassword(),
                 WarehouseDTO.toEntity(employeeDTO.getWarehouse())
         );
