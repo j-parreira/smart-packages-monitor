@@ -12,8 +12,16 @@ import java.util.Objects;
 @Entity
 @NamedQueries({
         @NamedQuery(
+                name = "getAllSensors",
+                query = "SELECT s FROM Sensor s"
+        ),
+        @NamedQuery(
                 name = "getAllSensorsInVolume",
                 query = "SELECT s FROM Sensor s WHERE s.volume.id = :volumeId"
+        ),
+        @NamedQuery(
+                name = "getSensorByVolumeAndType",
+                query = "SELECT s FROM Sensor s WHERE s.volume.id = :volumeId AND s.type = :type"
         )
 })
 @Table(name = "sensors", uniqueConstraints = {
@@ -52,13 +60,13 @@ public class Sensor extends Versionable {
         this.readings = new LinkedList<>();
     }
 
-    public Sensor(SensorType type, Volume volume, boolean isActive, long timeInterval, float maxThreshold, float minThreshold) {
-        this.type = type;
+    public Sensor(Volume volume, SensorType type, boolean isActive, float maxThreshold, float minThreshold, long timeInterval) {
         this.volume = volume;
+        this.type = type;
         this.isActive = isActive;
-        this.timeInterval = timeInterval;
         this.maxThreshold = maxThreshold;
         this.minThreshold = minThreshold;
+        this.timeInterval = timeInterval;
         this.readings = new LinkedList<>();
     }
 
@@ -66,8 +74,12 @@ public class Sensor extends Versionable {
         return id;
     }
 
-    public void getVolume(Volume volume) {
-        this.volume = volume;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Volume getVolume() {
+        return volume;
     }
 
     public void setVolume(Volume volume) {
@@ -120,14 +132,6 @@ public class Sensor extends Versionable {
 
     public void setReadings(List<Reading> readings) {
         this.readings = readings;
-    }
-
-    public void addReading(Reading reading) {
-        this.readings.add(reading);
-    }
-
-    public void removeReading(Reading reading) {
-        this.readings.remove(reading);
     }
 
     @Override

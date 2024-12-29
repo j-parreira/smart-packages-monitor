@@ -1,8 +1,5 @@
 package logistics.dtos;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import logistics.entities.Customer;
 
 import java.io.Serializable;
@@ -84,12 +81,27 @@ public class CustomerDTO implements Serializable {
                 customer.getId(),
                 customer.getName(),
                 customer.getEmail(),
-                customer.getPassword(),
+                null,
                 customer.getAddress()
         );
     }
 
+    public static Customer toEntity(CustomerDTO customerDTO) {
+        Customer customer =  new Customer(
+                customerDTO.getName(),
+                customerDTO.getEmail(),
+                customerDTO.getPassword(),
+                customerDTO.getAddress()
+        );
+        customer.setId(customerDTO.getId());
+        return customer;
+    }
+
     public static List<CustomerDTO> fromEntity(List<Customer> customers) {
         return customers.stream().map(CustomerDTO::fromEntity).collect(Collectors.toList());
+    }
+
+    public static List<Customer> toEntity(List<CustomerDTO> customerDTOs) {
+        return customerDTOs.stream().map(CustomerDTO::toEntity).collect(Collectors.toList());
     }
 }

@@ -75,6 +75,10 @@ public class Product extends Versionable {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
@@ -113,30 +117,6 @@ public class Product extends Versionable {
 
     public void setStocks(List<Stock> stocks) {
         this.stocks = stocks;
-    }
-
-    public void addOrder(Order order) {
-        this.orders.add(order);
-    }
-
-    public void removeOrder(Order order) {
-        this.orders.remove(order);
-    }
-
-    public void addVolume(Volume volume) {
-        this.volumes.add(volume);
-    }
-
-    public void removeVolume(Volume volume) {
-        this.volumes.remove(volume);
-    }
-
-    public void addStock(Stock stock) {
-        this.stocks.add(stock);
-    }
-
-    public void removeStock(Stock stock) {
-        this.stocks.remove(stock);
     }
 
     @Override

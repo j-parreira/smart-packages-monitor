@@ -1,11 +1,7 @@
 package logistics.dtos;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import logistics.entities.Employee;
-import logistics.entities.Volume;
-import logistics.entities.Warehouse;
+import org.hibernate.Hibernate;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -14,28 +10,17 @@ import java.util.stream.Collectors;
 
 public class EmployeeDTO implements Serializable {
     private Long id;
-
-    @NotNull
-    @Size(min = 3, max = 100)
     private String name;
-
-    @NotNull
-    @Email
     private String email;
-
-    @NotNull
     private String password;
-
-    @NotNull
-    private Warehouse warehouse;
-
-    private List<Volume> volumes;
+    private WarehouseDTO warehouse;
+    private List<VolumeDTO> volumes;
 
     public EmployeeDTO() {
         this.volumes = new LinkedList<>();
     }
 
-    public EmployeeDTO(Long id, String name, String email, String password, Warehouse warehouse) {
+    public EmployeeDTO(Long id, String name, String email, String password, WarehouseDTO warehouse) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -46,6 +31,10 @@ public class EmployeeDTO implements Serializable {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -72,30 +61,42 @@ public class EmployeeDTO implements Serializable {
         this.password = password;
     }
 
-    public Warehouse getWarehouse() {
+    public WarehouseDTO getWarehouse() {
         return warehouse;
     }
 
-    public void setWarehouse(Warehouse warehouse) {
+    public void setWarehouse(WarehouseDTO warehouse) {
         this.warehouse = warehouse;
     }
 
-    public List<Volume> getVolumes() {
+    public List<VolumeDTO> getVolumes() {
         return volumes;
     }
 
-    public void setVolumes(List<Volume> volumes) {
+    public void setVolumes(List<VolumeDTO> volumes) {
         this.volumes = volumes;
     }
 
     public static EmployeeDTO fromEntity(Employee employee) {
+        Hibernate.initialize(employee.getWarehouse());
         return new EmployeeDTO(
                 employee.getId(),
                 employee.getName(),
                 employee.getEmail(),
-                employee.getPassword(),
-                employee.getWarehouse()
+                null,
+                WarehouseDTO.fromEntity(employee.getWarehouse())
         );
+    }
+
+    public static Employee toEntity(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee(
+                employeeDTO.getName(),
+                employeeDTO.getEmail(),
+                employeeDTO.getPassword(),
+                WarehouseDTO.toEntity(employeeDTO.getWarehouse())
+        );
+        employee.setId(employeeDTO.getId());
+        return employee;
     }
 
     public static List<EmployeeDTO> fromEntity(List<Employee> employees) {

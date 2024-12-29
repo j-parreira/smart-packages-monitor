@@ -1,9 +1,6 @@
 package logistics.dtos;
 
-import jakarta.validation.constraints.NotNull;
-import logistics.entities.Product;
 import logistics.entities.Stock;
-import logistics.entities.Warehouse;
 
 import java.io.Serializable;
 import java.util.List;
@@ -11,14 +8,14 @@ import java.util.stream.Collectors;
 
 public class StockDTO implements Serializable {
     private Long id;
-    private Product product;
-    private Warehouse warehouse;
+    private ProductDTO product;
+    private WarehouseDTO warehouse;
     private Long quantity;
 
     public StockDTO() {
     }
 
-    public StockDTO(Long id, Product product, Warehouse warehouse, Long quantity) {
+    public StockDTO(Long id, ProductDTO product, WarehouseDTO warehouse, Long quantity) {
         this.id = id;
         this.product = product;
         this.warehouse = warehouse;
@@ -33,19 +30,19 @@ public class StockDTO implements Serializable {
         this.id = id;
     }
 
-    public Product getProduct() {
+    public ProductDTO getProduct() {
         return product;
     }
 
-    public void setProduct(Product product) {
+    public void setProduct(ProductDTO product) {
         this.product = product;
     }
 
-    public Warehouse getWarehouse() {
+    public WarehouseDTO getWarehouse() {
         return warehouse;
     }
 
-    public void setWarehouse(Warehouse warehouse) {
+    public void setWarehouse(WarehouseDTO warehouse) {
         this.warehouse = warehouse;
     }
 
@@ -60,13 +57,27 @@ public class StockDTO implements Serializable {
     public static StockDTO fromEntity(Stock stock) {
         return new StockDTO(
                 stock.getId(),
-                stock.getProduct(),
-                stock.getWarehouse(),
+                ProductDTO.fromEntity(stock.getProduct()),
+                WarehouseDTO.fromEntity(stock.getWarehouse()),
                 stock.getQuantity()
         );
     }
 
+    public static Stock toEntity(StockDTO stockDTO) {
+        Stock stock = new Stock(
+                ProductDTO.toEntity(stockDTO.getProduct()),
+                WarehouseDTO.toEntity(stockDTO.getWarehouse()),
+                stockDTO.getQuantity()
+        );
+        stock.setId(stockDTO.getId());
+        return stock;
+    }
+
     public static List<StockDTO> fromEntity(List<Stock> stocks) {
         return stocks.stream().map(StockDTO::fromEntity).collect(Collectors.toList());
+    }
+
+    public static List<Stock> toEntity(List<StockDTO> stockDTOs) {
+        return stockDTOs.stream().map(StockDTO::toEntity).collect(Collectors.toList());
     }
 }

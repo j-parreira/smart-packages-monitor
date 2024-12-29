@@ -29,7 +29,7 @@ public class EmployeeBean {
         return (Long)query.getSingleResult() > 0L;
     }
 
-    public void create(String name, String email, String password, Warehouse warehouse) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
+    public Employee create(String name, String email, String password, Warehouse warehouse) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
         if (exists(findByEmail(email).getId())) {
             throw new MyEntityExistsException("Employee already exists");
         }
@@ -37,6 +37,7 @@ public class EmployeeBean {
             Employee employee = new Employee(name, email, hasher.hash(password), warehouse);
             entityManager.persist(employee);
             entityManager.flush();
+            return employee;
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(e);
         }
@@ -70,18 +71,18 @@ public class EmployeeBean {
         return employee;
     }
 
-    public void update(Long id, String name, String email, String password, Warehouse warehouse) throws MyEntityNotFoundException, MyConstraintViolationException {
+    public Employee update(Long id, String name, String password, Warehouse warehouse) throws MyEntityNotFoundException, MyConstraintViolationException {
         if (!exists(id)) {
             throw new MyEntityNotFoundException("Employee not found");
         }
         try {
             Employee employee = find(id);
             employee.setName(name);
-            //employee.setEmail(email);
             employee.setPassword(hasher.hash(password));
             employee.setWarehouse(warehouse);
             entityManager.merge(employee);
             entityManager.flush();
+            return employee;
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(e);
         }

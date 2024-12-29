@@ -1,9 +1,9 @@
 package logistics.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import logistics.enums.OrderStatus;
+import logistics.enums.VolumeStatus;
 import logistics.enums.VolumeType;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -13,10 +13,20 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@NamedQuery(
-        name = "getAllVolumesInOrder",
-        query = "SELECT v FROM Volume v WHERE v.order.id = :orderId"
-)
+@NamedQueries({
+        @NamedQuery(
+                name = "getAllVolumes",
+                query = "SELECT v FROM Volume v"
+        ),
+        @NamedQuery(
+                name = "getVolumeByOrder",
+                query = "SELECT v FROM Volume v WHERE v.order.id = :orderId"
+        ),
+        @NamedQuery(
+                name = "getVolumeByOrderAndVolumeNumber",
+                query = "SELECT v FROM Volume v WHERE v.order.id = :orderId AND v.volumeNumber = :volumeNumber"
+        )
+})
 @Table(name = "volumes", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"order_id", "volume_number"})
 })
@@ -30,7 +40,7 @@ public class Volume extends Versionable {
 
     @NotNull
     @Column(name = "volume_number")
-    private int volumeNumber;
+    private long volumeNumber;
 
     @NotNull
     @ManyToMany(mappedBy = "volumes")
@@ -46,7 +56,7 @@ public class Volume extends Versionable {
     private Employee dispatchedBy;
 
     @NotNull
-    private OrderStatus status;
+    private VolumeStatus status;
 
     @NotNull
     @ManyToOne
@@ -66,7 +76,7 @@ public class Volume extends Versionable {
         this.sensors = new LinkedList<>();
     }
 
-    public Volume(VolumeType type, int volumeNumber, List<Product> products, List<Sensor> sensors, Employee dispatchedBy, OrderStatus status, Order order) {
+    public Volume(VolumeType type, long volumeNumber, List<Product> products, List<Sensor> sensors, Employee dispatchedBy, VolumeStatus status, Order order) {
         this.type = type;
         this.volumeNumber = volumeNumber;
         this.products = products;
@@ -82,6 +92,10 @@ public class Volume extends Versionable {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public VolumeType getType() {
         return type;
     }
@@ -90,11 +104,11 @@ public class Volume extends Versionable {
         this.type = type;
     }
 
-    public int getVolumeNumber() {
+    public long getVolumeNumber() {
         return volumeNumber;
     }
 
-    public void setVolumeNumber(int volumeNumber) {
+    public void setVolumeNumber(long volumeNumber) {
         this.volumeNumber = volumeNumber;
     }
 
@@ -122,11 +136,11 @@ public class Volume extends Versionable {
         this.dispatchedBy = dispatchedBy;
     }
 
-    public OrderStatus getStatus() {
+    public VolumeStatus getStatus() {
         return status;
     }
 
-    public void setStatus(OrderStatus status) {
+    public void setStatus(VolumeStatus status) {
         this.status = status;
     }
 
@@ -182,7 +196,7 @@ public class Volume extends Versionable {
     public int hashCode() {
         int result = Objects.hashCode(id);
         result = 31 * result + Objects.hashCode(type);
-        result = 31 * result + volumeNumber;
+        result = 31 * result + Long.hashCode(volumeNumber);
         result = 31 * result + Objects.hashCode(products);
         result = 31 * result + Objects.hashCode(sensors);
         result = 31 * result + Objects.hashCode(dispatchedBy);

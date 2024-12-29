@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
+import logistics.dtos.CustomerDTO;
 import logistics.dtos.OrderDTO;
 import logistics.dtos.VolumeDTO;
 import logistics.dtos.ProductDTO;
@@ -20,7 +21,6 @@ import logistics.ejbs.OrderBean;
 @Path("orders")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@Authenticated
 public class OrderService {
     @Context
     private SecurityContext securityContext;
@@ -73,13 +73,12 @@ public class OrderService {
     // POST /api/orders/
     @POST
     @Path("/")
-    public Response createOrder(@Valid OrderDTO orderDTO) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
-        orderBean.create(
-            orderDTO.getCustomer(),
-            orderDTO.getProducts(),
-            orderDTO.getPaymentType()
+    public Response createOrder(OrderDTO orderDTO) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
+        var order = orderBean.create(
+                CustomerDTO.toEntity(orderDTO.getCustomer()),
+                ProductDTO.toEntity(orderDTO.getProducts()),
+                orderDTO.getPaymentType()
         );
-        var order = orderBean.find(orderDTO.getId());
         return Response.status(Response.Status.CREATED)
             .entity(OrderDTO.fromEntity(order))
             .build();
@@ -89,12 +88,11 @@ public class OrderService {
     @PUT
     @Path("{id}")
     public Response updateOrder(@PathParam("id") long id, @Valid OrderDTO orderDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
-        orderBean.update(
+        var order = orderBean.update(
             id,
-            orderDTO.getVolumes(),
+            VolumeDTO.toEntity(orderDTO.getVolumes()),
             orderDTO.getStatus()
         );
-        var order = orderBean.find(id);
         return Response.ok(OrderDTO.fromEntity(order)).build();
     }
 

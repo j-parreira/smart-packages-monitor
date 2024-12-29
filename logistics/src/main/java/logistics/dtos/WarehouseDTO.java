@@ -1,7 +1,5 @@
 package logistics.dtos;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import logistics.entities.Warehouse;
 
 import java.io.Serializable;
@@ -11,15 +9,8 @@ import java.util.stream.Collectors;
 
 public class WarehouseDTO implements Serializable {
     private Long id;
-
-    @NotNull
-    @Size(min = 3, max = 100)
     private String name;
-
-    @NotNull
-    @Size(min = 3, max = 100)
     private String location;
-
     private List<EmployeeDTO> employees;
     private List<StockDTO> stocks;
 
@@ -38,6 +29,10 @@ public class WarehouseDTO implements Serializable {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -80,7 +75,20 @@ public class WarehouseDTO implements Serializable {
         );
     }
 
+    public static Warehouse toEntity(WarehouseDTO warehouseDTO) {
+        Warehouse warehouse = new Warehouse(
+                warehouseDTO.getName(),
+                warehouseDTO.getLocation()
+        );
+        warehouse.setId(warehouseDTO.getId());
+        return warehouse;
+    }
+
     public static List<WarehouseDTO> fromEntity(List<Warehouse> warehouses) {
         return warehouses.stream().map(WarehouseDTO::fromEntity).collect(Collectors.toList());
+    }
+
+    public static List<Warehouse> toEntity(List<WarehouseDTO> warehouseDTOs) {
+        return warehouseDTOs.stream().map(WarehouseDTO::toEntity).collect(Collectors.toList());
     }
 }

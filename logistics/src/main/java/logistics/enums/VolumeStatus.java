@@ -1,7 +1,8 @@
 package logistics.enums;
 
-public enum OrderStatus {
+public enum VolumeStatus {
     PROCESSING,
+    DAMAGED,
     DISPATCHED,
     DELIVERED,
 }

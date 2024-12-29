@@ -10,6 +10,7 @@ import jakarta.ws.rs.core.SecurityContext;
 import logistics.dtos.CustomerDTO;
 import logistics.dtos.OrderDTO;
 import logistics.ejbs.CustomerBean;
+import logistics.entities.Customer;
 import logistics.exceptions.MyConstraintViolationException;
 import logistics.exceptions.MyEntityExistsException;
 import logistics.exceptions.MyEntityNotFoundException;
@@ -18,7 +19,6 @@ import logistics.security.Authenticated;
 @Path("customers")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@Authenticated
 public class CustomerService {
     @Context
     private SecurityContext securityContext;
@@ -45,7 +45,7 @@ public class CustomerService {
     @GET
     @Path("{id}/orders")
     public Response getCustomerOrders(@PathParam("id") long id) throws MyEntityNotFoundException {
-        var customer = customerBean.findWithOrders(id);
+        Customer customer = customerBean.findWithOrders(id);
         CustomerDTO customerDTO = CustomerDTO.fromEntity(customer);
         customerDTO.setOrders(OrderDTO.fromEntity(customer.getOrders()));
         return Response.ok(customerDTO).build();

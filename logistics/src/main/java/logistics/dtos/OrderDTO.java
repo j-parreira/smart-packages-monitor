@@ -1,10 +1,6 @@
 package logistics.dtos;
 
-import jakarta.validation.constraints.NotNull;
-import logistics.entities.Customer;
 import logistics.entities.Order;
-import logistics.entities.Product;
-import logistics.entities.Volume;
 import logistics.enums.OrderStatus;
 import logistics.enums.PaymentType;
 
@@ -14,25 +10,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 public class OrderDTO implements Serializable {
-    @NotNull
     private Long id;
-
-    @NotNull
-    private Customer Customer;
-
-    @NotNull
-    private List<Product> products;
-
-    private List<Volume> volumes;
-
-    @NotNull
+    private CustomerDTO Customer;
+    private List<ProductDTO> products;
+    private List<VolumeDTO> volumes;
     private OrderStatus status;
-
-    @NotNull
     private Date createdAt;
-
-    @NotNull
     private PaymentType paymentType;
 
     public OrderDTO() {
@@ -40,10 +25,10 @@ public class OrderDTO implements Serializable {
         this.volumes = new LinkedList<>();
     }
 
-    public OrderDTO(Long id, Customer Customer, OrderStatus status, Date createdAt, PaymentType paymentType) {
+    public OrderDTO(Long id, CustomerDTO customer, List<ProductDTO> products, OrderStatus status, Date createdAt, PaymentType paymentType) {
         this.id = id;
-        this.Customer = Customer;
-        this.products = new LinkedList<>();
+        this.Customer = customer;
+        this.products = products;
         this.volumes = new LinkedList<>();
         this.status = status;
         this.createdAt = createdAt;
@@ -54,27 +39,31 @@ public class OrderDTO implements Serializable {
         return id;
     }
 
-    public Customer getCustomer() {
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public CustomerDTO getCustomer() {
         return Customer;
     }
 
-    public void setCustomer(Customer customer) {
+    public void setCustomer(CustomerDTO customer) {
         Customer = customer;
     }
 
-    public List<Product> getProducts() {
+    public List<ProductDTO> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Product> products) {
+    public void setProducts(List<ProductDTO> products) {
         this.products = products;
     }
 
-    public List<Volume> getVolumes() {
+    public List<VolumeDTO> getVolumes() {
         return volumes;
     }
 
-    public void setVolumes(List<Volume> volumes) {
+    public void setVolumes(List<VolumeDTO> volumes) {
         this.volumes = volumes;
     }
 
@@ -105,14 +94,31 @@ public class OrderDTO implements Serializable {
     public static OrderDTO fromEntity(Order order) {
         return new OrderDTO(
                 order.getId(),
-                order.getCustomer(),
+                CustomerDTO.fromEntity(order.getCustomer()),
+                ProductDTO.fromEntity(order.getProducts()),
                 order.getStatus(),
                 order.getCreatedAt(),
                 order.getPaymentType()
         );
     }
 
+    public static Order toEntity(OrderDTO orderDTO) {
+        Order order = new Order(
+                CustomerDTO.toEntity(orderDTO.getCustomer()),
+                ProductDTO.toEntity(orderDTO.getProducts()),
+                orderDTO.getPaymentType()
+        );
+        order.setId(orderDTO.getId());
+        order.setStatus(orderDTO.getStatus());
+        order.setCreatedAt(orderDTO.getCreatedAt());
+        return order;
+    }
+
     public static List<OrderDTO> fromEntity(List<Order> orders) {
         return orders.stream().map(OrderDTO::fromEntity).collect(Collectors.toList());
+    }
+
+    public static List<Order> toEntity(List<OrderDTO> ordersDTO) {
+        return ordersDTO.stream().map(OrderDTO::toEntity).collect(Collectors.toList());
     }
 }

@@ -19,7 +19,6 @@ import logistics.security.Authenticated;
 @Path("products")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@Authenticated
 public class ProductService {
     @Context
     private SecurityContext securityContext;

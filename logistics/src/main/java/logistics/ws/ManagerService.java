@@ -8,7 +8,9 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import logistics.dtos.ManagerDTO;
+import logistics.dtos.WarehouseDTO;
 import logistics.ejbs.ManagerBean;
+import logistics.entities.Manager;
 import logistics.exceptions.MyConstraintViolationException;
 import logistics.exceptions.MyEntityExistsException;
 import logistics.exceptions.MyEntityNotFoundException;
@@ -17,7 +19,6 @@ import logistics.security.Authenticated;
 @Path("managers")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@Authenticated
 public class ManagerService {
     @Context
     private SecurityContext securityContext;
@@ -43,15 +44,14 @@ public class ManagerService {
     // POST /api/managers/
     @POST
     @Path("/")
-    public Response createManager(@Valid  ManagerDTO managerDTO) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
-        managerBean.create(
+    public Response createManager(ManagerDTO managerDTO) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
+        var manager = managerBean.create(
                 managerDTO.getName(),
                 managerDTO.getEmail(),
                 managerDTO.getPassword(),
-                managerDTO.getWarehouse(),
+                WarehouseDTO.toEntity(managerDTO.getWarehouse()),
                 managerDTO.getOffice()
         );
-        var manager = managerBean.findByEmail(managerDTO.getEmail());
         return Response.status(Response.Status.CREATED)
                 .entity(ManagerDTO.fromEntity(manager))
                 .build();
@@ -60,14 +60,12 @@ public class ManagerService {
     // PUT /api/managers/{id}
     @PUT
     @Path("{id}")
-    public Response updateManager(@PathParam("id") long id, @Valid ManagerDTO managerDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
-        var manager = managerBean.find(id);
-        managerBean.update(
+    public Response updateManager(@PathParam("id") long id, ManagerDTO managerDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
+        var manager = managerBean.update(
                 id,
                 managerDTO.getName(),
-                managerDTO.getEmail(),
                 managerDTO.getPassword(),
-                managerDTO.getWarehouse(),
+                WarehouseDTO.toEntity(managerDTO.getWarehouse()),
                 managerDTO.getOffice()
         );
         return Response.ok(ManagerDTO.fromEntity(manager)).build();

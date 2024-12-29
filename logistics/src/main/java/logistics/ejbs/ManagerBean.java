@@ -28,7 +28,7 @@ public class ManagerBean {
         return (Long) query.getSingleResult() > 0L;
     }
 
-    public void create(String name, String email, String password, Warehouse warehouse, String office) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
+    public Manager create(String name, String email, String password, Warehouse warehouse, String office) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
         if (exists(findByEmail(email).getId())) {
             throw new MyEntityExistsException("Manager already exists");
         }
@@ -36,6 +36,7 @@ public class ManagerBean {
             Manager manager = new Manager(name, email, hasher.hash(password), warehouse, office);
             entityManager.persist(manager);
             entityManager.flush();
+            return manager;
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(e);
         }
@@ -63,18 +64,19 @@ public class ManagerBean {
         return managers.get(0);
     }
 
-    public void update(Long id, String name, String email, String password, Warehouse warehouse, String office) throws MyEntityNotFoundException, MyConstraintViolationException {
+    public Manager update(Long id, String name, String password, Warehouse warehouse, String office) throws MyEntityNotFoundException, MyConstraintViolationException {
         if (!exists(id)) {
             throw new MyEntityNotFoundException("Manager not found");
         }
         try {
             Manager manager = find(id);
             manager.setName(name);
-            //manager.setEmail(email);
             manager.setPassword(hasher.hash(password));
             manager.setWarehouse(warehouse);
             manager.setOffice(office);
             entityManager.merge(manager);
+            entityManager.flush();
+            return manager;
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(e);
         }

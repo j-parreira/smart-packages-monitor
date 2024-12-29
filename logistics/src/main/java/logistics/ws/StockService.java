@@ -6,7 +6,9 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
+import logistics.dtos.ProductDTO;
 import logistics.dtos.StockDTO;
+import logistics.dtos.WarehouseDTO;
 import logistics.ejbs.StockBean;
 import logistics.exceptions.MyConstraintViolationException;
 import logistics.exceptions.MyEntityExistsException;
@@ -16,7 +18,6 @@ import logistics.security.Authenticated;
 @Path("stocks")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@Authenticated
 public class StockService {
     @Context
     private SecurityContext securityContext;
@@ -58,8 +59,8 @@ public class StockService {
     @Path("/")
     public Response createStock(StockDTO stockDTO) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
         var stock = stockBean.create(
-                stockDTO.getProduct(),
-                stockDTO.getWarehouse(),
+                ProductDTO.toEntity(stockDTO.getProduct()),
+                WarehouseDTO.toEntity(stockDTO.getWarehouse()),
                 stockDTO.getQuantity()
         );
         return Response.status(Response.Status.CREATED)

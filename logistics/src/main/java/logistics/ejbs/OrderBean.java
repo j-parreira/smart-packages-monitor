@@ -28,11 +28,12 @@ public class OrderBean {
         return (Long) query.getSingleResult() > 0L;
     }
 
-    public void create(Customer customer, List<Product> products, PaymentType paymentType) throws MyEntityNotFoundException, MyConstraintViolationException {
+    public Order create(Customer customer, List<Product> products, PaymentType paymentType) throws MyEntityNotFoundException, MyConstraintViolationException {
         try {
             Order order = new Order(customer, products, paymentType);
             entityManager.persist(order);
             entityManager.flush();
+            return order;
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(e);
         }
@@ -68,7 +69,7 @@ public class OrderBean {
         return order;
     }
 
-    public void update(Long id, List<Volume> volumes, OrderStatus status) throws MyEntityNotFoundException, MyConstraintViolationException {
+    public Order update(Long id, List<Volume> volumes, OrderStatus status) throws MyEntityNotFoundException, MyConstraintViolationException {
         if(!exists(id)) {
             throw new MyEntityNotFoundException("Order not found");
         }
@@ -78,6 +79,7 @@ public class OrderBean {
             order.setStatus(status);
             entityManager.merge(order);
             entityManager.flush();
+            return order;
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(e);
         }

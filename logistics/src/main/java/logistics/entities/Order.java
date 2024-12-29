@@ -67,6 +67,10 @@ public class Order extends Versionable {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Customer getCustomer() {
         return customer;
     }
@@ -101,6 +105,10 @@ public class Order extends Versionable {
 
     public Date getCreatedAt() {
         return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     public PaymentType getPaymentType() {

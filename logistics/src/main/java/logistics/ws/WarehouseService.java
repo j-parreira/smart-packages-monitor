@@ -20,7 +20,6 @@ import logistics.dtos.StockDTO;
 @Path("warehouses")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@Authenticated
 public class WarehouseService {
     @Context
     private SecurityContext securityContext;
@@ -67,11 +66,10 @@ public class WarehouseService {
     @POST
     @Path("/")
     public Response createWarehouse(@Valid WarehouseDTO warehouseDTO) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
-        warehouseBean.create(
+        var warehouse = warehouseBean.create(
                 warehouseDTO.getName(),
                 warehouseDTO.getLocation()
         );
-        var warehouse = warehouseBean.findByName(warehouseDTO.getName());
         return Response.status(Response.Status.CREATED)
                 .entity(WarehouseDTO.fromEntity(warehouse))
                 .build();

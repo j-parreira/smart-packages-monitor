@@ -1,7 +1,6 @@
 package logistics.ws;
 
 import jakarta.ejb.EJB;
-import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
@@ -9,7 +8,9 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import logistics.dtos.EmployeeDTO;
 import logistics.dtos.VolumeDTO;
+import logistics.dtos.WarehouseDTO;
 import logistics.ejbs.EmployeeBean;
+import logistics.entities.Employee;
 import logistics.exceptions.MyConstraintViolationException;
 import logistics.exceptions.MyEntityExistsException;
 import logistics.exceptions.MyEntityNotFoundException;
@@ -18,7 +19,6 @@ import logistics.security.Authenticated;
 @Path("employees")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@Authenticated
 public class EmployeeService {
     @Context
     private SecurityContext securityContext;
@@ -54,14 +54,13 @@ public class EmployeeService {
     // POST /api/employees/
     @POST
     @Path("/")
-    public Response createEmployee(@Valid EmployeeDTO employeeDTO) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
-        employeeBean.create(
+    public Response createEmployee(EmployeeDTO employeeDTO) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
+        var employee = employeeBean.create(
                 employeeDTO.getName(),
                 employeeDTO.getEmail(),
                 employeeDTO.getPassword(),
-                employeeDTO.getWarehouse()
+                WarehouseDTO.toEntity(employeeDTO.getWarehouse())
         );
-        var employee = employeeBean.findByEmail(employeeDTO.getEmail());
         return Response.status(Response.Status.CREATED)
                 .entity(EmployeeDTO.fromEntity(employee))
                 .build();
@@ -70,14 +69,12 @@ public class EmployeeService {
     // PUT /api/employees/{id}
     @PUT
     @Path("{id}")
-    public Response updateEmployee(@PathParam("id") long id, @Valid EmployeeDTO employeeDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
-        var employee = employeeBean.find(id);
-        employeeBean.update(
+    public Response updateEmployee(@PathParam("id") long id, EmployeeDTO employeeDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
+        var employee = employeeBean.update(
                 id,
                 employeeDTO.getName(),
-                employeeDTO.getEmail(),
                 employeeDTO.getPassword(),
-                employeeDTO.getWarehouse()
+                WarehouseDTO.toEntity(employeeDTO.getWarehouse())
         );
         return Response.ok(EmployeeDTO.fromEntity(employee)).build();
     }

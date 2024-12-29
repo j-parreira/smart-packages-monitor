@@ -24,7 +24,7 @@ public class WarehouseBean {
         return (Long) query.getSingleResult() > 0L;
     }
 
-    public void create(String name, String location) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
+    public Warehouse create(String name, String location) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
         if (exists(findByName(name).getId())) {
             throw new MyEntityExistsException("Warehouse already exists");
         }
@@ -32,6 +32,7 @@ public class WarehouseBean {
             Warehouse warehouse = new Warehouse(name, location);
             entityManager.persist(warehouse);
             entityManager.flush();
+            return warehouse;
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(e);
         }
