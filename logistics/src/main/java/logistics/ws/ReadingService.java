@@ -40,11 +40,11 @@ public class ReadingService {
         return Response.ok(ReadingDTO.fromEntity(reading)).build();
     }
 
-    // GET /api/readings/sensor/{id}
+    // GET /api/readings/sensor/{sensorId}
     @GET
-    @Path("sensor/{id}")
-    public Response getSensorReadings(@PathParam("id") long id) throws MyEntityNotFoundException {
-        return Response.ok(ReadingDTO.fromEntity(readingBean.findBySensor(id))).build();
+    @Path("sensor/{sensorId}")
+    public Response getSensorReadings(@PathParam("sensorId") long sensorId) throws MyEntityNotFoundException {
+        return Response.ok(ReadingDTO.fromEntity(readingBean.findBySensor(sensorId))).build();
     }
 
     // POST /api/readings/
@@ -57,5 +57,25 @@ public class ReadingService {
                 readingDTO.getValueTwo()
         );
         return Response.ok(ReadingDTO.fromEntity(reading)).build();
+    }
+
+    // PUT /api/readings/{id}
+    @PUT
+    @Path("{id}")
+    public Response updateReading(@PathParam("id") long id, ReadingDTO readingDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
+        var reading = readingBean.update(
+                id,
+                readingDTO.getValueOne(),
+                readingDTO.getValueTwo()
+        );
+        return Response.ok(ReadingDTO.fromEntity(reading)).build();
+    }
+
+    // DELETE /api/readings/{id}
+    @DELETE
+    @Path("{id}")
+    public Response deleteReading(@PathParam("id") long id) throws MyEntityNotFoundException, MyConstraintViolationException {
+        readingBean.delete(id);
+        return Response.noContent().build();
     }
 }

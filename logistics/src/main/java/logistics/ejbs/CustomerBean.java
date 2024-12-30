@@ -7,6 +7,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.validation.ConstraintViolationException;
 import logistics.entities.Customer;
+import logistics.entities.Order;
 import logistics.exceptions.MyConstraintViolationException;
 import logistics.exceptions.MyEntityExistsException;
 import logistics.exceptions.MyEntityNotFoundException;
@@ -54,19 +55,16 @@ public class CustomerBean {
         return customer;
     }
 
-    public Customer findByEmail(String email) throws MyEntityNotFoundException {
-        var query = entityManager.createNamedQuery("getCustomerByEmail", Customer.class);
-        query.setParameter("email", email);
-        List<Customer> customers = query.getResultList();
-        if (customers.isEmpty()) {
-            throw new MyEntityNotFoundException("Customer not found");
-        }
-        return customers.get(0);
+    public List<Customer> findCustomerWithOrders(long id) throws MyEntityNotFoundException {
+        return entityManager.createNamedQuery("findOrdersbyCustomerId", Customer.class).getResultList();
     }
 
-    public Customer findWithOrders(long id) throws MyEntityNotFoundException {
+    public Customer findOrders(long id) throws MyEntityNotFoundException {
         var customer = this.find(id);
         Hibernate.initialize(customer.getOrders());
+        for (Order order : customer.getOrders()) {
+            Hibernate.initialize(order.getProducts());
+        }
         return customer;
     }
 

@@ -36,19 +36,22 @@ public class OrderService {
         return Response.ok(OrderDTO.fromEntity(orderBean.findAll())).build();
     }
 
-    // GET /api/orders/{status}
-    @GET
-    @Path("{status}")
-    public Response getOrdersByStatus(@PathParam("status") OrderStatus status) {
-        return Response.ok(OrderDTO.fromEntity(orderBean.findByStatus(status))).build();
-    }
-
     // GET /api/orders/{id}
     @GET
     @Path("{id}")
     public Response getOrder(@PathParam("id") long id) throws MyEntityNotFoundException {
         var order = orderBean.find(id);
         return Response.ok(OrderDTO.fromEntity(order)).build();
+    }
+
+    // GET /api/orders/{id}/products
+    @GET
+    @Path("{id}/products")
+    public Response getOrderProducts(@PathParam("id") long id) throws MyEntityNotFoundException {
+        var order = orderBean.findWithProducts(id);
+        OrderDTO orderDTO = OrderDTO.fromEntity(order);
+        orderDTO.setProducts(ProductDTO.fromEntity(order.getProducts()));
+        return Response.ok(orderDTO).build();
     }
 
     // GET /api/orders/{id}/volumes
@@ -61,14 +64,11 @@ public class OrderService {
         return Response.ok(orderDTO).build();
     }
 
-    // GET /api/orders/{id}/products
+    // GET /api/orders/{orderStatus}
     @GET
-    @Path("{id}/products")
-    public Response getOrderProducts(@PathParam("id") long id) throws MyEntityNotFoundException {
-        var order = orderBean.findWithProducts(id);
-        OrderDTO orderDTO = OrderDTO.fromEntity(order);
-        orderDTO.setProducts(ProductDTO.fromEntity(order.getProducts()));
-        return Response.ok(orderDTO).build();
+    @Path("{orderStatus}")
+    public Response getOrdersByStatus(@PathParam("orderStatus") OrderStatus orderStatus) {
+        return Response.ok(OrderDTO.fromEntity(orderBean.findByStatus(orderStatus))).build();
     }
 
     // POST /api/orders/

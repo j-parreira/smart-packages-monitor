@@ -40,15 +40,15 @@ public class VolumeService {
         return Response.ok(VolumeDTO.fromEntity(volume)).build();
     }
 
-    // GET /api/volumes/{id}/products
-    @GET
-    @Path("{id}/products")
-    public Response getVolumeProducts(@PathParam("id") long id) throws MyEntityNotFoundException {
-        var volume = volumeBean.findWithProduct(id);
-        var volumeDTO = VolumeDTO.fromEntity(volume);
-        volumeDTO.setProducts(ProductDTO.fromEntity(volume.getProduct()));
-        return Response.ok(volumeDTO).build();
-    }
+//    // GET /api/volumes/{id}/products
+//    @GET
+//    @Path("{id}/products")
+//    public Response getVolumeProducts(@PathParam("id") long id) throws MyEntityNotFoundException {
+//        var volume = volumeBean.findWithProduct(id);
+//        var volumeDTO = VolumeDTO.fromEntity(volume);
+//        volumeDTO.setProducts(ProductDTO.fromEntity(volume.getProduct()));
+//        return Response.ok(volumeDTO).build();
+//    }
 
     // GET /api/volumes/{id}/sensors
     @GET

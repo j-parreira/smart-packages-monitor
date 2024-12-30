@@ -103,5 +103,4 @@ public class ProductDTO implements Serializable {
     public static List<Product> toEntity(List<ProductDTO> productDTOs) {
         return productDTOs.stream().map(ProductDTO::toEntity).collect(Collectors.toList());
     }
-
 }

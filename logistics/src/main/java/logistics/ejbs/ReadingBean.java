@@ -53,4 +53,32 @@ public class ReadingBean {
         query.setParameter("sensor", entityManager.find(Sensor.class, sensorId));
         return query.getResultList();
     }
+
+    public Reading update(long id, double valueOne, double valueTwo) throws MyEntityNotFoundException, MyConstraintViolationException {
+        if (!exists(id)) {
+            throw new MyEntityNotFoundException("Reading not found");
+        }
+        try {
+            var reading = find(id);
+            reading.setValueOne(valueOne);
+            reading.setValueTwo(valueTwo);
+            entityManager.merge(reading);
+            entityManager.flush();
+            return reading;
+        } catch (ConstraintViolationException e) {
+            throw new MyConstraintViolationException(e);
+        }
+    }
+
+    public void delete(long id) throws MyEntityNotFoundException, MyConstraintViolationException {
+        try {
+            var reading = find(id);
+            if (!entityManager.contains(reading)) {
+                reading = entityManager.merge(reading); // Ensure it's managed
+            }
+            entityManager.remove(reading);
+        } catch (ConstraintViolationException e) {
+            throw new MyConstraintViolationException(e);
+        }
+    }
 }

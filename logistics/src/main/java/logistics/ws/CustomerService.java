@@ -46,7 +46,7 @@ public class CustomerService {
     @GET
     @Path("{id}/orders")
     public Response getCustomerOrders(@PathParam("id") long id) throws MyEntityNotFoundException {
-        Customer customer = customerBean.findWithOrders(id);
+        Customer customer = customerBean.findOrders(id);
         CustomerDTO customerDTO = CustomerDTO.fromEntity(customer);
         customerDTO.setOrders(OrderDTO.fromEntity(customer.getOrders()));
         return Response.ok(customerDTO).build();

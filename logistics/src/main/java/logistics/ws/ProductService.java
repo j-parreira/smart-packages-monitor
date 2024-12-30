@@ -42,15 +42,15 @@ public class ProductService {
         return Response.ok(ProductDTO.fromEntity(product)).build();
     }
 
-    // GET /api/products/{id}/totalstock
-    @GET
-    @Path("{id}/totalstock")
-    @Authenticated
-    @RolesAllowed({"Employee", "Administrator"})
-    public Response getProductTotalStock(@PathParam("id") long id) throws MyEntityNotFoundException {
-        var totalStock = productBean.getTotalStock(id);
-        return Response.ok(totalStock).build();
-    }
+//    // GET /api/products/{id}/totalstock
+//    @GET
+//    @Path("{id}/totalstock")
+//    @Authenticated
+//    @RolesAllowed({"Employee", "Administrator"})
+//    public Response getProductTotalStock(@PathParam("id") long id) throws MyEntityNotFoundException {
+//        var totalStock = productBean.getTotalStock(id);
+//        return Response.ok(totalStock).build();
+//    }
 
     // GET /api/products/{id}/orders
     @GET

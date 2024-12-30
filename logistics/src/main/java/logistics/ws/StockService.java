@@ -41,18 +41,18 @@ public class StockService {
         return Response.ok(StockDTO.fromEntity(stock)).build();
     }
 
-    // GET /api/stocks/product/{id}
+    // GET /api/stocks/product/{productId}
     @GET
-    @Path("product/{id}")
-    public Response getStockByProduct(@PathParam("id") long id) throws MyEntityNotFoundException {
-        return Response.ok(StockDTO.fromEntity(stockBean.findByProduct(id))).build();
+    @Path("product/{productId}")
+    public Response getStockByProduct(@PathParam("productId") long productId) throws MyEntityNotFoundException {
+        return Response.ok(StockDTO.fromEntity(stockBean.findByProduct(productId))).build();
     }
 
-    // GET /api/stocks/warehouse/{id}
+    // GET /api/stocks/warehouse/{warehouseId}
     @GET
-    @Path("warehouse/{id}")
-    public Response getStockByWarehouse(@PathParam("id") long id) throws MyEntityNotFoundException {
-        return Response.ok(StockDTO.fromEntity(stockBean.findByWarehouse(id))).build();
+    @Path("warehouse/{warehouseId}")
+    public Response getStockByWarehouse(@PathParam("warehouseId") long warehouseId) throws MyEntityNotFoundException {
+        return Response.ok(StockDTO.fromEntity(stockBean.findByWarehouse(warehouseId))).build();
     }
 
     // POST /api/stocks/

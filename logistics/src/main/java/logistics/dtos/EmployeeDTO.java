@@ -102,4 +102,8 @@ public class EmployeeDTO implements Serializable {
     public static List<EmployeeDTO> fromEntity(List<Employee> employees) {
         return employees.stream().map(EmployeeDTO::fromEntity).collect(Collectors.toList());
     }
+
+    public static List<Employee> toEntity(List<EmployeeDTO> employeeDTOs) {
+        return employeeDTOs.stream().map(EmployeeDTO::toEntity).collect(Collectors.toList());
+    }
 }
