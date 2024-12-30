@@ -1,11 +1,11 @@
 meta {
-  name: Login Admin
+  name: Auth User
   type: http
-  seq: 1
+  seq: 5
 }
 
-post {
-  url: {{api_url}}/auth/login
+get {
+  url: {{api_url}}/auth/user
   body: json
   auth: none
 }
