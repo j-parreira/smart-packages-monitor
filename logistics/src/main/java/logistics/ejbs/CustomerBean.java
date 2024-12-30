@@ -55,10 +55,6 @@ public class CustomerBean {
         return customer;
     }
 
-    public List<Customer> findCustomerWithOrders(long id) throws MyEntityNotFoundException {
-        return entityManager.createNamedQuery("findOrdersbyCustomerId", Customer.class).getResultList();
-    }
-
     public Customer findOrders(long id) throws MyEntityNotFoundException {
         var customer = this.find(id);
         Hibernate.initialize(customer.getOrders());

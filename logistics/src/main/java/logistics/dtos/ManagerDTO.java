@@ -11,18 +11,18 @@ public class ManagerDTO implements Serializable {
     private String name;
     private String email;
     private String password;
-    private WarehouseDTO warehouse;
+    private Long warehouseId;
     private String office;
 
     public ManagerDTO() {
     }
 
-    public ManagerDTO(Long id, String name, String email, String password, WarehouseDTO warehouse, String office) {
+    public ManagerDTO(Long id, String name, String email, String password, Long warehouseId, String office) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
-        this.warehouse = warehouse;
+        this.warehouseId = warehouseId;
         this.office = office;
     }
 
@@ -58,12 +58,12 @@ public class ManagerDTO implements Serializable {
         this.password = password;
     }
 
-    public WarehouseDTO getWarehouse() {
-        return warehouse;
+    public Long getWarehouseId() {
+        return warehouseId;
     }
 
-    public void setWarehouse(WarehouseDTO warehouse) {
-        this.warehouse = warehouse;
+    public void setWarehouseId(Long warehouseId) {
+        this.warehouseId = warehouseId;
     }
 
     public String getOffice() {
@@ -80,27 +80,27 @@ public class ManagerDTO implements Serializable {
                 manager.getName(),
                 manager.getEmail(),
                 manager.getPassword(),
-                WarehouseDTO.fromEntity(manager.getWarehouse()),
+                manager.getWarehouse().getId(),
                 manager.getOffice());
     }
 
-    public static Manager toEntity(ManagerDTO managerDTO) {
-        Manager manager = new Manager(
-                managerDTO.getName(),
-                managerDTO.getEmail(),
-                managerDTO.getPassword(),
-                WarehouseDTO.toEntity(managerDTO.getWarehouse()),
-                managerDTO.getOffice()
-        );
-        manager.setId(managerDTO.getId());
-        return manager;
-    }
+//    public static Manager toEntity(ManagerDTO managerDTO) {
+//        Manager manager = new Manager(
+//                managerDTO.getName(),
+//                managerDTO.getEmail(),
+//                managerDTO.getPassword(),
+//                WarehouseDTO.toEntity(managerDTO.getWarehouse()),
+//                managerDTO.getOffice()
+//        );
+//        manager.setId(managerDTO.getId());
+//        return manager;
+//    }
 
     public static List<ManagerDTO> fromEntity(List<Manager> managers) {
         return managers.stream().map(ManagerDTO::fromEntity).collect(Collectors.toList());
     }
 
-    public static List<Manager> toEntity(List<ManagerDTO> managerDTOs) {
-        return managerDTOs.stream().map(ManagerDTO::toEntity).collect(Collectors.toList());
-    }
+//    public static List<Manager> toEntity(List<ManagerDTO> managerDTOs) {
+//        return managerDTOs.stream().map(ManagerDTO::toEntity).collect(Collectors.toList());
+//    }
 }

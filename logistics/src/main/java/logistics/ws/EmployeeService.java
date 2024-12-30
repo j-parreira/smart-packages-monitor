@@ -60,7 +60,7 @@ public class EmployeeService {
                 employeeDTO.getName(),
                 employeeDTO.getEmail(),
                 employeeDTO.getPassword(),
-                WarehouseDTO.toEntity(employeeDTO.getWarehouse())
+                employeeDTO.getWarehouseId()
         );
         return Response.status(Response.Status.CREATED)
                 .entity(EmployeeDTO.fromEntity(employee))
@@ -76,7 +76,7 @@ public class EmployeeService {
                 employeeDTO.getName(),
                 employeeDTO.getEmail(),
                 employeeDTO.getPassword(),
-                WarehouseDTO.toEntity(employeeDTO.getWarehouse())
+                employeeDTO.getWarehouseId()
         );
         return Response.ok(EmployeeDTO.fromEntity(employee)).build();
     }

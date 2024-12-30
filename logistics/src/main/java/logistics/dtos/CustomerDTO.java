@@ -86,22 +86,22 @@ public class CustomerDTO implements Serializable {
         );
     }
 
-    public static Customer toEntity(CustomerDTO customerDTO) {
-        Customer customer =  new Customer(
-                customerDTO.getName(),
-                customerDTO.getEmail(),
-                customerDTO.getPassword(),
-                customerDTO.getAddress()
-        );
-        customer.setId(customerDTO.getId());
-        return customer;
-    }
+//    public static Customer toEntity(CustomerDTO customerDTO) {
+//        Customer customer =  new Customer(
+//                customerDTO.getName(),
+//                customerDTO.getEmail(),
+//                customerDTO.getPassword(),
+//                customerDTO.getAddress()
+//        );
+//        customer.setId(customerDTO.getId());
+//        return customer;
+//    }
 
     public static List<CustomerDTO> fromEntity(List<Customer> customers) {
         return customers.stream().map(CustomerDTO::fromEntity).collect(Collectors.toList());
     }
 
-    public static List<Customer> toEntity(List<CustomerDTO> customerDTOs) {
-        return customerDTOs.stream().map(CustomerDTO::toEntity).collect(Collectors.toList());
-    }
+//    public static List<Customer> toEntity(List<CustomerDTO> customerDTOs) {
+//        return customerDTOs.stream().map(CustomerDTO::toEntity).collect(Collectors.toList());
+//    }
 }

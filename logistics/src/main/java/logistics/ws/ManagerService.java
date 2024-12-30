@@ -50,7 +50,7 @@ public class ManagerService {
                 managerDTO.getName(),
                 managerDTO.getEmail(),
                 managerDTO.getPassword(),
-                WarehouseDTO.toEntity(managerDTO.getWarehouse()),
+                managerDTO.getWarehouseId(),
                 managerDTO.getOffice()
         );
         return Response.status(Response.Status.CREATED)
@@ -67,7 +67,7 @@ public class ManagerService {
                 managerDTO.getName(),
                 managerDTO.getPassword(),
                 managerDTO.getEmail(),
-                WarehouseDTO.toEntity(managerDTO.getWarehouse()),
+                managerDTO.getWarehouseId(),
                 managerDTO.getOffice()
         );
         return Response.ok(ManagerDTO.fromEntity(manager)).build();

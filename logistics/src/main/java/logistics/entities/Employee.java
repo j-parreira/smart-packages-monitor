@@ -12,10 +12,6 @@ import java.util.Objects;
         @NamedQuery(
                 name = "getAllEmployees",
                 query = "SELECT e FROM Employee e ORDER BY e.name"
-        ),
-        @NamedQuery(
-                name = "getEmployeeByEmail",
-                query = "SELECT e FROM Employee e WHERE e.email = :email"
         )
 })
 public class Employee extends User {

@@ -1,5 +1,6 @@
 package logistics.dtos;
 
+import logistics.ejbs.WarehouseBean;
 import logistics.entities.Employee;
 import org.hibernate.Hibernate;
 
@@ -13,19 +14,19 @@ public class EmployeeDTO implements Serializable {
     private String name;
     private String email;
     private String password;
-    private WarehouseDTO warehouse;
+    private Long warehouseId;
     private List<VolumeDTO> volumes;
 
     public EmployeeDTO() {
         this.volumes = new LinkedList<>();
     }
 
-    public EmployeeDTO(Long id, String name, String email, String password, WarehouseDTO warehouse) {
+    public EmployeeDTO(Long id, String name, String email, String password, Long warehouseId) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
-        this.warehouse = warehouse;
+        this.warehouseId = warehouseId;
         this.volumes = new LinkedList<>();
     }
 
@@ -61,12 +62,12 @@ public class EmployeeDTO implements Serializable {
         this.password = password;
     }
 
-    public WarehouseDTO getWarehouse() {
-        return warehouse;
+    public Long getWarehouseId() {
+        return warehouseId;
     }
 
-    public void setWarehouse(WarehouseDTO warehouse) {
-        this.warehouse = warehouse;
+    public void setWarehouseId(Long warehouseId) {
+        this.warehouseId = warehouseId;
     }
 
     public List<VolumeDTO> getVolumes() {
@@ -78,32 +79,31 @@ public class EmployeeDTO implements Serializable {
     }
 
     public static EmployeeDTO fromEntity(Employee employee) {
-        Hibernate.initialize(employee.getWarehouse());
         return new EmployeeDTO(
                 employee.getId(),
                 employee.getName(),
                 employee.getEmail(),
                 null,
-                WarehouseDTO.fromEntity(employee.getWarehouse())
+                employee.getWarehouse().getId()
         );
     }
 
-    public static Employee toEntity(EmployeeDTO employeeDTO) {
-        Employee employee = new Employee(
-                employeeDTO.getName(),
-                employeeDTO.getEmail(),
-                employeeDTO.getPassword(),
-                WarehouseDTO.toEntity(employeeDTO.getWarehouse())
-        );
-        employee.setId(employeeDTO.getId());
-        return employee;
-    }
+//    public static Employee toEntity(EmployeeDTO employeeDTO) {
+//        Employee employee = new Employee(
+//                employeeDTO.getName(),
+//                employeeDTO.getEmail(),
+//                employeeDTO.getPassword(),
+//                WarehouseBean.find(employeeDTO.getWarehouseId())
+//        );
+//        employee.setId(employeeDTO.getId());
+//        return employee;
+//    }
 
     public static List<EmployeeDTO> fromEntity(List<Employee> employees) {
         return employees.stream().map(EmployeeDTO::fromEntity).collect(Collectors.toList());
     }
 
-    public static List<Employee> toEntity(List<EmployeeDTO> employeeDTOs) {
-        return employeeDTOs.stream().map(EmployeeDTO::toEntity).collect(Collectors.toList());
-    }
+//    public static List<Employee> toEntity(List<EmployeeDTO> employeeDTOs) {
+//        return employeeDTOs.stream().map(EmployeeDTO::toEntity).collect(Collectors.toList());
+//    }
 }
