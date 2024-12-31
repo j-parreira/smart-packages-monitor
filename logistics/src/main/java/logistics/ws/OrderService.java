@@ -1,7 +1,6 @@
 package logistics.ws;
 
 import jakarta.ejb.EJB;
-import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
@@ -10,7 +9,6 @@ import jakarta.ws.rs.core.SecurityContext;
 import logistics.dtos.OrderDTO;
 import logistics.dtos.VolumeDTO;
 import logistics.dtos.ProductDTO;
-import logistics.entities.Product;
 import logistics.enums.OrderStatus;
 import logistics.exceptions.MyConstraintViolationException;
 import logistics.exceptions.MyEntityExistsException;
