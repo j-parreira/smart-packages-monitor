@@ -51,16 +51,6 @@ public class ProductBean {
         return product;
     }
 
-    public Product findByName(String name) throws MyEntityNotFoundException {
-        var query = entityManager.createNamedQuery("getProductByName", Product.class);
-        query.setParameter("name", name);
-        List<Product> products = query.getResultList();
-        if (products.isEmpty()) {
-            throw new MyEntityNotFoundException("Product not found");
-        }
-        return products.get(0);
-    }
-
     public long getTotalStock(long id) throws MyEntityNotFoundException {
         var product = find(id);
         var query = entityManager.createNamedQuery("getProductTotalStock", Long.class);

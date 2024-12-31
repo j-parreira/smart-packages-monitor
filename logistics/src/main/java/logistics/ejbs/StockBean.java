@@ -1,5 +1,6 @@
 package logistics.ejbs;
 
+import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -18,6 +19,10 @@ import java.util.List;
 public class StockBean {
     @PersistenceContext
     private EntityManager entityManager;
+    @EJB
+    private ProductBean productBean;
+    @EJB
+    private WarehouseBean warehouseBean;
 
     public boolean exists(Long id) {
         Query query = entityManager.createQuery("SELECT COUNT(s.id) FROM Stock s WHERE s.id = :id", Long.class);
@@ -25,12 +30,14 @@ public class StockBean {
         return (Long) query.getSingleResult() > 0L;
     }
 
-    public Stock create(Product product, Warehouse warehouse, Long quantity) throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
-        Stock existingStock = findByProductAndWarehouse(product.getId(), warehouse.getId());
+    public Stock create(Long productId, Long warehouseId, Long quantity) throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
+        Stock existingStock = findByProductAndWarehouse(productId, warehouseId);
         if (existingStock != null) {
             throw new MyEntityExistsException("Stock already exists");
         }
         try {
+            Product product = productBean.find(productId);
+            Warehouse warehouse = warehouseBean.find(warehouseId);
             Stock stock = new Stock(product, warehouse, quantity);
             entityManager.persist(stock);
             entityManager.flush();

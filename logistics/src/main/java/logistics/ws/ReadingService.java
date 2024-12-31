@@ -52,7 +52,7 @@ public class ReadingService {
     @Path("/")
     public Response createReading(ReadingDTO readingDTO) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
         var reading = readingBean.create(
-                SensorDTO.toEntity(readingDTO.getSensor()),
+                readingDTO.getSensorId(),
                 readingDTO.getValueOne(),
                 readingDTO.getValueTwo()
         );

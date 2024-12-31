@@ -1,11 +1,11 @@
 package logistics.ejbs;
 
+import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.validation.ConstraintViolationException;
-import logistics.entities.Customer;
 import logistics.entities.Order;
 import logistics.entities.Product;
 import logistics.entities.Volume;
@@ -15,12 +15,19 @@ import logistics.exceptions.MyConstraintViolationException;
 import logistics.exceptions.MyEntityNotFoundException;
 import org.hibernate.Hibernate;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Stateless
 public class OrderBean {
     @PersistenceContext
     private EntityManager entityManager;
+    @EJB
+    private CustomerBean customerBean;
+    @EJB
+    private ProductBean ProductBean;
+    @EJB
+    private VolumeBean volumeBean;
 
     public boolean exists(Long id) {
         Query query = entityManager.createQuery("SELECT COUNT(o.id) FROM Order o WHERE o.id = :id", Long.class);
@@ -28,8 +35,17 @@ public class OrderBean {
         return (Long) query.getSingleResult() > 0L;
     }
 
-    public Order create(Customer customer, List<Product> products, PaymentType paymentType) throws MyEntityNotFoundException, MyConstraintViolationException {
+    public Order create(Long customerId, List<Long> productIds, PaymentType paymentType) throws MyEntityNotFoundException, MyConstraintViolationException {
         try {
+            var customer = customerBean.find(customerId);
+            List<Product> products = new LinkedList<>();
+            for (var productId : productIds) {
+                var product = ProductBean.find(productId);
+                if (product == null) {
+                    throw new MyEntityNotFoundException("Product not found");
+                }
+                products.add(product);
+            }
             Order order = new Order(customer, products, paymentType);
             entityManager.persist(order);
             entityManager.flush();
@@ -69,11 +85,19 @@ public class OrderBean {
         return order;
     }
 
-    public Order update(Long id, List<Volume> volumes, OrderStatus status) throws MyEntityNotFoundException, MyConstraintViolationException {
+    public Order update(Long id, List<Long> volumeIds, OrderStatus status) throws MyEntityNotFoundException, MyConstraintViolationException {
         if(!exists(id)) {
             throw new MyEntityNotFoundException("Order not found");
         }
         try {
+            List<Volume> volumes = new LinkedList<>();
+            for (var volumeId : volumeIds) {
+                var volume = volumeBean.find(volumeId);
+                if (volume == null) {
+                    throw new MyEntityNotFoundException("Volume not found");
+                }
+                volumes.add(volume);
+            }
             Order order = find(id);
             order.setVolumes(volumes);
             order.setStatus(status);

@@ -84,23 +84,7 @@ public class ManagerDTO implements Serializable {
                 manager.getOffice());
     }
 
-//    public static Manager toEntity(ManagerDTO managerDTO) {
-//        Manager manager = new Manager(
-//                managerDTO.getName(),
-//                managerDTO.getEmail(),
-//                managerDTO.getPassword(),
-//                WarehouseDTO.toEntity(managerDTO.getWarehouse()),
-//                managerDTO.getOffice()
-//        );
-//        manager.setId(managerDTO.getId());
-//        return manager;
-//    }
-
     public static List<ManagerDTO> fromEntity(List<Manager> managers) {
         return managers.stream().map(ManagerDTO::fromEntity).collect(Collectors.toList());
     }
-
-//    public static List<Manager> toEntity(List<ManagerDTO> managerDTOs) {
-//        return managerDTOs.stream().map(ManagerDTO::toEntity).collect(Collectors.toList());
-//    }
 }

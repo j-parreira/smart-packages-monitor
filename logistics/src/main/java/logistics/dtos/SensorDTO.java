@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class SensorDTO implements Serializable {
     private Long id;
-    private VolumeDTO volume;
+    private Long volumeId;
     private SensorType type;
     private boolean isActive;
     private float maxThreshold;
@@ -22,9 +22,9 @@ public class SensorDTO implements Serializable {
         this.readings = new LinkedList<>();
     }
 
-    public SensorDTO(Long id, VolumeDTO volume, SensorType type, boolean isActive, float maxThreshold, float minThreshold, long timeInterval) {
+    public SensorDTO(Long id, Long volumeId, SensorType type, boolean isActive, float maxThreshold, float minThreshold, long timeInterval) {
         this.id = id;
-        this.volume = volume;
+        this.volumeId = volumeId;
         this.type = type;
         this.isActive = isActive;
         this.maxThreshold = maxThreshold;
@@ -41,12 +41,12 @@ public class SensorDTO implements Serializable {
         this.id = id;
     }
 
-    public VolumeDTO getVolume() {
-        return volume;
+    public Long getVolumeId() {
+        return volumeId;
     }
 
-    public void setVolume(VolumeDTO volume) {
-        this.volume = volume;
+    public void setVolumeId(Long volumeId) {
+        this.volumeId = volumeId;
     }
 
     public SensorType getType() {
@@ -100,7 +100,7 @@ public class SensorDTO implements Serializable {
     public static SensorDTO fromEntity(Sensor sensor) {
         return new SensorDTO(
                 sensor.getId(),
-                VolumeDTO.fromEntity(sensor.getVolume()),
+                sensor.getVolume().getId(),
                 sensor.getType(),
                 sensor.isActive(),
                 sensor.getMaxThreshold(),
@@ -108,23 +108,7 @@ public class SensorDTO implements Serializable {
                 sensor.getTimeInterval());
     }
 
-    public static Sensor toEntity(SensorDTO sensorDTO) {
-        Sensor sensor = new Sensor(
-                sensorDTO.getType(),
-                sensorDTO.isActive(),
-                sensorDTO.getMaxThreshold(),
-                sensorDTO.getMinThreshold(),
-                sensorDTO.getTimeInterval()
-        );
-        sensor.setId(sensorDTO.getId());
-        return sensor;
-    }
-
     public static List<SensorDTO> fromEntity(List<Sensor> sensors) {
         return sensors.stream().map(SensorDTO::fromEntity).collect(Collectors.toList());
-    }
-
-    public static List<Sensor> toEntity(List<SensorDTO> sensorDTOs) {
-        return sensorDTOs.stream().map(SensorDTO::toEntity).collect(Collectors.toList());
     }
 }

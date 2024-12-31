@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class OrderDTO implements Serializable {
     private Long id;
-    private CustomerDTO Customer;
+    private Long customerId;
     private List<ProductDTO> products;
     private List<VolumeDTO> volumes;
     private OrderStatus status;
@@ -25,10 +25,10 @@ public class OrderDTO implements Serializable {
         this.volumes = new LinkedList<>();
     }
 
-    public OrderDTO(Long id, CustomerDTO customer, List<ProductDTO> products, OrderStatus status, Date createdAt, PaymentType paymentType) {
+    public OrderDTO(Long id, Long customerId, OrderStatus status, Date createdAt, PaymentType paymentType) {
         this.id = id;
-        this.Customer = customer;
-        this.products = products;
+        this.customerId = customerId;
+        this.products = new LinkedList<>();
         this.volumes = new LinkedList<>();
         this.status = status;
         this.createdAt = createdAt;
@@ -43,12 +43,12 @@ public class OrderDTO implements Serializable {
         this.id = id;
     }
 
-    public CustomerDTO getCustomer() {
-        return Customer;
+    public Long getCustomerId() {
+        return customerId;
     }
 
-    public void setCustomer(CustomerDTO customer) {
-        Customer = customer;
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
     public List<ProductDTO> getProducts() {
@@ -94,31 +94,14 @@ public class OrderDTO implements Serializable {
     public static OrderDTO fromEntity(Order order) {
         return new OrderDTO(
                 order.getId(),
-                CustomerDTO.fromEntity(order.getCustomer()),
-                ProductDTO.fromEntity(order.getProducts()),
+                order.getCustomer().getId(),
                 order.getStatus(),
                 order.getCreatedAt(),
                 order.getPaymentType()
         );
     }
 
-    public static Order toEntity(OrderDTO orderDTO) {
-        Order order = new Order(
-                CustomerDTO.toEntity(orderDTO.getCustomer()),
-                ProductDTO.toEntity(orderDTO.getProducts()),
-                orderDTO.getPaymentType()
-        );
-        order.setId(orderDTO.getId());
-        order.setStatus(orderDTO.getStatus());
-        order.setCreatedAt(orderDTO.getCreatedAt());
-        return order;
-    }
-
     public static List<OrderDTO> fromEntity(List<Order> orders) {
         return orders.stream().map(OrderDTO::fromEntity).collect(Collectors.toList());
-    }
-
-    public static List<Order> toEntity(List<OrderDTO> ordersDTO) {
-        return ordersDTO.stream().map(OrderDTO::toEntity).collect(Collectors.toList());
     }
 }

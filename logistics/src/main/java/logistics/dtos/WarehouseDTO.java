@@ -75,20 +75,7 @@ public class WarehouseDTO implements Serializable {
         );
     }
 
-    public static Warehouse toEntity(WarehouseDTO warehouseDTO) {
-        Warehouse warehouse = new Warehouse(
-                warehouseDTO.getName(),
-                warehouseDTO.getLocation()
-        );
-        warehouse.setId(warehouseDTO.getId());
-        return warehouse;
-    }
-
     public static List<WarehouseDTO> fromEntity(List<Warehouse> warehouses) {
         return warehouses.stream().map(WarehouseDTO::fromEntity).collect(Collectors.toList());
-    }
-
-    public static List<Warehouse> toEntity(List<WarehouseDTO> warehouseDTOs) {
-        return warehouseDTOs.stream().map(WarehouseDTO::toEntity).collect(Collectors.toList());
     }
 }

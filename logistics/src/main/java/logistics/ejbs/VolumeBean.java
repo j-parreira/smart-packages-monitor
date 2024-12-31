@@ -1,5 +1,6 @@
 package logistics.ejbs;
 
+import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -14,12 +15,21 @@ import logistics.exceptions.MyEntityNotFoundException;
 import org.hibernate.Hibernate;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 @Stateless
 public class VolumeBean {
     @PersistenceContext
     private EntityManager entityManager;
+    @EJB
+    private ProductBean productBean;
+    @EJB
+    private SensorBean sensorBean;
+    @EJB
+    private EmployeeBean employeeBean;
+    @EJB
+    private OrderBean orderBean;
 
     public boolean exists(Long id) {
         Query query = entityManager.createQuery("SELECT COUNT(v.id) FROM Volume v WHERE v.id = :id", Long.class);
@@ -27,12 +37,19 @@ public class VolumeBean {
         return (Long)query.getSingleResult() > 0L;
     }
 
-    public Volume create(VolumeType type, long volumeNumber, Product product, List<Sensor> sensors, Employee dispatchedBy, VolumeStatus status, Order order) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
-        Volume existingVolume = findByOrderAndVolumeNumber(order.getId(), volumeNumber);
+    public Volume create(VolumeType type, long volumeNumber, Long productId, List<Long> sensorIds, Long dispatchedByEmployeeId, VolumeStatus status, Long orderId) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
+        Volume existingVolume = findByOrderAndVolumeNumber(orderId, volumeNumber);
         if (existingVolume != null) {
             throw new MyEntityExistsException("Volume already exists");
         }
         try {
+            Product product = productBean.find(productId);
+            List<Sensor> sensors = new LinkedList<>();
+            for (Long sensorId : sensorIds) {
+                sensors.add(sensorBean.find(sensorId));
+            }
+            Employee dispatchedBy = employeeBean.find(dispatchedByEmployeeId);
+            Order order = orderBean.find(orderId);
             Volume volume = new Volume(type, volumeNumber, product, sensors, dispatchedBy, status, order);
             entityManager.persist(volume);
             entityManager.flush();

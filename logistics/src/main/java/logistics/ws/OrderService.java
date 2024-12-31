@@ -7,16 +7,19 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
-import logistics.dtos.CustomerDTO;
 import logistics.dtos.OrderDTO;
 import logistics.dtos.VolumeDTO;
 import logistics.dtos.ProductDTO;
+import logistics.entities.Product;
 import logistics.enums.OrderStatus;
 import logistics.exceptions.MyConstraintViolationException;
 import logistics.exceptions.MyEntityExistsException;
 import logistics.exceptions.MyEntityNotFoundException;
 import logistics.security.Authenticated;
 import logistics.ejbs.OrderBean;
+
+import java.util.LinkedList;
+import java.util.List;
 
 @Path("orders")
 @Produces({MediaType.APPLICATION_JSON})
@@ -75,9 +78,13 @@ public class OrderService {
     @POST
     @Path("/")
     public Response createOrder(OrderDTO orderDTO) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
+        List<Long> productIds = new LinkedList<>();
+        for (ProductDTO productDTO : orderDTO.getProducts()) {
+            productIds.add(productDTO.getId());
+        }
         var order = orderBean.create(
-                CustomerDTO.toEntity(orderDTO.getCustomer()),
-                ProductDTO.toEntity(orderDTO.getProducts()),
+                orderDTO.getCustomerId(),
+                productIds,
                 orderDTO.getPaymentType()
         );
         return Response.status(Response.Status.CREATED)
@@ -88,10 +95,14 @@ public class OrderService {
     // PUT /api/orders/{id}
     @PUT
     @Path("{id}")
-    public Response updateOrder(@PathParam("id") long id, @Valid OrderDTO orderDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
+    public Response updateOrder(@PathParam("id") long id, OrderDTO orderDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
+        List<Long> volumeIds = new LinkedList<>();
+        for (VolumeDTO volumeDTO : orderDTO.getVolumes()) {
+            volumeIds.add(volumeDTO.getId());
+        }
         var order = orderBean.update(
             id,
-            VolumeDTO.toEntity(orderDTO.getVolumes()),
+            volumeIds,
             orderDTO.getStatus()
         );
         return Response.ok(OrderDTO.fromEntity(order)).build();

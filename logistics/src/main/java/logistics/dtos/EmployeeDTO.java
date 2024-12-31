@@ -1,8 +1,6 @@
 package logistics.dtos;
 
-import logistics.ejbs.WarehouseBean;
 import logistics.entities.Employee;
-import org.hibernate.Hibernate;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -88,22 +86,7 @@ public class EmployeeDTO implements Serializable {
         );
     }
 
-//    public static Employee toEntity(EmployeeDTO employeeDTO) {
-//        Employee employee = new Employee(
-//                employeeDTO.getName(),
-//                employeeDTO.getEmail(),
-//                employeeDTO.getPassword(),
-//                WarehouseBean.find(employeeDTO.getWarehouseId())
-//        );
-//        employee.setId(employeeDTO.getId());
-//        return employee;
-//    }
-
     public static List<EmployeeDTO> fromEntity(List<Employee> employees) {
         return employees.stream().map(EmployeeDTO::fromEntity).collect(Collectors.toList());
     }
-
-//    public static List<Employee> toEntity(List<EmployeeDTO> employeeDTOs) {
-//        return employeeDTOs.stream().map(EmployeeDTO::toEntity).collect(Collectors.toList());
-//    }
 }

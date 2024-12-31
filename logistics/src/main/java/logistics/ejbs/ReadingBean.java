@@ -1,11 +1,11 @@
 package logistics.ejbs;
 
+import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.validation.ConstraintViolationException;
-import logistics.entities.Customer;
 import logistics.entities.Reading;
 import logistics.entities.Sensor;
 import logistics.exceptions.MyConstraintViolationException;
@@ -18,6 +18,8 @@ import java.util.List;
 public class ReadingBean {
     @PersistenceContext
     private EntityManager entityManager;
+    @EJB
+    private SensorBean sensorBean;
 
     public boolean exists(Long id) {
         Query query = entityManager.createQuery("SELECT COUNT(r.id) FROM Reading r WHERE r.id = :id", Long.class);
@@ -25,8 +27,9 @@ public class ReadingBean {
         return (Long) query.getSingleResult() > 0L;
     }
 
-    public Reading create(Sensor sensor, double valueOne, double valueTwo) throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
+    public Reading create(Long sensorId, double valueOne, double valueTwo) throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
         try {
+            var sensor = sensorBean.find(sensorId);
             Reading reading = new Reading(sensor, valueOne, valueTwo);
             entityManager.persist(reading);
             entityManager.flush();
