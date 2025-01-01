@@ -47,6 +47,10 @@ public class OrderBean {
                 products.add(product);
             }
             Order order = new Order(customer, products, paymentType);
+            customer.addOrder(order);
+            for (var product : products) {
+                product.addOrder(order);
+            }
             entityManager.persist(order);
             entityManager.flush();
             return order;
@@ -86,9 +90,6 @@ public class OrderBean {
     }
 
     public Order update(Long id, List<Long> volumeIds, OrderStatus status) throws MyEntityNotFoundException, MyConstraintViolationException {
-        if(!exists(id)) {
-            throw new MyEntityNotFoundException("Order not found");
-        }
         try {
             List<Volume> volumes = new LinkedList<>();
             for (var volumeId : volumeIds) {

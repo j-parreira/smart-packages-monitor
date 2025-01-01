@@ -1,5 +1,6 @@
 package logistics.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import logistics.entities.Order;
 import logistics.enums.OrderStatus;
 import logistics.enums.PaymentType;
@@ -17,6 +18,7 @@ public class OrderDTO implements Serializable {
     private List<ProductDTO> products;
     private List<VolumeDTO> volumes;
     private OrderStatus status;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private Date createdAt;
     private PaymentType paymentType;
 

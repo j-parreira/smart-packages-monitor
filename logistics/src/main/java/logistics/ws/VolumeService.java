@@ -63,7 +63,6 @@ public class VolumeService {
         }
         var volume = volumeBean.create(
                 volumeDTO.getType(),
-                volumeDTO.getVolumeNumber(),
                 volumeDTO.getProductId(),
                 sensorIds,
                 volumeDTO.getDispatchedByEmployeeId(),
@@ -79,8 +78,7 @@ public class VolumeService {
     public Response updateVolume(@PathParam("id") long id, VolumeDTO volumeDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
         var volume = volumeBean.update(
                 id,
-                volumeDTO.getStatus(),
-                volumeDTO.getArrivedAt()
+                volumeDTO.getStatus()
         );
         return Response.ok(VolumeDTO.fromEntity(volume)).build();
     }

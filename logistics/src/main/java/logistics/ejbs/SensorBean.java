@@ -1,11 +1,13 @@
 package logistics.ejbs;
 
+import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.validation.ConstraintViolationException;
 import logistics.entities.Sensor;
+import logistics.entities.Volume;
 import logistics.enums.SensorType;
 import logistics.exceptions.MyConstraintViolationException;
 import logistics.exceptions.MyEntityExistsException;
@@ -18,6 +20,8 @@ import java.util.List;
 public class SensorBean {
     @PersistenceContext
     private EntityManager entityManager;
+    @EJB
+    private VolumeBean volumeBean;
 
     public boolean exists(Long id) {
         Query query = entityManager.createQuery("SELECT COUNT(s.id) FROM Sensor s WHERE s.id = :id", Long.class);
@@ -64,12 +68,11 @@ public class SensorBean {
         return sensor;
     }
 
-    public Sensor update(Long id, boolean isActive) throws MyEntityNotFoundException, MyConstraintViolationException {
-        if (!exists(id)) {
-            throw new MyEntityNotFoundException("Sensor not found");
-        }
+    public Sensor update(Long id, Long volumeId, boolean isActive) throws MyEntityNotFoundException, MyConstraintViolationException {
         try {
             Sensor sensor = find(id);
+            Volume volume = volumeBean.find(volumeId);
+            sensor.setVolume(volume);
             sensor.setActive(isActive);
             entityManager.merge(sensor);
             entityManager.flush();

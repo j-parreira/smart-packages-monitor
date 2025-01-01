@@ -78,6 +78,7 @@ public class SensorService {
     public Response updateSensor(@PathParam("id") long id, SensorDTO sensorDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
         var sensor = sensorBean.update(
                 id,
+                sensorDTO.getVolumeId(),
                 sensorDTO.isActive()
         );
         return Response.ok(SensorDTO.fromEntity(sensor)).build();

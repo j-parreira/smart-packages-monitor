@@ -79,7 +79,7 @@ public class ManagerDTO implements Serializable {
                 manager.getId(),
                 manager.getName(),
                 manager.getEmail(),
-                manager.getPassword(),
+                null,
                 manager.getWarehouse().getId(),
                 manager.getOffice());
     }

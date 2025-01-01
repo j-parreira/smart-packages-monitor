@@ -12,10 +12,6 @@ import java.util.Objects;
         @NamedQuery(
                 name = "getAllWarehouses",
                 query = "SELECT w FROM Warehouse w ORDER BY w.name"
-        ),
-        @NamedQuery(
-                name = "getWarehouseByName",
-                query = "SELECT w FROM Warehouse w WHERE w.name = :name ORDER BY w.name"
         )
 })
 @Table(name = "warehouses",

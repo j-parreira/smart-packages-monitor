@@ -1,5 +1,6 @@
 package logistics.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import logistics.entities.Reading;
 
 import java.io.Serializable;
@@ -12,6 +13,7 @@ public class ReadingDTO implements Serializable {
     private Long sensorId;
     private double valueOne;
     private double valueTwo;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private Date timestamp;
 
     public ReadingDTO() {

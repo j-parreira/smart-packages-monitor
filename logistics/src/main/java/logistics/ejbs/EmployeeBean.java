@@ -38,6 +38,7 @@ public class EmployeeBean {
         try {
             var warehouse = warehouseBean.find(warehouseId);
             Employee employee = new Employee(name, email, hasher.hash(password), warehouse);
+            warehouse.addEmployee(employee);
             entityManager.persist(employee);
             entityManager.flush();
             return employee;
@@ -65,12 +66,13 @@ public class EmployeeBean {
     }
 
     public Employee update(Long id, String name, String email, String password, Long warehouseId) throws MyEntityNotFoundException, MyConstraintViolationException {
-        if (!exists(email)) {
-            throw new MyEntityNotFoundException("Employee not found");
-        }
         try {
             var warehouse = warehouseBean.find(warehouseId);
             Employee employee = find(id);
+            if (employee.getWarehouse() != warehouse) {
+                employee.getWarehouse().removeEmployee(employee);
+                warehouse.addEmployee(employee);
+            }
             employee.setName(name);
             employee.setPassword(hasher.hash(password));
             employee.setWarehouse(warehouse);

@@ -58,16 +58,10 @@ public class CustomerBean {
     public Customer findOrders(long id) throws MyEntityNotFoundException {
         var customer = this.find(id);
         Hibernate.initialize(customer.getOrders());
-        for (Order order : customer.getOrders()) {
-            Hibernate.initialize(order.getProducts());
-        }
         return customer;
     }
 
     public Customer update(Long id, String name, String email, String password, String address) throws MyEntityNotFoundException, MyConstraintViolationException {
-        if (!exists(email)) {
-            throw new MyEntityNotFoundException("Customer not found");
-        }
         try {
             Customer customer = find(id);
             customer.setName(name);

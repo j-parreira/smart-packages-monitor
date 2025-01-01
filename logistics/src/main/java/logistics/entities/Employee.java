@@ -19,7 +19,7 @@ public class Employee extends User {
     @ManyToOne
     Warehouse warehouse;
 
-    @OneToMany(mappedBy = "dispatchedBy", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "dispatchedBy")
     List<Volume> volumes;
 
     public Employee() {

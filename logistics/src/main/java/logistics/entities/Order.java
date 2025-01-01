@@ -2,6 +2,7 @@ package logistics.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jdk.jfr.Timestamp;
 import logistics.enums.OrderStatus;
 import logistics.enums.PaymentType;
 import org.hibernate.annotations.CreationTimestamp;
@@ -34,20 +35,22 @@ public class Order extends Versionable {
     @ManyToMany(mappedBy = "orders")
     List<Product> products;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "order")
     List<Volume> volumes;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     OrderStatus status;
 
-    @CreationTimestamp
     @NotNull
-    @Column(name = "created_at")
-    private Date createdAt;
-
-    @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "payment_type")
     PaymentType paymentType;
+
+    @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at", columnDefinition = "TIMESTAMP(0)")
+    private Date createdAt;
 
     public Order() {
         this.products = new LinkedList<>();

@@ -32,6 +32,7 @@ public class Sensor extends Versionable {
     private Volume volume;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private SensorType type;
 
     @NotNull
@@ -127,6 +128,10 @@ public class Sensor extends Versionable {
 
     public void setReadings(List<Reading> readings) {
         this.readings = readings;
+    }
+
+    public void addReading(Reading reading) {
+        this.readings.add(reading);
     }
 
     @Override

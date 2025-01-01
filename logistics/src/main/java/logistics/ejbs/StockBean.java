@@ -39,6 +39,8 @@ public class StockBean {
             Product product = productBean.find(productId);
             Warehouse warehouse = warehouseBean.find(warehouseId);
             Stock stock = new Stock(product, warehouse, quantity);
+            product.addStock(stock);
+            warehouse.addStock(stock);
             entityManager.persist(stock);
             entityManager.flush();
             return stock;
@@ -80,9 +82,6 @@ public class StockBean {
     }
 
     public Stock update(Long id, Long quantity) throws MyEntityNotFoundException, MyConstraintViolationException {
-        if (!exists(id)) {
-            throw new MyEntityNotFoundException("Stock not found");
-        }
         try {
             Stock stock = find(id);
             stock.setQuantity(quantity);

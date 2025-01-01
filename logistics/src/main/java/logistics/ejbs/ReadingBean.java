@@ -31,6 +31,7 @@ public class ReadingBean {
         try {
             var sensor = sensorBean.find(sensorId);
             Reading reading = new Reading(sensor, valueOne, valueTwo);
+            sensor.addReading(reading);
             entityManager.persist(reading);
             entityManager.flush();
             return reading;
@@ -58,9 +59,6 @@ public class ReadingBean {
     }
 
     public Reading update(long id, double valueOne, double valueTwo) throws MyEntityNotFoundException, MyConstraintViolationException {
-        if (!exists(id)) {
-            throw new MyEntityNotFoundException("Reading not found");
-        }
         try {
             var reading = find(id);
             reading.setValueOne(valueOne);

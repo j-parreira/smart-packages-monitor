@@ -1,5 +1,6 @@
 package logistics.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import logistics.entities.Volume;
 import logistics.enums.VolumeStatus;
 import logistics.enums.VolumeType;
@@ -13,29 +14,31 @@ import java.util.stream.Collectors;
 public class VolumeDTO implements Serializable {
     private Long id;
     private VolumeType type;
-    private long volumeNumber;
+    private String volumeCode;
     private Long productId;
     private List<SensorDTO> sensors;
     private Long dispatchedByEmployeeId;
     private VolumeStatus status;
     private Long orderId;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private Date dispatchedAt;
-    private Date arrivedAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    private Date updatedAt;
 
     public VolumeDTO() {
         this.sensors = new LinkedList<>();
     }
 
-    public VolumeDTO(VolumeType type, long volumeNumber, Long productId, Long dispatchedByEmployeeId, VolumeStatus status, Long orderId, Date dispatchedAt, Date arrivedAt) {
+    public VolumeDTO(VolumeType type, String volumeCode, Long productId, Long dispatchedByEmployeeId, VolumeStatus status, Long orderId, Date dispatchedAt, Date updatedAt) {
         this.type = type;
-        this.volumeNumber = volumeNumber;
+        this.volumeCode = volumeCode;
         this.productId = productId;
         this.sensors = new LinkedList<>();
         this.dispatchedByEmployeeId = dispatchedByEmployeeId;
         this.status = status;
         this.orderId = orderId;
         this.dispatchedAt = dispatchedAt;
-        this.arrivedAt = arrivedAt;
+        this.updatedAt = updatedAt;
     }
 
     public Long getId() {
@@ -54,12 +57,12 @@ public class VolumeDTO implements Serializable {
         this.type = type;
     }
 
-    public long getVolumeNumber() {
-        return volumeNumber;
+    public String getVolumeCode() {
+        return volumeCode;
     }
 
-    public void setVolumeNumber(long volumeNumber) {
-        this.volumeNumber = volumeNumber;
+    public void setVolumeCode(String volumeCode) {
+        this.volumeCode = volumeCode;
     }
 
     public Long getProductId() {
@@ -110,25 +113,16 @@ public class VolumeDTO implements Serializable {
         this.dispatchedAt = dispatchedAt;
     }
 
-    public Date getArrivedAt() {
-        return arrivedAt;
+    public Date getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setArrivedAt(Date arrivedAt) {
-        this.arrivedAt = arrivedAt;
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public static VolumeDTO fromEntity(Volume volume) {
-        return new VolumeDTO(
-                volume.getType(),
-                volume.getVolumeNumber(),
-                volume.getProduct().getId(),
-                volume.getDispatchedBy().getId(),
-                volume.getStatus(),
-                volume.getOrder().getId(),
-                volume.getDispatchedAt(),
-                volume.getArrivedAt()
-        );
+        return new VolumeDTO(volume.getType(), volume.getVolumeCode(), volume.getProduct().getId(), volume.getDispatchedBy().getId(), volume.getStatus(), volume.getOrder().getId(), volume.getDispatchedAt(), volume.getUpdatedAt());
     }
 
     public static List<VolumeDTO> fromEntity(List<Volume> volumes) {
