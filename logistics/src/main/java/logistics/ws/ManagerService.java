@@ -66,7 +66,6 @@ public class ManagerService {
                 id,
                 managerDTO.getName(),
                 managerDTO.getPassword(),
-                managerDTO.getEmail(),
                 managerDTO.getWarehouseId(),
                 managerDTO.getOffice()
         );

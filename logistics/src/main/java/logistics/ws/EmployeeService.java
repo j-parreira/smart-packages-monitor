@@ -72,7 +72,6 @@ public class EmployeeService {
         var employee = employeeBean.update(
                 id,
                 employeeDTO.getName(),
-                employeeDTO.getEmail(),
                 employeeDTO.getPassword(),
                 employeeDTO.getWarehouseId()
         );

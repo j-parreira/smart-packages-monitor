@@ -74,7 +74,6 @@ public class CustomerService {
         var customer = customerBean.update(
                 id,
                 customerDTO.getName(),
-                customerDTO.getEmail(),
                 customerDTO.getPassword(),
                 customerDTO.getAddress()
         );
