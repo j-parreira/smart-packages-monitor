@@ -7,6 +7,7 @@ import jakarta.ejb.Startup;
 import logistics.entities.*;
 import logistics.enums.*;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -62,9 +63,9 @@ public class ConfigBean {
 
         // Create Managers
         try {
-            managerBean.create("Manager 1", "m1@mail.pt", "123", warehouses.get(0), "Office 1");
-            managerBean.create("Manager 2", "m2@mail.pt", "123", warehouses.get(1), "Office 2");
-            managerBean.create("Manager 3", "m3@mail.pt", "123", warehouses.get(2), "Office 3");
+            managerBean.create("Manager 1", "m1@mail.pt", "123", warehouses.get(0).getId(), "Office 1");
+            managerBean.create("Manager 2", "m2@mail.pt", "123", warehouses.get(1).getId(), "Office 2");
+            managerBean.create("Manager 3", "m3@mail.pt", "123", warehouses.get(2).getId(), "Office 3");
         } catch (Exception e) {
             System.err.println("Some exception happened while creating managers");
             logger.severe(e.getMessage());
@@ -73,12 +74,12 @@ public class ConfigBean {
 
         // Create Employees
         try {
-            employeeBean.create("Employee 1", "e1@mail.pt", "123", warehouses.get(0));
-            employeeBean.create("Employee 2", "e2@mail.pt", "123", warehouses.get(0));
-            employeeBean.create("Employee 3", "e3@mail.pt", "123", warehouses.get(1));
-            employeeBean.create("Employee 4", "e4@mail.pt", "123", warehouses.get(1));
-            employeeBean.create("Employee 5", "e5@mail.pt", "123", warehouses.get(2));
-            employeeBean.create("Employee 6", "e6@mail.pt", "123", warehouses.get(2));
+            employeeBean.create("Employee 1", "e1@mail.pt", "123", warehouses.get(0).getId());
+            employeeBean.create("Employee 2", "e2@mail.pt", "123", warehouses.get(0).getId());
+            employeeBean.create("Employee 3", "e3@mail.pt", "123", warehouses.get(1).getId());
+            employeeBean.create("Employee 4", "e4@mail.pt", "123", warehouses.get(1).getId());
+            employeeBean.create("Employee 5", "e5@mail.pt", "123", warehouses.get(2).getId());
+            employeeBean.create("Employee 6", "e6@mail.pt", "123", warehouses.get(2).getId());
         } catch (Exception e) {
             System.err.println("Some exception happened while creating employees");
             logger.severe(e.getMessage());
@@ -117,36 +118,40 @@ public class ConfigBean {
 
         // Create Stocks
         try {
-            stockBean.create(products.get(0), warehouses.get(0), 15L);
-            stockBean.create(products.get(0), warehouses.get(1), 20L);
-            stockBean.create(products.get(1), warehouses.get(1), 5L);
-            stockBean.create(products.get(1), warehouses.get(2), 10L);
-            stockBean.create(products.get(2), warehouses.get(0), 15L);
-            stockBean.create(products.get(2), warehouses.get(2), 20L);
-            stockBean.create(products.get(3), warehouses.get(1), 5L);
-            stockBean.create(products.get(3), warehouses.get(2), 10L);
-            stockBean.create(products.get(4), warehouses.get(0), 15L);
-            stockBean.create(products.get(4), warehouses.get(1), 20L);
-            stockBean.create(products.get(5), warehouses.get(0), 5L);
-            stockBean.create(products.get(5), warehouses.get(1), 10L);
-            stockBean.create(products.get(6), warehouses.get(2), 15L);
-            stockBean.create(products.get(6), warehouses.get(0), 20L);
-            stockBean.create(products.get(7), warehouses.get(1), 5L);
-            stockBean.create(products.get(7), warehouses.get(2), 10L);
+            stockBean.create(products.get(0).getId(), warehouses.get(0).getId(), 15L);
+            stockBean.create(products.get(0).getId(), warehouses.get(1).getId(), 20L);
+            stockBean.create(products.get(1).getId(), warehouses.get(1).getId(), 5L);
+            stockBean.create(products.get(1).getId(), warehouses.get(2).getId(), 10L);
+            stockBean.create(products.get(2).getId(), warehouses.get(0).getId(), 15L);
+            stockBean.create(products.get(2).getId(), warehouses.get(2).getId(), 20L);
+            stockBean.create(products.get(3).getId(), warehouses.get(1).getId(), 5L);
+            stockBean.create(products.get(3).getId(), warehouses.get(2).getId(), 10L);
+            stockBean.create(products.get(4).getId(), warehouses.get(0).getId(), 15L);
+            stockBean.create(products.get(4).getId(), warehouses.get(1).getId(), 20L);
+            stockBean.create(products.get(5).getId(), warehouses.get(0).getId(), 5L);
+            stockBean.create(products.get(5).getId(), warehouses.get(1).getId(), 10L);
+            stockBean.create(products.get(6).getId(), warehouses.get(2).getId(), 15L);
+            stockBean.create(products.get(6).getId(), warehouses.get(0).getId(), 20L);
+            stockBean.create(products.get(7).getId(), warehouses.get(1).getId(), 5L);
+            stockBean.create(products.get(7).getId(), warehouses.get(2).getId(), 10L);
         } catch (Exception e) {
             System.err.println("Some exception happened while creating stocks");
             logger.severe(e.getMessage());
         }
         List<Stock> stocks = stockBean.findAll();
 
+        List<Long> productIds = new LinkedList<>();
+        for (Product product : products) {
+            productIds.add(product.getId());
+        }
         // Create Orders
         try {
-            orderBean.create(customers.get(0), products, PaymentType.MBWAY);
-            orderBean.create(customers.get(1), products, PaymentType.MB);
-            orderBean.create(customers.get(2), products, PaymentType.PAYPAL);
-            orderBean.create(customers.get(3), products, PaymentType.MBWAY);
-            orderBean.create(customers.get(4), products, PaymentType.MBWAY);
-            orderBean.create(customers.get(5), products, PaymentType.MBWAY);
+            orderBean.create(customers.get(0).getId(), productIds, PaymentType.MBWAY);
+            orderBean.create(customers.get(1).getId(), productIds, PaymentType.MB);
+            orderBean.create(customers.get(2).getId(), productIds, PaymentType.PAYPAL);
+            orderBean.create(customers.get(3).getId(), productIds, PaymentType.MBWAY);
+            orderBean.create(customers.get(4).getId(), productIds, PaymentType.MBWAY);
+            orderBean.create(customers.get(5).getId(), productIds, PaymentType.MBWAY);
         } catch (Exception e) {
             System.err.println("Some exception happened while creating orders");
             logger.severe(e.getMessage());
@@ -164,13 +169,16 @@ public class ConfigBean {
             logger.severe(e.getMessage());
         }
         List<Sensor> sensors = sensorBean.findAll();
-
+        List<Long> sensorIds = new LinkedList<>();
+        for (Sensor sensor : sensors) {
+            sensorIds.add(sensor.getId());
+        }
         // Create Volumes
         try {
-            volumeBean.create(VolumeType.WOODEN_CRATE, 1, products.get(1), sensors, employees.get(0), VolumeStatus.PROCESSING, orders.get(0));
-            volumeBean.create(VolumeType.WOODEN_CRATE, 2, products.get(0), sensors, employees.get(1), VolumeStatus.PROCESSING, orders.get(1));
-            volumeBean.create(VolumeType.WOODEN_CRATE, 3, products.get(2), sensors, employees.get(2), VolumeStatus.PROCESSING, orders.get(2));
-            volumeBean.create(VolumeType.WOODEN_CRATE, 4, products.get(3), sensors, employees.get(3), VolumeStatus.PROCESSING, orders.get(3));
+            volumeBean.create(VolumeType.WOODEN_CRATE, products.get(1).getId(), sensorIds, employees.get(0).getId(), VolumeStatus.PROCESSING, orders.get(0).getId());
+            volumeBean.create(VolumeType.WOODEN_CRATE, products.get(0).getId(), sensorIds, employees.get(1).getId(), VolumeStatus.PROCESSING, orders.get(1).getId());
+            volumeBean.create(VolumeType.WOODEN_CRATE, products.get(2).getId(), sensorIds, employees.get(2).getId(), VolumeStatus.PROCESSING, orders.get(2).getId());
+            volumeBean.create(VolumeType.WOODEN_CRATE, products.get(3).getId(), sensorIds, employees.get(3).getId(), VolumeStatus.PROCESSING, orders.get(3).getId());
         } catch (Exception e) {
             System.err.println("Some exception happened while creating volumes");
             logger.severe(e.getMessage());
@@ -179,10 +187,10 @@ public class ConfigBean {
 
         // Create Readings
         try {
-            readingBean.create(sensors.get(0), 25, 10);
-            readingBean.create(sensors.get(1), 75, 20);
-            readingBean.create(sensors.get(2), 45, 30);
-            readingBean.create(sensors.get(3), 0, 0);
+            readingBean.create(sensors.get(0).getId(), 25, 10);
+            readingBean.create(sensors.get(1).getId(), 75, 20);
+            readingBean.create(sensors.get(2).getId(), 45, 30);
+            readingBean.create(sensors.get(3).getId(), 0, 0);
         } catch (Exception e) {
             System.err.println("Some exception happened while creating readings");
             logger.severe(e.getMessage());

@@ -87,20 +87,7 @@ public class ProductDTO implements Serializable {
         );
     }
 
-    public static Product toEntity(ProductDTO productDTO) {
-        Product product = new Product(
-                productDTO.getName(),
-                productDTO.getType()
-        );
-        product.setId(productDTO.getId());
-        return product;
-    }
-
     public static List<ProductDTO> fromEntity(List<Product> products) {
         return products.stream().map(ProductDTO::fromEntity).collect(Collectors.toList());
-    }
-
-    public static List<Product> toEntity(List<ProductDTO> productDTOs) {
-        return productDTOs.stream().map(ProductDTO::toEntity).collect(Collectors.toList());
     }
 }

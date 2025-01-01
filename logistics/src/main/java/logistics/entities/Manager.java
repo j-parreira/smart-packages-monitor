@@ -13,10 +13,6 @@ import java.util.Objects;
                 name = "getAllManagers",
                 query = "SELECT m FROM Manager m ORDER BY m.name"
         ),
-        @NamedQuery(
-                name = "getManagerByEmail",
-                query = "SELECT m FROM Manager m WHERE m.email = :email"
-        )
 })
 public class Manager extends Employee {
     @NotNull

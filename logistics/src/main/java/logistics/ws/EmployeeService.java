@@ -8,9 +8,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import logistics.dtos.EmployeeDTO;
 import logistics.dtos.VolumeDTO;
-import logistics.dtos.WarehouseDTO;
 import logistics.ejbs.EmployeeBean;
-import logistics.entities.Employee;
 import logistics.exceptions.MyConstraintViolationException;
 import logistics.exceptions.MyEntityExistsException;
 import logistics.exceptions.MyEntityNotFoundException;
@@ -60,7 +58,7 @@ public class EmployeeService {
                 employeeDTO.getName(),
                 employeeDTO.getEmail(),
                 employeeDTO.getPassword(),
-                WarehouseDTO.toEntity(employeeDTO.getWarehouse())
+                employeeDTO.getWarehouseId()
         );
         return Response.status(Response.Status.CREATED)
                 .entity(EmployeeDTO.fromEntity(employee))
@@ -76,7 +74,7 @@ public class EmployeeService {
                 employeeDTO.getName(),
                 employeeDTO.getEmail(),
                 employeeDTO.getPassword(),
-                WarehouseDTO.toEntity(employeeDTO.getWarehouse())
+                employeeDTO.getWarehouseId()
         );
         return Response.ok(EmployeeDTO.fromEntity(employee)).build();
     }

@@ -14,6 +14,9 @@ import logistics.exceptions.MyEntityExistsException;
 import logistics.exceptions.MyEntityNotFoundException;
 import logistics.security.Authenticated;
 
+import java.util.LinkedList;
+import java.util.List;
+
 @Path("volumes")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
@@ -40,16 +43,6 @@ public class VolumeService {
         return Response.ok(VolumeDTO.fromEntity(volume)).build();
     }
 
-//    // GET /api/volumes/{id}/products
-//    @GET
-//    @Path("{id}/products")
-//    public Response getVolumeProducts(@PathParam("id") long id) throws MyEntityNotFoundException {
-//        var volume = volumeBean.findWithProduct(id);
-//        var volumeDTO = VolumeDTO.fromEntity(volume);
-//        volumeDTO.setProducts(ProductDTO.fromEntity(volume.getProduct()));
-//        return Response.ok(volumeDTO).build();
-//    }
-
     // GET /api/volumes/{id}/sensors
     @GET
     @Path("{id}/sensors")
@@ -64,14 +57,17 @@ public class VolumeService {
     @POST
     @Path("/")
     public Response createVolume(VolumeDTO volumeDTO) throws MyEntityNotFoundException, MyConstraintViolationException, MyEntityExistsException {
+        List<Long> sensorIds = new LinkedList<>();
+        for (SensorDTO sensorDTO : volumeDTO.getSensors()) {
+            sensorIds.add(sensorDTO.getId());
+        }
         var volume = volumeBean.create(
                 volumeDTO.getType(),
-                volumeDTO.getVolumeNumber(),
-                ProductDTO.toEntity(volumeDTO.getProduct()),
-                SensorDTO.toEntity(volumeDTO.getSensors()),
-                EmployeeDTO.toEntity(volumeDTO.getDispatchedBy()),
+                volumeDTO.getProductId(),
+                sensorIds,
+                volumeDTO.getDispatchedByEmployeeId(),
                 volumeDTO.getStatus(),
-                OrderDTO.toEntity(volumeDTO.getOrder())
+                volumeDTO.getOrderId()
         );
         return Response.ok(VolumeDTO.fromEntity(volume)).build();
     }
@@ -82,8 +78,7 @@ public class VolumeService {
     public Response updateVolume(@PathParam("id") long id, VolumeDTO volumeDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
         var volume = volumeBean.update(
                 id,
-                volumeDTO.getStatus(),
-                volumeDTO.getArrivedAt()
+                volumeDTO.getStatus()
         );
         return Response.ok(VolumeDTO.fromEntity(volume)).build();
     }

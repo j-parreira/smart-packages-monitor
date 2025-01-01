@@ -12,10 +12,6 @@ import java.util.Objects;
         @NamedQuery(
                 name = "getAllEmployees",
                 query = "SELECT e FROM Employee e ORDER BY e.name"
-        ),
-        @NamedQuery(
-                name = "getEmployeeByEmail",
-                query = "SELECT e FROM Employee e WHERE e.email = :email"
         )
 })
 public class Employee extends User {
@@ -23,7 +19,7 @@ public class Employee extends User {
     @ManyToOne
     Warehouse warehouse;
 
-    @OneToMany(mappedBy = "dispatchedBy", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "dispatchedBy")
     List<Volume> volumes;
 
     public Employee() {

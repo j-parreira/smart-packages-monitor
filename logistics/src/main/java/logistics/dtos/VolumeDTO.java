@@ -1,5 +1,6 @@
 package logistics.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import logistics.entities.Volume;
 import logistics.enums.VolumeStatus;
 import logistics.enums.VolumeType;
@@ -13,29 +14,31 @@ import java.util.stream.Collectors;
 public class VolumeDTO implements Serializable {
     private Long id;
     private VolumeType type;
-    private long volumeNumber;
-    private ProductDTO product;
+    private String volumeCode;
+    private Long productId;
     private List<SensorDTO> sensors;
-    private EmployeeDTO dispatchedBy;
+    private Long dispatchedByEmployeeId;
     private VolumeStatus status;
-    private OrderDTO order;
+    private Long orderId;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private Date dispatchedAt;
-    private Date arrivedAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    private Date updatedAt;
 
     public VolumeDTO() {
         this.sensors = new LinkedList<>();
     }
 
-    public VolumeDTO(VolumeType type, long volumeNumber, ProductDTO product, EmployeeDTO dispatchedBy, VolumeStatus status, OrderDTO order, Date dispatchedAt, Date arrivedAt) {
+    public VolumeDTO(VolumeType type, String volumeCode, Long productId, Long dispatchedByEmployeeId, VolumeStatus status, Long orderId, Date dispatchedAt, Date updatedAt) {
         this.type = type;
-        this.volumeNumber = volumeNumber;
-        this.product = product;
+        this.volumeCode = volumeCode;
+        this.productId = productId;
         this.sensors = new LinkedList<>();
-        this.dispatchedBy = dispatchedBy;
+        this.dispatchedByEmployeeId = dispatchedByEmployeeId;
         this.status = status;
-        this.order = order;
+        this.orderId = orderId;
         this.dispatchedAt = dispatchedAt;
-        this.arrivedAt = arrivedAt;
+        this.updatedAt = updatedAt;
     }
 
     public Long getId() {
@@ -54,20 +57,20 @@ public class VolumeDTO implements Serializable {
         this.type = type;
     }
 
-    public long getVolumeNumber() {
-        return volumeNumber;
+    public String getVolumeCode() {
+        return volumeCode;
     }
 
-    public void setVolumeNumber(long volumeNumber) {
-        this.volumeNumber = volumeNumber;
+    public void setVolumeCode(String volumeCode) {
+        this.volumeCode = volumeCode;
     }
 
-    public ProductDTO getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
-    public void setProducts(ProductDTO product) {
-        this.product = product;
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 
     public List<SensorDTO> getSensors() {
@@ -78,12 +81,12 @@ public class VolumeDTO implements Serializable {
         this.sensors = sensors;
     }
 
-    public EmployeeDTO getDispatchedBy() {
-        return dispatchedBy;
+    public Long getDispatchedByEmployeeId() {
+        return dispatchedByEmployeeId;
     }
 
-    public void setDispatchedBy(EmployeeDTO dispatchedBy) {
-        this.dispatchedBy = dispatchedBy;
+    public void setDispatchedByEmployeeId(Long dispatchedByEmployeeId) {
+        this.dispatchedByEmployeeId = dispatchedByEmployeeId;
     }
 
     public VolumeStatus getStatus() {
@@ -94,12 +97,12 @@ public class VolumeDTO implements Serializable {
         this.status = status;
     }
 
-    public OrderDTO getOrder() {
-        return order;
+    public Long getOrderId() {
+        return orderId;
     }
 
-    public void setOrder(OrderDTO order) {
-        this.order = order;
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 
     public Date getDispatchedAt() {
@@ -110,49 +113,20 @@ public class VolumeDTO implements Serializable {
         this.dispatchedAt = dispatchedAt;
     }
 
-    public Date getArrivedAt() {
-        return arrivedAt;
+    public Date getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setArrivedAt(Date arrivedAt) {
-        this.arrivedAt = arrivedAt;
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public static VolumeDTO fromEntity(Volume volume) {
-        return new VolumeDTO(
-                volume.getType(),
-                volume.getVolumeNumber(),
-                ProductDTO.fromEntity(volume.getProduct()),
-                EmployeeDTO.fromEntity(volume.getDispatchedBy()),
-                volume.getStatus(),
-                OrderDTO.fromEntity(volume.getOrder()),
-                volume.getDispatchedAt(),
-                volume.getArrivedAt()
-        );
-    }
-
-    public static Volume toEntity(VolumeDTO volumeDTO) {
-        Volume volume = new Volume(
-                volumeDTO.getType(),
-                volumeDTO.getVolumeNumber(),
-                ProductDTO.toEntity(volumeDTO.getProduct()),
-                SensorDTO.toEntity(volumeDTO.getSensors()),
-                EmployeeDTO.toEntity(volumeDTO.getDispatchedBy()),
-                volumeDTO.getStatus(),
-                OrderDTO.toEntity(volumeDTO.getOrder())
-        );
-        volume.setId(volumeDTO.getId());
-        volume.setDispatchedAt(volumeDTO.getDispatchedAt());
-        volume.setArrivedAt(volumeDTO.getArrivedAt());
-        return volume;
+        return new VolumeDTO(volume.getType(), volume.getVolumeCode(), volume.getProduct().getId(), volume.getDispatchedBy().getId(), volume.getStatus(), volume.getOrder().getId(), volume.getDispatchedAt(), volume.getUpdatedAt());
     }
 
     public static List<VolumeDTO> fromEntity(List<Volume> volumes) {
         return volumes.stream().map(VolumeDTO::fromEntity).collect(Collectors.toList());
-    }
-
-    public static List<Volume> toEntity(List<VolumeDTO> volumeDTOs) {
-        return volumeDTOs.stream().map(VolumeDTO::toEntity).collect(Collectors.toList());
     }
 }
 

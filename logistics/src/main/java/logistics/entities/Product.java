@@ -16,10 +16,6 @@ import java.util.Objects;
                 query = "SELECT p FROM Product p ORDER BY p.name"
         ),
         @NamedQuery(
-                name = "getProductByName",
-                query = "SELECT p FROM Product p WHERE p.name = :name"
-        ),
-        @NamedQuery(
                 name = "getProductTotalStock",
                 query = "SELECT SUM(s.quantity) FROM Stock s WHERE s.product = :product"
         )
@@ -33,7 +29,8 @@ public class Product extends Versionable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotNull
+    @Column(unique = true, nullable = false)
     private String name;
 
     @NotNull
@@ -114,6 +111,30 @@ public class Product extends Versionable {
 
     public void setStocks(List<Stock> stocks) {
         this.stocks = stocks;
+    }
+
+    public void addOrder(Order order) {
+        this.orders.add(order);
+    }
+
+    public void removeOrder(Order order) {
+        this.orders.remove(order);
+    }
+
+    public void addVolume(Volume volume) {
+        this.volumes.add(volume);
+    }
+
+    public void removeVolume(Volume volume) {
+        this.volumes.remove(volume);
+    }
+
+    public void addStock(Stock stock) {
+        this.stocks.add(stock);
+    }
+
+    public void removeStock(Stock stock) {
+        this.stocks.remove(stock);
     }
 
     @Override

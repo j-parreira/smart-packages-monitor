@@ -6,7 +6,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import logistics.entities.User;
 import logistics.security.Hasher;
-import org.hibernate.Hibernate;
 
 @Stateless
 public class UserBean {

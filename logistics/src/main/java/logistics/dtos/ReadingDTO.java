@@ -1,5 +1,6 @@
 package logistics.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import logistics.entities.Reading;
 
 import java.io.Serializable;
@@ -9,17 +10,18 @@ import java.util.stream.Collectors;
 
 public class ReadingDTO implements Serializable {
     private Long id;
-    private SensorDTO sensor;
+    private Long sensorId;
     private double valueOne;
     private double valueTwo;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private Date timestamp;
 
     public ReadingDTO() {
     }
 
-    public ReadingDTO(Long id, SensorDTO sensor, double valueOne, double valueTwo, Date timestamp) {
+    public ReadingDTO(Long id, Long sensorId, double valueOne, double valueTwo, Date timestamp) {
         this.id = id;
-        this.sensor = sensor;
+        this.sensorId = sensorId;
         this.valueOne = valueOne;
         this.valueTwo = valueTwo;
         this.timestamp = timestamp;
@@ -33,12 +35,12 @@ public class ReadingDTO implements Serializable {
         this.id = id;
     }
 
-    public SensorDTO getSensor() {
-        return sensor;
+    public Long getSensorId() {
+        return sensorId;
     }
 
-    public void setSensor(SensorDTO sensor) {
-        this.sensor = sensor;
+    public void setSensorId(Long sensorId) {
+        this.sensorId = sensorId;
     }
 
     public double getValueOne() {
@@ -68,26 +70,14 @@ public class ReadingDTO implements Serializable {
     public static ReadingDTO fromEntity(Reading reading) {
         return new ReadingDTO(
                 reading.getId(),
-                SensorDTO.fromEntity(reading.getSensor()),
+                reading.getSensor().getId(),
                 reading.getValueOne(),
                 reading.getValueTwo(),
                 reading.getTimestamp()
         );
     }
 
-    public static Reading toEntity(ReadingDTO readingDTO) {
-        return new Reading(
-                SensorDTO.toEntity(readingDTO.getSensor()),
-                readingDTO.getValueOne(),
-                readingDTO.getValueTwo()
-        );
-    }
-
     public static List<ReadingDTO> fromEntity(List<Reading> readings) {
         return readings.stream().map(ReadingDTO::fromEntity).collect(Collectors.toList());
-    }
-
-    public static List<Reading> toEntity(List<ReadingDTO> readings) {
-        return readings.stream().map(ReadingDTO::toEntity).collect(Collectors.toList());
     }
 }

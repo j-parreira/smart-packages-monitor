@@ -8,7 +8,6 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import logistics.dtos.ReadingDTO;
 import logistics.dtos.SensorDTO;
-import logistics.dtos.VolumeDTO;
 import logistics.ejbs.SensorBean;
 import logistics.entities.Sensor;
 import logistics.exceptions.MyConstraintViolationException;
@@ -79,6 +78,7 @@ public class SensorService {
     public Response updateSensor(@PathParam("id") long id, SensorDTO sensorDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
         var sensor = sensorBean.update(
                 id,
+                sensorDTO.getVolumeId(),
                 sensorDTO.isActive()
         );
         return Response.ok(SensorDTO.fromEntity(sensor)).build();

@@ -2,10 +2,8 @@ package logistics.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import logistics.enums.OrderStatus;
 import logistics.enums.VolumeStatus;
 import logistics.enums.VolumeType;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -19,16 +17,12 @@ import java.util.Objects;
                 query = "SELECT v FROM Volume v"
         ),
         @NamedQuery(
-                name = "getVolumeByOrder",
-                query = "SELECT v FROM Volume v WHERE v.order.id = :orderId"
-        ),
-        @NamedQuery(
-                name = "getVolumeByOrderAndVolumeNumber",
-                query = "SELECT v FROM Volume v WHERE v.order.id = :orderId AND v.volumeNumber = :volumeNumber"
+                name = "getVolumeByVolumeCode",
+                query = "SELECT v FROM Volume v WHERE v.volumeCode = :volumeCode"
         )
 })
 @Table(name = "volumes", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"order_id", "volume_number"})
+        @UniqueConstraint(columnNames = {"volume_code"})
 })
 public class Volume extends Versionable {
     @Id
@@ -36,11 +30,12 @@ public class Volume extends Versionable {
     private Long id;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private VolumeType type;
 
     @NotNull
-    @Column(name = "volume_number")
-    private long volumeNumber;
+    @Column(name = "volume_code", unique = true)
+    private String volumeCode;
 
     @NotNull
     @ManyToOne
@@ -56,6 +51,7 @@ public class Volume extends Versionable {
     private Employee dispatchedBy;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private VolumeStatus status;
 
     @NotNull
@@ -63,28 +59,28 @@ public class Volume extends Versionable {
     private Order order;
 
     @NotNull
-    @CreationTimestamp
-    @Column(name = "dispatched_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "dispatched_at", columnDefinition = "TIMESTAMP(0)")
     private Date dispatchedAt;
 
-    @CreationTimestamp
-    @Column(name = "arrived_at")
-    private Date arrivedAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "updated_at", columnDefinition = "TIMESTAMP(0)")
+    private Date updatedAt;
 
     public Volume() {
         this.sensors = new LinkedList<>();
     }
 
-    public Volume(VolumeType type, long volumeNumber, Product product, List<Sensor> sensors, Employee dispatchedBy, VolumeStatus status, Order order) {
+    public Volume(VolumeType type, Product product, List<Sensor> sensors, Employee dispatchedBy, VolumeStatus status, Order order) {
         this.type = type;
-        this.volumeNumber = volumeNumber;
+        this.volumeCode = "T" + type.toString() + "P" + product.getId().toString() + "O" + order.getId().toString() + "E" + dispatchedBy.getId().toString() + "D" + new Date().getTime();
         this.product = product;
         this.sensors = sensors;
         this.dispatchedBy = dispatchedBy;
         this.status = status;
         this.order = order;
         this.dispatchedAt = new Date();
-        this.arrivedAt = null;
+        this.updatedAt = new Date();
     }
 
     public Long getId() {
@@ -103,19 +99,19 @@ public class Volume extends Versionable {
         this.type = type;
     }
 
-    public long getVolumeNumber() {
-        return volumeNumber;
+    public String getVolumeCode() {
+        return volumeCode;
     }
 
-    public void setVolumeNumber(long volumeNumber) {
-        this.volumeNumber = volumeNumber;
+    public void setVolumeCode(String volumeCode) {
+        this.volumeCode = volumeCode;
     }
 
     public Product getProduct() {
         return product;
     }
 
-    public void setProducts(Product product) {
+    public void setProduct(Product product) {
         this.product = product;
     }
 
@@ -159,12 +155,12 @@ public class Volume extends Versionable {
         this.dispatchedAt = dispatchedAt;
     }
 
-    public Date getArrivedAt() {
-        return arrivedAt;
+    public Date getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setArrivedAt(Date arrivedAt) {
-        this.arrivedAt = arrivedAt;
+    public void setUpdatedAt(Date arrivedAt) {
+        this.updatedAt = arrivedAt;
     }
 
     public void addSensor(Sensor sensor) {
@@ -180,21 +176,21 @@ public class Volume extends Versionable {
         if (o == null || getClass() != o.getClass()) return false;
 
         Volume volume = (Volume) o;
-        return volumeNumber == volume.volumeNumber && Objects.equals(id, volume.id) && type == volume.type && Objects.equals(product, volume.product) && Objects.equals(sensors, volume.sensors) && Objects.equals(dispatchedBy, volume.dispatchedBy) && status == volume.status && Objects.equals(order, volume.order) && Objects.equals(dispatchedAt, volume.dispatchedAt) && Objects.equals(arrivedAt, volume.arrivedAt);
+        return Objects.equals(id, volume.id) && type == volume.type && Objects.equals(volumeCode, volume.volumeCode) && Objects.equals(product, volume.product) && Objects.equals(sensors, volume.sensors) && Objects.equals(dispatchedBy, volume.dispatchedBy) && status == volume.status && Objects.equals(order, volume.order) && Objects.equals(dispatchedAt, volume.dispatchedAt) && Objects.equals(updatedAt, volume.updatedAt);
     }
 
     @Override
     public int hashCode() {
         int result = Objects.hashCode(id);
         result = 31 * result + Objects.hashCode(type);
-        result = 31 * result + Long.hashCode(volumeNumber);
+        result = 31 * result + Objects.hashCode(volumeCode);
         result = 31 * result + Objects.hashCode(product);
         result = 31 * result + Objects.hashCode(sensors);
         result = 31 * result + Objects.hashCode(dispatchedBy);
         result = 31 * result + Objects.hashCode(status);
         result = 31 * result + Objects.hashCode(order);
         result = 31 * result + Objects.hashCode(dispatchedAt);
-        result = 31 * result + Objects.hashCode(arrivedAt);
+        result = 31 * result + Objects.hashCode(updatedAt);
         return result;
     }
 }

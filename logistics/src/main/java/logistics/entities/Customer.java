@@ -18,7 +18,7 @@ public class Customer extends User {
     @NotNull
     private String address;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "customer")
     private List<Order> orders;
 
     public Customer() {

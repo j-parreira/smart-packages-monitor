@@ -50,13 +50,6 @@ public class WarehouseBean {
         return warehouse;
     }
 
-    public Warehouse findByName(String name) throws MyEntityNotFoundException {
-        var query = entityManager.createNamedQuery("getWarehouseByName", Warehouse.class);
-        query.setParameter("name", name);
-        List<Warehouse> warehouses = query.getResultList();
-        return warehouses.get(0);
-    }
-
     public Warehouse findWithEmployees(Long id) throws MyEntityNotFoundException {
         var warehouse = this.find(id);
         Hibernate.initialize(warehouse.getEmployees());

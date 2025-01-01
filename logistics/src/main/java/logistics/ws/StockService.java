@@ -60,8 +60,8 @@ public class StockService {
     @Path("/")
     public Response createStock(StockDTO stockDTO) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
         var stock = stockBean.create(
-                ProductDTO.toEntity(stockDTO.getProduct()),
-                WarehouseDTO.toEntity(stockDTO.getWarehouse()),
+                stockDTO.getProductId(),
+                stockDTO.getWarehouseId(),
                 stockDTO.getQuantity()
         );
         return Response.status(Response.Status.CREATED)

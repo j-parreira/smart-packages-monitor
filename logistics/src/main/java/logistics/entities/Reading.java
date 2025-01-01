@@ -2,7 +2,6 @@ package logistics.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 import java.util.Objects;
@@ -38,7 +37,8 @@ public class Reading extends Versionable {
     private double valueTwo;
 
     @NotNull
-    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "timestamp")
     private Date timestamp;
 
     public Reading() {

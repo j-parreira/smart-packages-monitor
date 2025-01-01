@@ -1,5 +1,6 @@
 package logistics.ejbs;
 
+import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -7,7 +8,6 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.validation.ConstraintViolationException;
 import logistics.entities.Manager;
-import logistics.entities.Warehouse;
 import logistics.exceptions.MyConstraintViolationException;
 import logistics.exceptions.MyEntityExistsException;
 import logistics.exceptions.MyEntityNotFoundException;
@@ -21,6 +21,8 @@ public class ManagerBean {
     private EntityManager entityManager;
     @Inject
     private Hasher hasher;
+    @EJB
+    private WarehouseBean warehouseBean;
 
     public boolean exists(String email) {
         Query query = entityManager.createQuery("SELECT COUNT(m.email) FROM Manager m WHERE m.email = :email", Long.class);
@@ -28,12 +30,14 @@ public class ManagerBean {
         return (Long) query.getSingleResult() > 0L;
     }
 
-    public Manager create(String name, String email, String password, Warehouse warehouse, String office) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
+    public Manager create(String name, String email, String password, Long warehouseId, String office) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
         if (exists(email)) {
             throw new MyEntityExistsException("Manager already exists");
         }
         try {
+            var warehouse = warehouseBean.find(warehouseId);
             Manager manager = new Manager(name, email, hasher.hash(password), warehouse, office);
+            warehouse.addEmployee(manager);
             entityManager.persist(manager);
             entityManager.flush();
             return manager;
@@ -54,22 +58,14 @@ public class ManagerBean {
         return manager;
     }
 
-    public Manager findByEmail(String email) throws MyEntityNotFoundException {
-        var query = entityManager.createNamedQuery("getManagerByEmail", Manager.class);
-        query.setParameter("email", email);
-        List<Manager> managers = query.getResultList();
-        if (managers.isEmpty()) {
-            throw new MyEntityNotFoundException("Manager not found");
-        }
-        return managers.get(0);
-    }
-
-    public Manager update(Long id, String name, String email, String password, Warehouse warehouse, String office) throws MyEntityNotFoundException, MyConstraintViolationException {
-        if (!exists(email)) {
-            throw new MyEntityNotFoundException("Manager not found");
-        }
+    public Manager update(Long id, String name, String email, String password, Long warehouseId, String office) throws MyEntityNotFoundException, MyConstraintViolationException {
         try {
+            var warehouse = warehouseBean.find(warehouseId);
             Manager manager = find(id);
+            if (manager.getWarehouse() != warehouse) {
+                manager.getWarehouse().removeEmployee(manager);
+                warehouse.addEmployee(manager);
+            }
             manager.setName(name);
             manager.setPassword(hasher.hash(password));
             manager.setWarehouse(warehouse);

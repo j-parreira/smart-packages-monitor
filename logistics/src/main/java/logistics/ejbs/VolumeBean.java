@@ -1,5 +1,6 @@
 package logistics.ejbs;
 
+import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -14,12 +15,21 @@ import logistics.exceptions.MyEntityNotFoundException;
 import org.hibernate.Hibernate;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 @Stateless
 public class VolumeBean {
     @PersistenceContext
     private EntityManager entityManager;
+    @EJB
+    private ProductBean productBean;
+    @EJB
+    private SensorBean sensorBean;
+    @EJB
+    private EmployeeBean employeeBean;
+    @EJB
+    private OrderBean orderBean;
 
     public boolean exists(Long id) {
         Query query = entityManager.createQuery("SELECT COUNT(v.id) FROM Volume v WHERE v.id = :id", Long.class);
@@ -27,13 +37,24 @@ public class VolumeBean {
         return (Long)query.getSingleResult() > 0L;
     }
 
-    public Volume create(VolumeType type, long volumeNumber, Product product, List<Sensor> sensors, Employee dispatchedBy, VolumeStatus status, Order order) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
-        Volume existingVolume = findByOrderAndVolumeNumber(order.getId(), volumeNumber);
-        if (existingVolume != null) {
-            throw new MyEntityExistsException("Volume already exists");
-        }
+    public Volume create(VolumeType type, Long productId, List<Long> sensorIds, Long dispatchedByEmployeeId, VolumeStatus status, Long orderId) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
         try {
-            Volume volume = new Volume(type, volumeNumber, product, sensors, dispatchedBy, status, order);
+            Product product = productBean.find(productId);
+            List<Sensor> sensors = new LinkedList<>();
+            for (Long sensorId : sensorIds) {
+                var sensor = sensorBean.find(sensorId);
+                sensors.add(sensor);
+            }
+            Employee dispatchedBy = employeeBean.find(dispatchedByEmployeeId);
+            Order order = orderBean.find(orderId);
+            Volume volume = new Volume(type, product, sensors, dispatchedBy, status, order);
+            product.addVolume(volume);
+            order.addVolume(volume);
+            dispatchedBy.addVolume(volume);
+            for (Long sensorId : sensorIds) {
+                var sensor = sensorBean.find(sensorId);
+                sensor.setVolume(volume);
+            }
             entityManager.persist(volume);
             entityManager.flush();
             return volume;
@@ -54,40 +75,20 @@ public class VolumeBean {
         return volume;
     }
 
-    public Volume findByOrderAndVolumeNumber(long orderId, long volumeNumber) throws MyEntityNotFoundException {
-        var query = entityManager.createNamedQuery("getVolumeByOrderAndVolumeNumber", Volume.class);
-        query.setParameter("orderId", orderId);
-        query.setParameter("volumeNumber", volumeNumber);
-        List<Volume> volumes = query.getResultList();
-        return volumes.isEmpty() ? null : volumes.get(0);
-    }
-
-    public List<Volume> findByOrder(long orderId) {
-        var query = entityManager.createNamedQuery("getVolumeByOrder", Volume.class);
-        query.setParameter("orderId", orderId);
-        return query.getResultList();
-    }
-
-    public Volume findWithProduct(long id) throws MyEntityNotFoundException {
-        var volume = this.find(id);
-        Hibernate.initialize(volume.getProduct());
-        return volume;
-    }
-
     public Volume findWithSensors(long id) throws MyEntityNotFoundException {
         var volume = this.find(id);
         Hibernate.initialize(volume.getSensors());
         return volume;
     }
 
-    public Volume update(long id, VolumeStatus status, Date arrivedAt) throws MyEntityNotFoundException, MyConstraintViolationException {
+    public Volume update(long id, VolumeStatus status) throws MyEntityNotFoundException, MyConstraintViolationException {
         if (!exists(id)) {
             throw new MyEntityNotFoundException("Volume not found");
         }
         try {
             Volume volume = find(id);
             volume.setStatus(status);
-            volume.setArrivedAt(arrivedAt);
+            volume.setUpdatedAt(new Date());
             entityManager.merge(volume);
             entityManager.flush();
             return volume;
