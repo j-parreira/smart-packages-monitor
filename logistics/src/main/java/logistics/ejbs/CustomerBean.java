@@ -31,7 +31,7 @@ public class CustomerBean {
 
     public Customer create(String name, String email, String password, String address) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
         if (exists(email)) {
-            throw new MyEntityExistsException("Customer already exists");
+            throw new MyEntityExistsException("Customer with that email already exists");
         }
         try {
             Customer customer = new Customer(name, email, hasher.hash(password), address);

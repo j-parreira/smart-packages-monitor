@@ -6,10 +6,24 @@ meta {
 
 put {
   url: {{api_url}}/orders/:id
-  body: none
+  body: json
   auth: none
 }
 
 params:path {
-  id: 
+  id: 8
+}
+
+body:json {
+  {
+    "customerId": 10,
+    "products": [
+      {
+        "id": 1,
+        "id": 2,
+        "id": 3
+      }
+    ],
+    "paymentType": "MBWAY"
+  }
 }

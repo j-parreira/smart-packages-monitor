@@ -6,6 +6,16 @@ meta {
 
 post {
   url: {{api_url}}/managers
-  body: none
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "name": "Manager 4",
+    "email": "m4@mail.pt",
+    "password": "123",
+    "warehouseId": 3,
+    "office": "Office 4"
+  }
 }

@@ -6,10 +6,20 @@ meta {
 
 put {
   url: {{api_url}}/managers/:id
-  body: none
+  body: json
   auth: none
 }
 
 params:path {
-  id: 
+  id: 18
+}
+
+body:json {
+  {
+    "name": "Manager 4",
+    "email": "m4@mail.pt",
+    "password": "123",
+    "warehouseId": 1,
+    "office": "Office 4"
+  }
 }

@@ -33,7 +33,7 @@ public class EmployeeBean {
 
     public Employee create(String name, String email, String password, Long warehouseId) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
         if (exists(email)) {
-            throw new MyEntityExistsException("Employee already exists");
+            throw new MyEntityExistsException("Employee with that email already exists");
         }
         try {
             var warehouse = warehouseBean.find(warehouseId);
@@ -53,7 +53,7 @@ public class EmployeeBean {
 
     public Employee find(long id) throws MyEntityNotFoundException {
         var employee = entityManager.find(Employee.class, id);
-        if (employee == null) {
+        if (employee == null || employee.getClass() != Employee.class) {
             throw new MyEntityNotFoundException("Employee not found");
         }
         return employee;

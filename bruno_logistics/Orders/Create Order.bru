@@ -6,6 +6,20 @@ meta {
 
 post {
   url: {{api_url}}/orders
-  body: none
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "customerId": 10,
+    "products": [
+      {
+        "id": 1,
+        "id": 2,
+        "id": 3
+      }
+    ],
+    "paymentType": "MBWAY"
+  }
 }

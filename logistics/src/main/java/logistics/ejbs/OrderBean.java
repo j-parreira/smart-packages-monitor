@@ -37,6 +37,9 @@ public class OrderBean {
 
     public Order create(Long customerId, List<Long> productIds, PaymentType paymentType) throws MyEntityNotFoundException, MyConstraintViolationException {
         try {
+            if (productIds.isEmpty()) {
+                throw new MyEntityNotFoundException("Order must have at least one product");
+            }
             var customer = customerBean.find(customerId);
             List<Product> products = new LinkedList<>();
             for (var productId : productIds) {
@@ -61,12 +64,6 @@ public class OrderBean {
 
     public List<Order> findAll() {
         return entityManager.createNamedQuery("getAllOrders", Order.class).getResultList();
-    }
-
-    public List<Order> findByStatus(OrderStatus status) {
-        var query = entityManager.createQuery("SELECT o FROM Order o WHERE o.status = :status", Order.class);
-        query.setParameter("status", status);
-        return query.getResultList();
     }
 
     public Order find(long id) throws MyEntityNotFoundException {

@@ -32,7 +32,7 @@ public class ManagerBean {
 
     public Manager create(String name, String email, String password, Long warehouseId, String office) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
         if (exists(email)) {
-            throw new MyEntityExistsException("Manager already exists");
+            throw new MyEntityExistsException("Manager with that email already exists");
         }
         try {
             var warehouse = warehouseBean.find(warehouseId);

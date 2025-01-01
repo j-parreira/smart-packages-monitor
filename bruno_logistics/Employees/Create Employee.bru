@@ -6,6 +6,15 @@ meta {
 
 post {
   url: {{api_url}}/employees
-  body: none
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "name": "Employee 7",
+    "email": "e7@mail.pt",
+    "password": "123",
+    "warehouseId": 1
+  }
 }

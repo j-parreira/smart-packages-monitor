@@ -11,7 +11,7 @@ import java.util.Objects;
 @NamedQueries({
         @NamedQuery(
                 name = "getAllEmployees",
-                query = "SELECT e FROM Employee e ORDER BY e.name"
+                query = "SELECT e FROM Employee e WHERE e.class = Employee ORDER BY e.name"
         )
 })
 public class Employee extends User {

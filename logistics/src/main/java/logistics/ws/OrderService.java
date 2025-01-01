@@ -65,13 +65,6 @@ public class OrderService {
         return Response.ok(orderDTO).build();
     }
 
-    // GET /api/orders/{orderStatus}
-    @GET
-    @Path("{orderStatus}")
-    public Response getOrdersByStatus(@PathParam("orderStatus") OrderStatus orderStatus) {
-        return Response.ok(OrderDTO.fromEntity(orderBean.findByStatus(orderStatus))).build();
-    }
-
     // POST /api/orders/
     @POST
     @Path("/")
