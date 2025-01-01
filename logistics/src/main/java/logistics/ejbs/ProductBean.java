@@ -27,7 +27,7 @@ public class ProductBean {
 
     public Product create(String name, ProductType type) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
         if (exists(name)) {
-            throw new MyEntityExistsException("Product already exists");
+            throw new MyEntityExistsException("Product with that name already exists");
         }
         try {
             Product product = new Product(name, type);
@@ -77,9 +77,6 @@ public class ProductBean {
     }
 
     public Product update(long id, String name, ProductType type) throws MyEntityNotFoundException, MyConstraintViolationException {
-        if (!exists(name)) {
-            throw new MyEntityNotFoundException("Product not found");
-        }
         try {
             var product = find(id);
             product.setName(name);

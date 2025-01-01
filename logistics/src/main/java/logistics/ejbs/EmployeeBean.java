@@ -65,7 +65,7 @@ public class EmployeeBean {
         return employee;
     }
 
-    public Employee update(Long id, String name, String email, String password, Long warehouseId) throws MyEntityNotFoundException, MyConstraintViolationException {
+    public Employee update(Long id, String name, String password, Long warehouseId) throws MyEntityNotFoundException, MyConstraintViolationException {
         try {
             var warehouse = warehouseBean.find(warehouseId);
             Employee employee = find(id);

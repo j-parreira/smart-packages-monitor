@@ -6,10 +6,18 @@ meta {
 
 put {
   url: {{api_url}}/readings/:id
-  body: none
+  body: json
   auth: none
 }
 
 params:path {
-  id: 
+  id: 5
+}
+
+body:json {
+  {
+    "sensorId": 1,
+    "valueOne": 25,
+    "valueTwo": 10
+  }
 }

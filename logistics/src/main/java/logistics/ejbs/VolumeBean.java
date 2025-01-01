@@ -82,9 +82,6 @@ public class VolumeBean {
     }
 
     public Volume update(long id, VolumeStatus status) throws MyEntityNotFoundException, MyConstraintViolationException {
-        if (!exists(id)) {
-            throw new MyEntityNotFoundException("Volume not found");
-        }
         try {
             Volume volume = find(id);
             volume.setStatus(status);

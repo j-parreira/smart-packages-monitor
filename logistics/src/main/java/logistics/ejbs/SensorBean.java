@@ -44,16 +44,6 @@ public class SensorBean {
         return entityManager.createNamedQuery("getAllSensors", Sensor.class).getResultList();
     }
 
-    public List<Sensor> findAllInVolume(long volumeId) throws MyEntityNotFoundException {
-        var query = entityManager.createNamedQuery("getAllSensorsInVolume", Sensor.class);
-        query.setParameter("volumeId", volumeId);
-        List<Sensor> sensors = query.getResultList();
-        if (sensors.isEmpty()) {
-            throw new MyEntityNotFoundException("Sensor not found");
-        }
-        return sensors;
-    }
-
     public Sensor find(long id) throws MyEntityNotFoundException {
         var sensor = entityManager.find(Sensor.class, id);
         if (sensor == null) {

@@ -6,10 +6,17 @@ meta {
 
 put {
   url: {{api_url}}/products/:id
-  body: none
+  body: json
   auth: none
 }
 
 params:path {
-  id: 
+  id: 9
+}
+
+body:json {
+  {
+    "name": "Product 1000",
+    "type": "ELECTRONICS"
+  }
 }

@@ -6,10 +6,17 @@ meta {
 
 put {
   url: {{api_url}}/warehouses/:id
-  body: none
+  body: json
   auth: none
 }
 
 params:path {
-  id: 
+  id: 4
+}
+
+body:json {
+  {
+    "name": "Warehouse Carlos",
+    "location": "Location King Carlos"
+  }
 }

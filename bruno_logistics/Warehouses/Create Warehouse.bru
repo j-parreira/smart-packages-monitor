@@ -6,6 +6,13 @@ meta {
 
 post {
   url: {{api_url}}/warehouses
-  body: none
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "name": "Warehouse 4",
+    "location": "Location 4"
+  }
 }

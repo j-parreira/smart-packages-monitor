@@ -6,10 +6,16 @@ meta {
 
 put {
   url: {{api_url}}/volumes/:id
-  body: none
+  body: json
   auth: none
 }
 
 params:path {
-  id: 
+  id: 5
+}
+
+body:json {
+  {
+    "status": "DELIVERED"
+  }
 }

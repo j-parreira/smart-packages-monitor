@@ -6,6 +6,14 @@ meta {
 
 post {
   url: {{api_url}}/stocks
-  body: none
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "productId": 1,
+    "warehouseId": 3,
+    "quantity": 15
+  }
 }

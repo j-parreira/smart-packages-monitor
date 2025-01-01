@@ -6,6 +6,36 @@ meta {
 
 post {
   url: {{api_url}}/volumes
-  body: none
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "type": "WOODEN_CRATE",
+    "productId": 2,
+    "sensors": [
+        {
+        "id": 1,
+        "type": "TEMPERATURE",
+        "maxThreshold": 30,
+        "minThreshold": 10,
+        "timeInterval": 1000,
+        "readings": [],
+        "active": true
+      },
+      {
+        "id": 2,
+        "type": "ACCELERATION",
+        "maxThreshold": 80,
+        "minThreshold": 20,
+        "timeInterval": 1000,
+        "readings": [],
+        "active": true
+      }
+    ],
+    "dispatchedByEmployeeId": 4,
+    "status": "DISPATCHED",
+    "orderId": 1
+  }
 }

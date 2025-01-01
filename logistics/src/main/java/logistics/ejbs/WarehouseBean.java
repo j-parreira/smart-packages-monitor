@@ -63,9 +63,6 @@ public class WarehouseBean {
     }
 
     public Warehouse update(long id, String name, String location) throws MyEntityNotFoundException, MyConstraintViolationException {
-        if (!exists(name)) {
-            throw new MyEntityNotFoundException("Warehouse not found");
-        }
         try {
             var warehouse = find(id);
             warehouse.setName(name);

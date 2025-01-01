@@ -6,6 +6,14 @@ meta {
 
 post {
   url: {{api_url}}/readings
-  body: none
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "sensorId": 1,
+    "valueOne": 25,
+    "valueTwo": 10
+  }
 }

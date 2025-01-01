@@ -29,7 +29,8 @@ public class VolumeDTO implements Serializable {
         this.sensors = new LinkedList<>();
     }
 
-    public VolumeDTO(VolumeType type, String volumeCode, Long productId, Long dispatchedByEmployeeId, VolumeStatus status, Long orderId, Date dispatchedAt, Date updatedAt) {
+    public VolumeDTO(Long id, VolumeType type, String volumeCode, Long productId, Long dispatchedByEmployeeId, VolumeStatus status, Long orderId, Date dispatchedAt, Date updatedAt) {
+        this.id = id;
         this.type = type;
         this.volumeCode = volumeCode;
         this.productId = productId;
@@ -122,7 +123,16 @@ public class VolumeDTO implements Serializable {
     }
 
     public static VolumeDTO fromEntity(Volume volume) {
-        return new VolumeDTO(volume.getType(), volume.getVolumeCode(), volume.getProduct().getId(), volume.getDispatchedBy().getId(), volume.getStatus(), volume.getOrder().getId(), volume.getDispatchedAt(), volume.getUpdatedAt());
+        return new VolumeDTO(
+                volume.getId(),
+                volume.getType(),
+                volume.getVolumeCode(),
+                volume.getProduct().getId(),
+                volume.getDispatchedBy().getId(),
+                volume.getStatus(),
+                volume.getOrder().getId(),
+                volume.getDispatchedAt(),
+                volume.getUpdatedAt());
     }
 
     public static List<VolumeDTO> fromEntity(List<Volume> volumes) {

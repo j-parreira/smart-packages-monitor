@@ -6,6 +6,16 @@ meta {
 
 post {
   url: {{api_url}}/sensors
-  body: none
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "type": "TEMPERATURE",
+    "maxThreshold": 30,
+    "minThreshold": 10,
+    "timeInterval": 1000,
+    "active": true
+  }
 }

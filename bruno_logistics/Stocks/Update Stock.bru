@@ -6,10 +6,16 @@ meta {
 
 put {
   url: {{api_url}}/stocks/:id
-  body: none
+  body: json
   auth: none
 }
 
 params:path {
-  id: 
+  id: 17
+}
+
+body:json {
+  {
+    "quantity": 14
+  }
 }

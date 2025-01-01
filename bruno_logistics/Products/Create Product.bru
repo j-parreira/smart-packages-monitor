@@ -6,6 +6,13 @@ meta {
 
 post {
   url: {{api_url}}/products
-  body: none
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "name": "Product 10",
+    "type": "ELECTRONICS"
+  }
 }

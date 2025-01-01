@@ -70,10 +70,10 @@ public class StockService {
     // PUT /api/stocks/{id}
     @PUT
     @Path("{id}")
-    public Response updateStock(@PathParam("id") long id, long quantity) throws MyEntityNotFoundException, MyConstraintViolationException {
+    public Response updateStock(@PathParam("id") long id, StockDTO stockDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
         var stock = stockBean.update(
                 id,
-                quantity
+                stockDTO.getQuantity()
         );
         return Response.ok(StockDTO.fromEntity(stock)).build();
     }

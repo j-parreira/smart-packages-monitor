@@ -6,10 +6,17 @@ meta {
 
 put {
   url: {{api_url}}/sensors/:id
-  body: none
+  body: json
   auth: none
 }
 
 params:path {
-  id: 
+  id: 5
+}
+
+body:json {
+  {
+    "volumeId": 1,
+    "active": false
+  }
 }

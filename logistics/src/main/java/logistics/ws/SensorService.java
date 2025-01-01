@@ -41,13 +41,6 @@ public class SensorService {
         return Response.ok(SensorDTO.fromEntity(sensor)).build();
     }
 
-    // GET /api/sensors/volume/{id}
-    @GET
-    @Path("volume/{id}")
-    public Response getSensorsInVolume(@PathParam("id") long id) throws MyEntityNotFoundException {
-        return Response.ok(SensorDTO.fromEntity(sensorBean.findAllInVolume(id))).build();
-    }
-
     // GET /api/sensors/{id}/readings
     @GET
     @Path("{id}/readings")

@@ -61,7 +61,7 @@ public class CustomerBean {
         return customer;
     }
 
-    public Customer update(Long id, String name, String email, String password, String address) throws MyEntityNotFoundException, MyConstraintViolationException {
+    public Customer update(Long id, String name, String password, String address) throws MyEntityNotFoundException, MyConstraintViolationException {
         try {
             Customer customer = find(id);
             customer.setName(name);
