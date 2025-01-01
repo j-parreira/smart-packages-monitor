@@ -1,0 +1,15 @@
+meta {
+  name: Get Sensors in Volume
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{api_url}}/sensors/volume/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 
+}

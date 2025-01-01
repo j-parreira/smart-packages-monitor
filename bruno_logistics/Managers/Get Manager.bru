@@ -1,0 +1,15 @@
+meta {
+  name: Get Manager
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{api_url}}/managers/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 10
+}

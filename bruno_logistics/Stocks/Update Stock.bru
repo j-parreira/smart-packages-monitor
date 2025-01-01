@@ -1,0 +1,15 @@
+meta {
+  name: Update Stock
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{api_url}}/stocks/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 
+}

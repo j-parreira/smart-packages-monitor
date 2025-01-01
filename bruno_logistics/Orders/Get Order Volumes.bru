@@ -1,0 +1,15 @@
+meta {
+  name: Get Order Volumes
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{api_url}}/orders/:id/volumes
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 
+}

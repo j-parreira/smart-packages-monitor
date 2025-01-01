@@ -1,0 +1,15 @@
+meta {
+  name: Get Sensor Readings
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{api_url}}/sensors/:id/readings
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 
+}

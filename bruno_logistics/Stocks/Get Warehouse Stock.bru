@@ -1,0 +1,15 @@
+meta {
+  name: Get Warehouse Stock
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{api_url}}/stocks/warehouse/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 
+}

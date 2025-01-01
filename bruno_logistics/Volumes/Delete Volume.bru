@@ -1,0 +1,15 @@
+meta {
+  name: Delete Volume
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{api_url}}/volumes/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 
+}

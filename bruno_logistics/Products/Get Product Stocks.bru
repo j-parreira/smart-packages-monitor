@@ -1,0 +1,15 @@
+meta {
+  name: Get Product Stocks
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{api_url}}/products/:id/stocks
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 
+}

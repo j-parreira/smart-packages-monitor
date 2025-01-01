@@ -1,0 +1,15 @@
+meta {
+  name: Delete Stock
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{api_url}}/stocks/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Update Customer
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{api_url}}/customers/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 
+}

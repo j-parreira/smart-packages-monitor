@@ -1,0 +1,15 @@
+meta {
+  name: Get Employee Volumes
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{api_url}}/employees/:id/volumes
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 
+}

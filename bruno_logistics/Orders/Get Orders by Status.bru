@@ -1,0 +1,15 @@
+meta {
+  name: Get Orders by Status
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{api_url}}/orders/:status
+  body: none
+  auth: none
+}
+
+params:path {
+  status: 
+}
