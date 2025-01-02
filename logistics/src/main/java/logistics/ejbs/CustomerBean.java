@@ -15,6 +15,7 @@ import logistics.security.Hasher;
 import org.hibernate.Hibernate;
 
 import java.util.List;
+import java.util.Objects;
 
 @Stateless
 public class CustomerBean {
@@ -32,6 +33,9 @@ public class CustomerBean {
     public Customer create(String name, String email, String password, String address) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
         if (exists(email)) {
             throw new MyEntityExistsException("Account with that email already exists");
+        }
+        if (name.isBlank() || email.isBlank() || password.isBlank() || address.isBlank()) {
+            throw new MyEntityNotFoundException("One or more fields are empty");
         }
         try {
             Customer customer = new Customer(name, email, hasher.hash(password), address);
@@ -61,12 +65,18 @@ public class CustomerBean {
         return customer;
     }
 
-    public Customer update(Long id, String name, String password, String address) throws MyEntityNotFoundException, MyConstraintViolationException {
+    public Customer update(Long id, String name, String email, String password, String address) throws MyEntityNotFoundException, MyConstraintViolationException {
         try {
             Customer customer = find(id);
-            customer.setName(name);
-            customer.setPassword(hasher.hash(password));
-            customer.setAddress(address);
+            if (!name.isBlank()) {
+                customer.setName(name);
+            }
+            if (!address.isBlank()) {
+                customer.setAddress(address);
+            }
+            if (!email.isBlank() && !exists(email)) {
+                customer.setEmail(email);
+            }
             entityManager.merge(customer);
             entityManager.flush();
             return customer;

@@ -73,10 +73,11 @@ public class CustomerService {
     @PUT
     @Path("{id}")
     @Authenticated
-    public Response updateCustomer(@PathParam("id") long id,CustomerDTO customerDTO) throws MyConstraintViolationException, MyEntityNotFoundException {
+    public Response updateCustomer(@PathParam("id") long id, CustomerDTO customerDTO) throws MyConstraintViolationException, MyEntityNotFoundException {
         var customer = customerBean.update(
                 id,
                 customerDTO.getName(),
+                customerDTO.getEmail(),
                 customerDTO.getPassword(),
                 customerDTO.getAddress()
         );
