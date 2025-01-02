@@ -1,44 +1,76 @@
 <script setup>
-import { useAuthStore } from '~/store/storeAuth.js'
+import MenuItem from '@/components/MenuItem.vue'
 import Card from '@/components/ui/card/Card.vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '~/store/storeAuth.js'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { ref, onMounted, onBeforeMount } from 'vue'
 
 const router = useRouter()
-const authStore = useAuthStore()
+const storeAuth = useAuthStore()
+const isLoading = ref(true)
 
 function logout() {
-  authStore.logout()
+  storeAuth.logout()
   router.push('/')
 }
 
-const menuItems = [
-  { label: 'Profile', icon: 'material-symbols:account-circle', to: '/login' },
-  { label: 'Settings', icon: 'material-symbols:settings', to: '/' },
-  { label: 'Logout', icon: 'material-symbols:logout-rounded', onClick: logout }
-]
+onMounted(async () => {
+  await storeAuth.checkAuth()
+  isLoading.value = false
+})
 </script>
 
 <template>
-  <div class="bg-slate-50">
-    <div class="min-w-screen min-h-screen p-3 container flex">
-      <Card class="w-full">
-        <div class="flex items-center justify-between p-3 h-14">
-          <div class="flex flex-row items-center gap-3">
-            <img src="/logo.png" alt="logo" class="h-10" />
-            <div class="font-semibold">Smart Packages Manager</div>
+  <div class="bg-blue-50 min-h-screen">
+    <Card class="flex flex-col container min-h-screen p-0 rounded-none">
+      <div class="flex items-center justify-between h-14 p-3 pr-0 border-b">
+        <div class="flex items-center gap-3 hover:cursor-pointer" @click="router.push('/')">
+          <img src="/assets/img/logo.png" alt="logo" class="h-12" />
+          <div class="text-blue-950 font-medium">Smart Packages Management</div>
+        </div>
+        <div v-if="!isLoading" class="flex items-center gap-3 h-full">
+          <!-- Guest -->
+          <div v-if="!storeAuth.user" class="pr-3">
+            <MenuItem :item="{ label: 'Login', to: '/login' }" />
           </div>
-          <div class="flex items-center gap-x-3 h-full">
-            <div v-for="item in menuItems" :key="item.label" class="border rounded h-full flex items-center px-2 bg-gray-100 border-gray-200">
-              <Icon :name="item.icon" v-if="item.icon" class="mr-2" />
-              <nuxt-link :to="item.to" v-if="item.to">{{ item.label }}</nuxt-link>
-              <a href="#" @click.prevent="item.onClick" v-else>{{ item.label }}</a>
+          <!-- Authenticated -->
+          <div v-else>
+            <div class="flex items-center gap-3">
+              <DropdownMenu>
+                <DropdownMenuTrigger class="border-l border-b hover:bg-slate-50 px-3 h-14 flex items-center gap-3 hover:cursor-pointer justify-center">
+                  <img src="/assets/img/avatar-none.png" alt="avatar" class="h-10 w-10 rounded-full" />
+                  <div class="flex flex-col items-start">
+                    <div class="text-blue-950 font-medium">{{ storeAuth.user?.name ?? 'Username' }}</div>
+                    <div class="text-blue-600 text-xs">{{ storeAuth.user?.role ?? 'Role' }}</div>
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Profile</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem @click="logout" class="hover:cursor-pointer">Logout</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
-        <hr />
-        <div class="flex-grow p-3">
-          <slot />
+        <div v-else class="flex items-center justify-center h-screen pr-5">
+          <Icon name="eos-icons:three-dots-loading" class="text-blue-950 w-12 h-12" />
         </div>
-      </Card>
-    </div>
+      </div>
+
+      <!-- Authenticated -->
+      <div class="flex items-center justify-end gap-3 h-10 p-3 border-b">
+        <MenuItem :item="{ label: 'Customers', to: '/customers' }" />
+        <MenuItem :item="{ label: 'Orders', to: '/customers' }" />
+        <MenuItem :item="{ label: 'Warehouses', to: '/customers' }" />
+      </div>
+
+      <div class="flex-grow flex flex-col items-center justify-center">
+        <slot />
+      </div>
+    </Card>
   </div>
 </template>

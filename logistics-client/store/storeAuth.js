@@ -1,19 +1,24 @@
 import { defineStore } from 'pinia'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
+import { useErrorStore } from './error.js'
+import { useToast } from '@/components/ui/toast/use-toast'
 
 export const useAuthStore = defineStore('authStore', () => {
+  const storeError = useErrorStore()
   const router = useRouter()
   const token = ref(null)
   const user = ref(null)
+  const { toast } = useToast()
+
+  axios.defaults.baseURL = useRuntimeConfig().public.API_URL
+  axios.defaults.headers.common['Content-Type'] = 'application/json'
 
   function logout() {
-    token.value = null
-    user.value = null
+    clearUser()
   }
 
   const clearUser = () => {
-    resetIntervalToRefreshToken()
     user.value = null
     token.value = ''
     localStorage.removeItem('token')
@@ -23,30 +28,46 @@ export const useAuthStore = defineStore('authStore', () => {
   const login = async (credentials) => {
     try {
       const responseLogin = await axios.post('auth/login', credentials)
-      
-      token.value = responseLogin.data.token
+
+      token.value = responseLogin.data
       localStorage.setItem('token', token.value)
       axios.defaults.headers.common.Authorization = 'Bearer ' + token.value
-      const responseUser = await axios.get('users/me')
-      user.value = responseUser.data.data
-      socket.emit('login', user.value)
-      repeatRefreshToken()
+
+      const responseUser = await axios.get('auth/user')
+      user.value = responseUser.data
       toast({
         title: 'Login Successful',
-        variant: 'info'
+        variant: 'green'
       })
       return user.value
     } catch (e) {
       clearUser()
-      storeError.setErrorMessages(e.response.data.message, e.response.data.errors, e.response.status, 'Authentication Error!')
+      storeError.setErrorMessages(e.response.statusText, e.response.data.parameterViolations, e.response.status, 'Authentication Error!')
       return false
     }
+  }
+
+  const checkAuth = async () => {
+    if (localStorage.getItem('token')) {
+      axios.defaults.headers.common.Authorization = 'Bearer ' + localStorage.getItem('token')
+      try {
+        const responseUser = await axios.get('auth/user')
+        user.value = responseUser.data
+        return true
+      } catch (e) {
+        clearUser()
+        storeError.setErrorMessages(e.response.statusText, e.response.data.parameterViolations, e.response.status, 'Authentication Error!')
+        return false
+      }
+    }
+    return true
   }
 
   return {
     token,
     user,
-    clearUser,
-    logout
+    login,
+    logout,
+    checkAuth
   }
 })

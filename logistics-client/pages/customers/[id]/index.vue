@@ -1,13 +1,13 @@
 <template>
-  <div class="w-full p-3 bg-slate-50">
+  <div class="w-full p-3 bg-slate-50 border-b">
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink href="/"> Home </BreadcrumbLink>
+          <BreadcrumbLink @click="$router.push('/')"> Home </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbLink href="/customers"> Customers </BreadcrumbLink>
+          <BreadcrumbLink @click="$router.push('/customers')"> Customers </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
@@ -16,8 +16,7 @@
       </BreadcrumbList>
     </Breadcrumb>
   </div>
-  <hr class="shadow shadow-blue-50" />
-  <div class="p-3">
+  <div class="mb-auto sm:w-full p-3 ">
     <h1 class="pb-3">Customer Details</h1>
     <div class="border rounded-lg flex items-center">
       <Table>
@@ -41,7 +40,7 @@
         </TableBody>
       </Table>
       <div>
-        <img src="/avatar-none.png" class="w-1/2 mx-auto rounded-full" />
+        <img src="/assets/img/avatar-none.png" class="w-1/2 mx-auto rounded-full" />
       </div>
     </div>
 
@@ -76,6 +75,7 @@ import { onMounted } from 'vue'
 const route = useRoute()
 
 const customer = ref([])
+const orders = ref([])
 
 const fetchCustomer = async () => {
   try {
@@ -87,7 +87,17 @@ const fetchCustomer = async () => {
   }
 }
 
+const fetchCustomerOrders = async () => {
+  try {
+    const response = await axios.get(`customers/${route.params.id}/orders`)
+    orders.value = response.data
+    console.log(response.data)
+  } catch (error) {
+    console.error(error)
+  }
+}
 onMounted(() => {
   fetchCustomer()
+  fetchCustomerOrders()
 })
 </script>

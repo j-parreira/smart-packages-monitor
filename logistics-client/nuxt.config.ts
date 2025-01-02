@@ -8,14 +8,10 @@ export default defineNuxtConfig({
     }
   },
   modules: ['@pinia/nuxt', '@nuxtjs/tailwindcss', 'shadcn-nuxt', '@nuxt/icon'],
-  shadcn: {
-    prefix: '',
-    componentDir: './components/ui'
-  },
   app: {
     head: {
       title: 'DAE Smart Packages',
-      link: [{ rel: 'icon', type: 'image/x-icon', href: '/logo.png' }]
+      link: [{ rel: 'icon', type: 'image/x-icon', href: 'logo.png' }]
     }
   }
 })

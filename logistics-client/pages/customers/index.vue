@@ -1,9 +1,9 @@
 <template>
-  <div class="w-full p-3 bg-slate-50">
+  <div class="w-full p-3 bg-slate-50 border-b">
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink href="/"> Home </BreadcrumbLink>
+          <BreadcrumbLink @click="$router.push('/')"> Home </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
@@ -12,8 +12,7 @@
       </BreadcrumbList>
     </Breadcrumb>
   </div>
-  <hr class="shadow shadow-blue-50" />
-  <div class="p-3">
+  <div class="mb-auto sm:w-full p-3 ">
     <h1 class="text-slate-700 pb-3">List of Customers</h1>
     <div class="border rounded-lg">
       <Table>
@@ -40,7 +39,7 @@
 
 <script setup>
 import axios from 'axios'
-import { useAuthStore } from '~/store/storeAuth'
+import { useAuthStore } from '~/store/storeAuth.js'
 import { onMounted } from 'vue'
 
 const storeAuth = useAuthStore()
