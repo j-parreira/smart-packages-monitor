@@ -19,7 +19,6 @@ import logistics.security.Authenticated;
 @Path("customers")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@Authenticated
 public class CustomerService {
     @Context
     private SecurityContext securityContext;
@@ -30,6 +29,7 @@ public class CustomerService {
     // GET /api/customers/
     @GET
     @Path("/")
+    @Authenticated
     public Response getAllCustomers() {
         return Response.ok(CustomerDTO.fromEntity(customerBean.findAll())).build();
     }
@@ -37,6 +37,7 @@ public class CustomerService {
     // GET /api/customers/{id}
     @GET
     @Path("{id}")
+    @Authenticated
     public Response getCustomer(@PathParam("id") long id) throws MyEntityNotFoundException {
         var customer = customerBean.find(id);
         return Response.ok(CustomerDTO.fromEntity(customer)).build();
@@ -45,6 +46,7 @@ public class CustomerService {
     // GET /api/customers/{id}/orders
     @GET
     @Path("{id}/orders")
+    @Authenticated
     public Response getCustomerOrders(@PathParam("id") long id) throws MyEntityNotFoundException {
         Customer customer = customerBean.findOrders(id);
         CustomerDTO customerDTO = CustomerDTO.fromEntity(customer);
@@ -70,6 +72,7 @@ public class CustomerService {
     // PUT /api/customers/{id}
     @PUT
     @Path("{id}")
+    @Authenticated
     public Response updateCustomer(@PathParam("id") long id,CustomerDTO customerDTO) throws MyConstraintViolationException, MyEntityNotFoundException {
         var customer = customerBean.update(
                 id,
@@ -83,6 +86,7 @@ public class CustomerService {
     // DELETE /api/customers/{id}
     @DELETE
     @Path("{id}")
+    @Authenticated
     public Response deleteCustomer(@PathParam("id") long id) throws MyEntityNotFoundException, MyConstraintViolationException {
         customerBean.delete(id);
         return Response.noContent().build();

@@ -24,14 +24,14 @@ public class CustomerBean {
     private Hasher hasher;
 
     public boolean exists(String email) {
-        Query query = entityManager.createQuery("SELECT COUNT(c.email) FROM Customer c WHERE c.email = :email", Long.class);
+        Query query = entityManager.createQuery("SELECT COUNT(c.email) FROM User c WHERE c.email = :email", Long.class);
         query.setParameter("email", email);
         return (Long) query.getSingleResult() > 0L;
     }
 
     public Customer create(String name, String email, String password, String address) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
         if (exists(email)) {
-            throw new MyEntityExistsException("Customer with that email already exists");
+            throw new MyEntityExistsException("Account with that email already exists");
         }
         try {
             Customer customer = new Customer(name, email, hasher.hash(password), address);
