@@ -152,6 +152,7 @@ public class ConfigBean {
             orderBean.create(customers.get(3).getId(), productIds, PaymentType.MBWAY);
             orderBean.create(customers.get(4).getId(), productIds, PaymentType.MBWAY);
             orderBean.create(customers.get(5).getId(), productIds, PaymentType.MBWAY);
+
         } catch (Exception e) {
             System.err.println("Some exception happened while creating orders");
             logger.severe(e.getMessage());
@@ -177,8 +178,8 @@ public class ConfigBean {
         try {
             volumeBean.create(VolumeType.WOODEN_CRATE, products.get(1).getId(), sensorIds, employees.get(0).getId(), VolumeStatus.DISPATCHED, orders.get(0).getId());
             volumeBean.create(VolumeType.WOODEN_CRATE, products.get(0).getId(), sensorIds, employees.get(1).getId(), VolumeStatus.DISPATCHED, orders.get(1).getId());
-            volumeBean.create(VolumeType.WOODEN_CRATE, products.get(2).getId(), sensorIds, employees.get(2).getId(), VolumeStatus.DISPATCHED, orders.get(2).getId());
-            volumeBean.create(VolumeType.WOODEN_CRATE, products.get(3).getId(), sensorIds, employees.get(3).getId(), VolumeStatus.DISPATCHED, orders.get(3).getId());
+            volumeBean.create(VolumeType.COOLER_BOX, products.get(2).getId(), sensorIds, employees.get(2).getId(), VolumeStatus.DISPATCHED, orders.get(2).getId());
+            volumeBean.create(VolumeType.CARDBOARD_BOX, products.get(3).getId(), sensorIds, employees.get(3).getId(), VolumeStatus.DISPATCHED, orders.get(3).getId());
         } catch (Exception e) {
             System.err.println("Some exception happened while creating volumes");
             logger.severe(e.getMessage());

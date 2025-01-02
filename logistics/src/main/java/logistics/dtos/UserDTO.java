@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserDTO {
+    private Long id;
     private String name;
     private String email;
     private String password;
@@ -18,7 +19,8 @@ public class UserDTO {
     public UserDTO() {
     }
 
-    public UserDTO(String name, String email, String password, String role ) {
+    public UserDTO(Long id, String name, String email, String password, String role) {
+        this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
@@ -27,13 +29,14 @@ public class UserDTO {
 
     public static UserDTO from(User user) {
         return new UserDTO(
+                user.getId(),
                 user.getName(),
                 user.getEmail(),
                 user.getPassword(),
                 Hibernate.getClass(user).getSimpleName());
     }
 
-    public static List<UserDTO> from (List<User> users) {
+    public static List<UserDTO> from(List<User> users) {
         return users.stream().map(UserDTO::from).collect(Collectors.toList());
     }
 
@@ -67,5 +70,13 @@ public class UserDTO {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
