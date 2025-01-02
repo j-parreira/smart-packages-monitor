@@ -7,7 +7,7 @@
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbPage>Customers</BreadcrumbPage>
+          <BreadcrumbPage>Employees</BreadcrumbPage>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
@@ -17,7 +17,7 @@
       <Icon name="eos-icons:three-dots-loading" class="text-blue-950 w-12 h-12" />
     </div>
     <div v-else>
-      <h1 class="text-slate-700 pb-3">List of Customers</h1>
+      <h1 class="text-slate-700 pb-3">List of Employees</h1>
       <div class="border rounded-lg">
         <Table>
           <TableHeader>
@@ -25,17 +25,17 @@
               <TableHead class="w-[100px]"> ID </TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>Address</TableHead>
+              <TableHead> Warehouse </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow v-for="customer in customers" :key="customer.id">
-              <TableCell class="font-medium"> {{ customer.id }} </TableCell>
-              <TableCell>{{ customer.name }}</TableCell>
-              <TableCell>{{ customer.email }}</TableCell>
+            <TableRow v-for="e in employees" :key="e.id">
+              <TableCell class="font-medium"> {{ e.id }} </TableCell>
+              <TableCell>{{ e.name }}</TableCell>
+              <TableCell>{{ e.email }}</TableCell>
               <TableCell class="flex justify-between gap-2">
-                {{ customer.address }}
-                <div class="text-nowrap flex flex-row items-center justify-end text-xs text-slate-500 hover:text-blue-600 cursor-pointer" @click="$router.push(`/customers/${customer.id}`)">
+                {{ e.warehouseId }}
+                <div class="text-nowrap flex flex-row items-center justify-end text-xs text-slate-500 hover:text-blue-600 cursor-pointer" @click="$router.push(`/employees/${e.id}`)">
                   Show Details
                   <Icon name="stash:new-window-page-light" class="w-6 h-6" mode="svg" />
                 </div>
@@ -52,12 +52,12 @@
 import { onMounted } from 'vue'
 import { useAPI } from '~/store/storeAPI'
 
-const customers = ref([])
+const employees = ref([])
 const isLoading = ref(true)
 const api = useAPI()
 
 const fetchData = async () => {
-  customers.value = await api.getCustomers()
+  employees.value = await api.getEmployees()
 }
 onMounted(async () => {
   await fetchData()

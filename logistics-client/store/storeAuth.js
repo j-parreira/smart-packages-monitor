@@ -14,6 +14,8 @@ export const useAuthStore = defineStore('authStore', () => {
   axios.defaults.baseURL = useRuntimeConfig().public.API_URL
   axios.defaults.headers.common['Content-Type'] = 'application/json'
 
+  const userID = computed(() => user.value ? user.value.id : null)
+
   function logout() {
     clearUser()
   }
@@ -66,6 +68,7 @@ export const useAuthStore = defineStore('authStore', () => {
   return {
     token,
     user,
+    userID,
     login,
     logout,
     checkAuth
