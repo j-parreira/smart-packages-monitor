@@ -68,10 +68,21 @@ export const useErrorStore = defineStore('error', () => {
       variant: 'red'
     })
   }
+
+  const showError = (message, title = '') => {
+    _message.value = message
+    _title.value = title
+    toast({
+      title: title,
+      description: message,
+      variant: 'red'
+    })
+  }
   return {
     message,
     statusCode,
     title,
+    showError,
     fieldMessage,
     hasFieldErrors,
     setFieldError,

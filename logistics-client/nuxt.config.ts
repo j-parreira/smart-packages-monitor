@@ -11,7 +11,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: 'DAE Smart Packages',
-      link: [{ rel: 'icon', type: 'image/x-icon', href: 'logo.png' }]
+      link: [{ rel: 'icon', type: 'image/x-icon', href: '/logo.png' }]
     }
   }
 })

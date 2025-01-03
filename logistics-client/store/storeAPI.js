@@ -123,9 +123,16 @@ export const useAPI = defineStore('apiStore', () => {
     storeError.resetMessages()
     try {
       const response = await axios.delete(`customers/${userID}`)
+      toast({
+        description: 'Customer deleted successfully!',
+        variant: 'green'
+      })
       return response.data
     } catch (e) {
-      storeError.setErrorMessages(e.response.statusText, e.response.data.parameterViolations, e.response.status, 'Error deleting user!')
+      toast({
+        description: 'Failed to delete customer! ' + e.response.data,
+        variant: 'red'
+      })
       return false
     }
   }
@@ -170,19 +177,115 @@ export const useAPI = defineStore('apiStore', () => {
       return false
     }
   }
-
+  const getProductOrders = async (productID) => {
+    storeError.resetMessages()
+    try {
+      const response = await axios.get(`products/${productID}/orders`)
+      return response.data
+    } catch (e) {
+      storeError.setErrorMessages(e.response.statusText, e.response.data.parameterViolations, e.response.status, 'Error getting product orders data!')
+      return false
+    }
+  }
+  const getProductVolumes = async (productID) => {
+    storeError.resetMessages()
+    try {
+      const response = await axios.get(`products/${productID}/volumes`)
+      return response.data
+    } catch (e) {
+      storeError.setErrorMessages(e.response.statusText, e.response.data.parameterViolations, e.response.status, 'Error getting product volumes data!')
+      return false
+    }
+  }
   /* Products */
   const getProducts = async () => {
     storeError.resetMessages()
     try {
       const response = await axios.get(`products`)
-      return response.data
+      //sort by id
+      return response.data.sort((a, b) => a.id - b.id)
     } catch (e) {
       storeError.setErrorMessages(e.response.statusText, e.response.data.parameterViolations, e.response.status, 'Error getting products data!')
       return false
     }
   }
-
+  const getProductTotalStock = async (productID) => {
+    storeError.resetMessages()
+    try {
+      const response = await axios.get(`products/${productID}/totalstock`)
+      return response.data
+    } catch (e) {
+      if (e.response.status !== 500) storeError.setErrorMessages(e.response.statusText, e.response.data.parameterViolations, e.response.status, 'Error getting product stock data!')
+      return false
+    }
+  }
+  const getProductStock = async (productID) => {
+    storeError.resetMessages()
+    try {
+      const response = await axios.get(`products/${productID}/stocks`)
+      return response.data
+    } catch (e) {
+      storeError.setErrorMessages(e.response.statusText, e.response.data.parameterViolations, e.response.status, 'Error getting product stock data!')
+      return false
+    }
+  }
+  const deleteProduct = async (productID) => {
+    storeError.resetMessages()
+    try {
+      const response = await axios.delete(`products/${productID}`)
+      toast({
+        description: 'Product deleted successfully!',
+        variant: 'green'
+      })
+      return response.data
+    } catch (e) {
+      toast({
+        description: 'Failed to delete product! Product is in use!',
+        variant: 'red'
+      })
+      return false
+    }
+  }
+  const getProduct = async (productID) => {
+    storeError.resetMessages()
+    try {
+      const response = await axios.get(`products/${productID}`)
+      return response.data
+    } catch (e) {
+      storeError.setErrorMessages(e.response.statusText, e.response.data.parameterViolations, e.response.status, 'Error getting product data!')
+      return false
+    }
+  }
+  const updateProduct = async (productID, data) => {
+    storeError.resetMessages()
+    try {
+      const response = await axios.put(`products/${productID}`, data)
+      return response.data
+    } catch (e) {
+      storeError.setErrorMessages(e.response.data, e.response.data.parameterViolations, e.response.status, 'Error updating product data!')
+      return false
+    }
+  }
+  const createProduct = async (data) => {
+    storeError.resetMessages()
+    try {
+      const response = await axios.post('products', data)
+      return response.data
+    } catch (e) {
+      storeError.setErrorMessages(e.response.data, e.response.data.parameterViolations, e.response.status, 'Error creating product!')
+      return false
+    }
+  }
+  const createStock = async (productID, data) => {
+    storeError.resetMessages()
+    try {
+      const response = await axios.post(`stocks`, data)
+      return response.data
+    } catch (e) {
+      storeError.setErrorMessages(e.response.data, e.response.data.parameterViolations, e.response.status, 'Error creating stock!')
+      return false
+    }
+  }
   const getWarehouses = async () => {
     storeError.resetMessages()
     try {
@@ -193,8 +296,30 @@ export const useAPI = defineStore('apiStore', () => {
       return false
     }
   }
+  const getVolume = async (volumeID) => {
+    storeError.resetMessages()
+    try {
+      const response = await axios.get(`volumes/${volumeID}/sensors`)
+      return response.data
+    } catch (e) {
+      storeError.setErrorMessages(e.response.statusText, e.response.data.parameterViolations, e.response.status, 'Error getting volume data!')
+      return false
+    }
+  }
+  const getSensorLastReading = async (sensorID) => {
+    storeError.resetMessages()
+    try {
+      const response = await axios.get(`sensors/${sensorID}/readings`)
+      return response.data.lastReading
+    } catch (e) {
+      storeError.setErrorMessages(e.response.statusText, e.response.data.parameterViolations, e.response.status, 'Error getting sensor data!')
+      return false
+    }
+  }
 
   return {
+    getSensorLastReading,
+    getVolume,
     getAuthUser,
     getManager,
     getEmployee,
@@ -208,7 +333,16 @@ export const useAPI = defineStore('apiStore', () => {
     updateCustomer,
     getOrder,
     getOrders,
+    getProduct,
+    getProductOrders,
+    getProductVolumes,
     getProducts,
+    createProduct,
+    updateProduct,
+    createStock,
+    getProductTotalStock,
+    getProductStock,
+    deleteProduct,
     getWarehouses
   }
 })
