@@ -97,6 +97,9 @@ public class CustomerBean {
             if (!entityManager.contains(customer)) {
                 customer = entityManager.merge(customer);
             }
+            if(!customer.getOrders().isEmpty()){
+                throw new MyConstraintViolationException("Customer has orders");
+            }
             entityManager.remove(customer);
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(e);

@@ -33,7 +33,7 @@ public class StockBean {
     public Stock create(Long productId, Long warehouseId, Long quantity) throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
         Stock existingStock = findByProductAndWarehouse(productId, warehouseId);
         if (existingStock != null) {
-            throw new MyEntityExistsException("Stock already exists");
+            return update(existingStock.getId(), existingStock.getQuantity() + quantity);
         }
         try {
             Product product = productBean.find(productId);

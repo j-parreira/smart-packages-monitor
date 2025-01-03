@@ -55,7 +55,7 @@ public class ProductBean {
         var product = find(id);
         var query = entityManager.createNamedQuery("getProductTotalStock", Long.class);
         query.setParameter("product", product);
-        return (Long)query.getSingleResult();
+        return (Long)query.getSingleResult() == null ? 0 : (Long)query.getSingleResult();
     }
 
     public Product findWithOrders(long id) throws MyEntityNotFoundException {
@@ -91,7 +91,10 @@ public class ProductBean {
 
     public void delete(long id) throws MyEntityNotFoundException, MyConstraintViolationException {
         try {
-            var product = find(id);
+            Product product = find(id);
+            if(getTotalStock(id)>0) {
+                throw new MyConstraintViolationException("Product is still in stock");
+            }
             if (!entityManager.contains(product)) {
                 product = entityManager.merge(product);
             }
