@@ -10,6 +10,14 @@ public class MyConstraintViolationException extends Exception {
         super(getConstraintViolationMessages(e));
     }
 
+    public MyConstraintViolationException(String field, String message) {
+        super(field + ":" + message);
+    }
+
+    public MyConstraintViolationException(String message) {
+        super(message);
+    }
+
     private static String getConstraintViolationMessages(ConstraintViolationException e) {
         return e.getConstraintViolations().stream().map(ConstraintViolation::getMessage).collect(Collectors.joining("; "));
     }

@@ -15,6 +15,7 @@ import logistics.security.Hasher;
 import org.hibernate.Hibernate;
 
 import java.util.List;
+import java.util.Objects;
 
 @Stateless
 public class EmployeeBean {
@@ -65,17 +66,27 @@ public class EmployeeBean {
         return employee;
     }
 
-    public Employee update(Long id, String name, String password, Long warehouseId) throws MyEntityNotFoundException, MyConstraintViolationException {
+    public Employee update(Long id, String name, String email, String password, Long warehouseId) throws MyEntityNotFoundException, MyConstraintViolationException {
         try {
             var warehouse = warehouseBean.find(warehouseId);
             Employee employee = find(id);
-            if (employee.getWarehouse() != warehouse) {
+            if (!email.isBlank()) {
+                if (exists(email) && !Objects.equals(employee.getEmail(), email)) {
+                    throw new MyConstraintViolationException("Account with that email already exists");
+                }
+                employee.setEmail(email);
+
+            }if (employee.getWarehouse() != warehouse) {
                 employee.getWarehouse().removeEmployee(employee);
                 warehouse.addEmployee(employee);
             }
-            employee.setName(name);
-            employee.setPassword(hasher.hash(password));
-            employee.setWarehouse(warehouse);
+            if (!name.isBlank()) {
+                employee.setName(name);
+            }
+
+            if (!password.isBlank()) {
+                employee.setPassword(hasher.hash(password));
+            }
             entityManager.merge(employee);
             entityManager.flush();
             return employee;

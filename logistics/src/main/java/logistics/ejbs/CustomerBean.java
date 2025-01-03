@@ -74,8 +74,14 @@ public class CustomerBean {
             if (!address.isBlank()) {
                 customer.setAddress(address);
             }
-            if (!email.isBlank() && !exists(email)) {
+            if (!email.isBlank()) {
+                if(exists(email) && !Objects.equals(customer.getEmail(), email)) {
+                    throw new MyConstraintViolationException("Account with that email already exists");
+                }
                 customer.setEmail(email);
+            }
+            if (!password.isBlank()) {
+                customer.setPassword(hasher.hash(password));
             }
             entityManager.merge(customer);
             entityManager.flush();
