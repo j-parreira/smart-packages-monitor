@@ -9,6 +9,10 @@ export const useErrorStore = defineStore('error', () => {
   const _statusCode = ref(0)
   const _title = ref('')
 
+  const setFieldError = (field, error) => {
+    _fieldErrorMessages.value.push({ path: field, message: error })
+  }
+
   const message = computed(() => {
     return _message.value.trim()
   })
@@ -34,6 +38,10 @@ export const useErrorStore = defineStore('error', () => {
     _title.value = ''
   }
 
+  const hasFieldErrors = () => {
+    return _fieldErrorMessages.value.length > 0
+  }
+
   const setErrorMessages = (mainMessage, fieldMessages, status = 0, titleMessage = '') => {
     _message.value = mainMessage
     _fieldErrorMessages.value = fieldMessages
@@ -51,11 +59,8 @@ export const useErrorStore = defineStore('error', () => {
       case 404:
         toastMessage = mainMessage ?? 'Server resource not found!'
         break
-      case 400:
-        toastMessage = 'Check field error messages!'
-        break
       default:
-        toastMessage = `An error occurred! `
+        toastMessage = `An error occurred! ${mainMessage}`
     }
     toast({
       title: titleMessage,
@@ -68,6 +73,8 @@ export const useErrorStore = defineStore('error', () => {
     statusCode,
     title,
     fieldMessage,
+    hasFieldErrors,
+    setFieldError,
     resetMessages,
     setErrorMessages
   }

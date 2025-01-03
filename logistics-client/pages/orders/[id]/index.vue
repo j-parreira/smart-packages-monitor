@@ -7,7 +7,8 @@
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbLink @click="$router.push('/orders')"> Orders </BreadcrumbLink>
+          <BreadcrumbLink v-if="storeAuth.user?.role!=='Customer'" @click="$router.push('/orders')"> Orders </BreadcrumbLink>
+          <BreadcrumbLink v-else @click="$router.push('/my-orders')"> My Orders </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
@@ -86,7 +87,8 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useAPI } from '~/store/storeAPI'
-
+import { useAuthStore } from '~/store/storeAuth'
+const storeAuth = useAuthStore()
 const route = useRoute()
 const api = useAPI()
 const order = ref([])

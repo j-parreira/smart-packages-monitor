@@ -48,8 +48,9 @@ const hideFullName = (id) => {
         </div>
         <div v-if="!isLoading" class="flex items-center gap-3 h-full">
           <!-- Guest -->
-          <div v-if="!storeAuth.user" class="pr-3">
+          <div v-if="!storeAuth.user" class="pr-3 gap-3 flex">
             <MenuItem :item="{ label: 'Login', to: '/login' }" />
+            <MenuItem :item="{ label: 'Register', to: '/register' }" />
           </div>
           <!-- Authenticated -->
           <div v-else>
@@ -66,7 +67,7 @@ const hideFullName = (id) => {
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem @click="router.push('/profile')">Profile</DropdownMenuItem>
-                  <DropdownMenuItem @click="router.push('/profile')">Orders</DropdownMenuItem>
+                  <DropdownMenuItem @click="router.push('/my-orders')" v-if="storeAuth.user?.role==='Customer'">Orders</DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem @click="logout" class="hover:cursor-pointer">Logout</DropdownMenuItem>
                 </DropdownMenuContent>
@@ -84,7 +85,6 @@ const hideFullName = (id) => {
         <MenuItem :item="{ label: 'Customers', to: '/customers' }" />
         <MenuItem :item="{ label: 'Employees', to: '/employees' }" />
         <MenuItem :item="{ label: 'Orders', to: '/orders' }" />
-        <MenuItem :item="{ label: 'Warehouses', to: '/customers' }" />
       </div>
 
       <div class="flex-grow flex flex-col items-center justify-center">

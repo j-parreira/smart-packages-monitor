@@ -19,6 +19,53 @@
   <div class="mb-auto sm:w-full p-3">
     <div v-if="!isLoading">
       <h1 class="pb-3">Customer Details</h1>
+      <Card class="mb-3">
+        <CardContent class="p-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-xl font-semibold">{{ customer.name }}</div>
+              <div class="text-sm text-slate-500">{{ customer.email }}</div>
+            </div>
+            <div class="flex items-center gap-2">
+              <AlertDialog>
+                <AlertDialogTrigger as-child>
+                  <Button variant="blue">Edit</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Edit {{ customer.name }}</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      <div class="flex flex-col gap-3">
+                        <div class="flex flex-row items-center gap-3">
+                          <span class="w-1/2 text-right"> Username </span>
+                          <Input v-model="user.name" label="Name" />
+                        </div>
+                        <div class="flex flex-row items-center gap-3">
+                          <span class="w-1/2 text-right"> Email </span>
+                          <Input v-model="user.email" label="Email" />
+                        </div>
+                        <div class="flex flex-row items-center gap-3">
+                          <span class="w-1/2 text-right"> Address </span>
+                          <Input v-model="user.address" label="Address" />
+                        </div>
+                        <div class="flex flex-row items-center gap-3">
+                          <span class="w-1/2 text-right"> Password </span>
+                          <Input v-model="user.password" label="Password" />
+                        </div>
+                      </div>
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction @click="updateCustomer">Save</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+              <Button variant="red" @click="deleteCustomer">Delete</Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
       <div class="border rounded-lg flex items-center">
         <Table>
           <TableBody>
@@ -89,17 +136,44 @@
 </template>
 
 <script setup>
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { format, parse } from 'date-fns'
 import { onMounted } from 'vue'
 import { useAPI } from '~/store/storeAPI'
+import { useRouter, useRoute } from 'vue-router'
 
 const route = useRoute()
 const customer = ref([])
 const isLoading = ref(true)
 const api = useAPI()
+const router = useRouter()
+
+const user = ref({
+  name: '',
+  email: '',
+  address: '',
+  password: ''
+})
+
+const deleteCustomer = async () => {
+  if(!confirm('Are you sure you want to delete this customer?')) return
+  await api.deleteCustomer(route.params.id)
+  router.push('/customers')
+}
+
+const updateCustomer = async () => {
+  await api.updateCustomer(route.params.id, user.value)
+  await fetchData()
+}
 
 const fetchData = async () => {
   customer.value = await api.getCustomer(route.params.id)
+  user.value = {
+    name: customer.value.name,
+    email: customer.value.email,
+    address: customer.value.address,
+    password: ''
+  }
 }
 onMounted(async () => {
   await fetchData()

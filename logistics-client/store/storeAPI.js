@@ -67,6 +67,26 @@ export const useAPI = defineStore('apiStore', () => {
       return false
     }
   }
+  const updateEmployee = async (userID, data) => {
+    storeError.resetMessages()
+    try {
+      const response = await axios.put(`employees/${userID}`, data)
+      return response.data
+    } catch (e) {
+      storeError.setErrorMessages(e.response.data, e.response.data.parameterViolations, e.response.status, 'Error updating employee data!')
+      return
+    }
+  }
+  const deleteEmployee = async (userID) => {
+    storeError.resetMessages()
+    try {
+      const response = await axios.delete(`employees/${userID}`)
+      return response.data
+    } catch (e) {
+      storeError.setErrorMessages(e.response.statusText, e.response.data.parameterViolations, e.response.status, 'Error deleting employee!')
+      return false
+    }
+  }
 
   /* Customer */
   const getCustomer = async (userID) => {
@@ -86,6 +106,36 @@ export const useAPI = defineStore('apiStore', () => {
       return response.data
     } catch (e) {
       storeError.setErrorMessages(e.response.statusText, e.response.data.parameterViolations, e.response.status, 'Error getting customers data!')
+      return false
+    }
+  }
+  const createCustomer = async (data) => {
+    storeError.resetMessages()
+    try {
+      const response = await axios.post('customers', data)
+      return response.data
+    } catch (e) {
+      storeError.setErrorMessages(e.response.data, e.response.data.parameterViolations, e.response.status, 'Error registering user!')
+      return false
+    }
+  }
+  const deleteCustomer = async (userID) => {
+    storeError.resetMessages()
+    try {
+      const response = await axios.delete(`customers/${userID}`)
+      return response.data
+    } catch (e) {
+      storeError.setErrorMessages(e.response.statusText, e.response.data.parameterViolations, e.response.status, 'Error deleting user!')
+      return false
+    }
+  }
+  const updateCustomer = async (userID, data) => {
+    storeError.resetMessages()
+    try {
+      const response = await axios.put(`customers/${userID}`, data)
+      return response.data
+    } catch (e) {
+      storeError.setErrorMessages(e.response.data, e.response.data.parameterViolations, e.response.status, 'Error updating user data!')
       return false
     }
   }
@@ -133,15 +183,32 @@ export const useAPI = defineStore('apiStore', () => {
     }
   }
 
+  const getWarehouses = async () => {
+    storeError.resetMessages()
+    try {
+      const response = await axios.get(`warehouses`)
+      return response.data
+    } catch (e) {
+      storeError.setErrorMessages(e.response.statusText, e.response.data.parameterViolations, e.response.status, 'Error getting warehouses data!')
+      return false
+    }
+  }
+
   return {
     getAuthUser,
     getManager,
     getEmployee,
     getEmployees,
+    updateEmployee,
+    deleteEmployee,
     getCustomer,
     getCustomers,
+    deleteCustomer,
+    createCustomer,
+    updateCustomer,
     getOrder,
     getOrders,
-    getProducts
+    getProducts,
+    getWarehouses
   }
 })

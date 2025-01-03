@@ -19,6 +19,62 @@
   <div class="mb-auto sm:w-full p-3">
     <div v-if="!isLoading">
       <h1 class="pb-3">Employee Details</h1>
+      <Card class="mb-3">
+        <CardContent class="p-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-xl font-semibold">{{ employee.name }}</div>
+              <div class="text-sm text-slate-500">{{ employee.email }}</div>
+            </div>
+            <div class="flex items-center gap-2">
+              <AlertDialog>
+                <AlertDialogTrigger as-child>
+                  <Button variant="blue">Edit</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Edit {{ employee.name }}</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      <div class="flex flex-col gap-3">
+                        <div class="flex flex-row items-center gap-3">
+                          <span class="w-1/2 text-right"> Username </span>
+                          <Input v-model="user.name" label="Name" />
+                        </div>
+                        <div class="flex flex-row items-center gap-3">
+                          <span class="w-1/2 text-right"> Email </span>
+                          <Input v-model="user.email" label="Email" />
+                        </div>
+                        <div class="flex flex-row items-center gap-3">
+                          <span class="w-1/2 text-right"> Warehouse </span>
+                          <Select v-model="user.warehouseId" label="Warehouse">
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem v-for="w in warehouses" :key="w.id" :value="String(w.id)">
+                                {{ w.id }}
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div class="flex flex-row items-center gap-3">
+                          <span class="w-1/2 text-right"> Password </span>
+                          <Input v-model="user.password" label="Password" />
+                        </div>
+                      </div>
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction @click="updateEmployee">Save</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+              <Button variant="red" @click="deleteCustomer">Delete</Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
       <div class="border rounded-lg flex items-center">
         <Table>
           <TableBody>
@@ -98,19 +154,53 @@
 </template>
 
 <script setup>
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { onMounted } from 'vue'
 import Badge from '~/components/ui/badge/Badge.vue'
 import { useAPI } from '~/store/storeAPI'
+import { useRouter, useRoute } from 'vue-router'
 
 const route = useRoute()
 const api = useAPI()
 const isLoading = ref(true)
 const employee = ref([])
 const products = ref([])
+const warehouses = ref([])
+const router = useRouter()
 
+const user = ref({
+  name: '',
+  email: '',
+  password: '',
+  warehouseId: ''
+})
+
+const deleteCustomer = async () => {
+  if (!confirm('Are you sure you want to delete this employee?')) return
+  await api.deleteEmployee(route.params.id)
+  router.push('/employees')
+}
+
+const updateEmployee = async () => {
+  const data = {
+    name: user.value.name,
+    email: user.value.email,
+    warehouseId: parseInt(user.value.warehouseId),
+    password: user.value.password ?? ''
+  }
+  await api.updateEmployee(route.params.id, data)
+  await fetchData()
+}
 const fetchData = async () => {
   employee.value = await api.getEmployee(route.params.id)
+  user.value = {
+    name: employee.value.name,
+    email: employee.value.email,
+    warehouseId: String(employee.value.warehouseId),
+    password: employee.value.password
+  }
   products.value = await api.getProducts()
+  warehouses.value = await api.getWarehouses()
 }
 onMounted(async () => {
   await fetchData()
