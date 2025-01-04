@@ -8,6 +8,7 @@ import jakarta.persistence.Query;
 import jakarta.validation.ConstraintViolationException;
 import logistics.entities.Reading;
 import logistics.entities.Sensor;
+import logistics.enums.VolumeStatus;
 import logistics.exceptions.MyConstraintViolationException;
 import logistics.exceptions.MyEntityExistsException;
 import logistics.exceptions.MyEntityNotFoundException;
@@ -32,6 +33,10 @@ public class ReadingBean {
             var sensor = sensorBean.find(sensorId);
             Reading reading = new Reading(sensor, valueOne, valueTwo);
             sensor.addReading(reading);
+            if (valueOne > sensor.getMaxThreshold() || valueOne < sensor.getMinThreshold()) {
+                sensor.setActive(false);
+                sensor.getVolume().setStatus(VolumeStatus.DAMAGED);
+            }
             entityManager.persist(reading);
             entityManager.flush();
             return reading;
