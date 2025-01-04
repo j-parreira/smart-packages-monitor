@@ -61,7 +61,7 @@
         <Table>
           <TableBody>
             <TableRow>
-              <TableHead colspan="7" class="bg-slate-50 text-center">Sensors</TableHead>
+              <TableHead colspan="8" class="bg-slate-50 text-center">Sensors</TableHead>
             </TableRow>
             <TableRow>
               <TableHead class="bg-slate-50">Sensor ID</TableHead>
@@ -70,38 +70,56 @@
               <TableHead class="bg-slate-50">Max Threshold</TableHead>
               <TableHead class="bg-slate-50">Min Threshold</TableHead>
               <TableHead class="bg-slate-50">Last Reading</TableHead>
-              <TableHead class="bg-slate-50">Last Reading Timestamp</TableHead>
+              <TableHead class="bg-slate-50" colspan="2">Last Reading Timestamp</TableHead>
             </TableRow>
             <TableRow v-for="s in volume.sensors" :key="s.id">
               <TableCell>{{ s.id }}</TableCell>
               <TableCell>{{ s.type }}</TableCell>
               <TableCell>
                 <Badge :variant="s.active ? 'green' : 'red'">
-                  {{ s.active ? 'Online' : 'Offline' }}
+                  {{ s.active ? 'OK' : 'NOK' }}
                 </Badge>
               </TableCell>
-              <TableCell>{{ s.maxThreshold || '-'}}</TableCell>
-              <TableCell>{{ s.minThreshold || '-'}}</TableCell>
-              <TableCell>{{ s.type=='GPS' ? `LAT ${s.lastReading?.valueOne} LONG ${s.lastReading?.valueTwo}` : s.lastReading?.valueOne}}</TableCell>
+              <TableCell>{{ s.maxThreshold || '-' }}</TableCell>
+              <TableCell>{{ s.minThreshold || '-' }}</TableCell>
+              <TableCell>{{ s.type == 'GPS' ? `LAT ${s.lastReading?.valueOne} LONG ${s.lastReading?.valueTwo}` : s.lastReading?.valueOne }}</TableCell>
               <TableCell>{{ s.lastReading?.timestamp }}</TableCell>
-              <!-- <TableCell>{{ }}</TableCell> -->
-              <!-- 
               <TableCell>
-                <Badge :variant="s.type === 'ELECTRONICS' ? 'blue' : s.type === 'FROZEN_FOOD' ? 'yellow' : s.type === 'FRUITS' ? 'green' : 'red'">
-                  {{ s.type === 'ELECTRONICS' ? 'Eletronics' : s.type === 'FROZEN_FOOD' ? 'Frozen Food' : s.type === 'FRUITS' ? 'Fruits' : 'Drinks' }}
-                </Badge>
+                <AlertDialog>
+                  <AlertDialogTrigger>
+                    <div class="text-nowrap flex flex-row items-center justify-end text-xs text-slate-500 hover:text-blue-600 cursor-pointer">
+                      Readings History
+                      <Icon name="stash:new-window-page-light" class="w-6 h-6" mode="svg" />
+                    </div>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Stock Per Warehouse</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        <ScrollArea class="border h-60">
+                          <Table>
+                            <TableRow>
+                              <TableHead class="bg-slate-50">Value</TableHead>
+                              <TableHead class="bg-slate-50">Timestamp</TableHead>
+                            </TableRow>
+                            <TableRow v-for="r in s.readings" :key="r.id" class="w-full">
+                              <TableCell>
+                                <Badge :variant="r.valueOne > s.maxThreshold || r.valueOne < s.minThreshold ? 'red' : 'green'">
+                                  {{ s.type == 'GPS' ? `LAT ${r.valueOne} LONG ${r.valueTwo}` : r.valueOne }}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>{{ r.timestamp }}</TableCell>
+                            </TableRow>
+                          </Table>
+                        </ScrollArea>
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </TableCell>
-              <TableCell>{{ order.volumes.filter((v) => v.id == s.id)[0]?.volumeCode ?? '-' }}</TableCell>
-              <TableCell class="flex justify-between gap-3">
-                <Badge :variant="order.volumes.filter((v) => v.id == s.id)[0]?.status === 'PROCESSING' ? 'blue' : order.volumes.filter((v) => v.id == s.id)[0]?.status === 'DISPATCHED' ? 'green' : 'outline'">
-                  {{ order.volumes.filter((v) => v.id == s.id)[0]?.status ?? 'PENDING' }}
-                </Badge>
-                <div v-if="order.volumes.filter((v) => v.id == s.id)[0]" class="text-nowrap flex flex-row items-center justify-end text-xs text-slate-500 hover:text-blue-600 cursor-pointer" @click="$router.push(`/volumes/${order.volumes.filter((v) => v.id == s.id)[0]?.id}`)">
-                  Volume Details
-                  <Icon name="stash:new-window-page-light" class="w-6 h-6" mode="svg" />
-                </div> 
-              </TableCell>
-              -->
             </TableRow>
           </TableBody>
         </Table>
@@ -122,12 +140,14 @@ const api = useAPI()
 const volume = ref([])
 const isLoading = ref(true)
 const product = ref(null)
+const readings = ref([])
 
 const fetchData = async () => {
   volume.value = await api.getVolume(route.params.id)
   product.value = await api.getProduct(volume.value.productId)
   for (const s of volume.value.sensors) {
-    s.lastReading = await api.getSensorLastReading(s.id)
+    s.readings = await api.getSensorReadings(s.id)
+    s.lastReading = s.readings[0]
   }
 }
 

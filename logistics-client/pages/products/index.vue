@@ -76,9 +76,7 @@
               <TableCell class="font-medium"> {{ p.id }} </TableCell>
               <TableCell>{{ p.name }}</TableCell>
               <TableCell>
-                <Badge :variant="p.type === 'ELECTRONICS' ? 'blue' : p.type === 'FROZEN_FOOD' ? 'yellow' : p.type === 'FRUITS' ? 'green' : 'red'">
-                  {{ p.type === 'ELECTRONICS' ? 'Eletronics' : p.type === 'FROZEN_FOOD' ? 'Frozen Food' : p.type === 'FRUITS' ? 'Fruits' : 'Drinks' }}
-                </Badge>
+                {{ p.type === 'ELECTRONICS' ? 'Eletronics' : p.type === 'FROZEN_FOOD' ? 'Frozen Food' : p.type === 'FRUITS' ? 'Fruits' : 'Drinks' }}
               </TableCell>
               <TableCell>
                 <div class="text-nowrap flex flex-row items-center text-xs text-slate-500 hover:text-blue-600 cursor-pointer" @click="$router.push(`/products/${p.id}/orders`)">
@@ -165,8 +163,8 @@
                             </Select>
                           </div>
                           <div class="flex flex-row items-center gap-3">
-                            <span class="w-1/2 text-right"> Product Name </span>
-                            <Input v-model="productStock.quantity" label="Name" type="number" />
+                            <span class="w-1/2 text-right"> Quantity </span>
+                            <Input v-model="productStock.quantity" label="Name" type="number" min="0" />
                           </div>
                         </div>
                       </AlertDialogDescription>

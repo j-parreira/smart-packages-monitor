@@ -306,19 +306,30 @@ export const useAPI = defineStore('apiStore', () => {
       return false
     }
   }
-  const getSensorLastReading = async (sensorID) => {
+  const getSensorReadings = async (sensorID) => {
     storeError.resetMessages()
     try {
       const response = await axios.get(`sensors/${sensorID}/readings`)
-      return response.data.lastReading
+      const readings = response.data.readings.sort((a, b) => b.id - a.id)
+      return readings
     } catch (e) {
       storeError.setErrorMessages(e.response.statusText, e.response.data.parameterViolations, e.response.status, 'Error getting sensor data!')
       return false
     }
   }
+  const createReading = async (sensorID, data) => {
+    storeError.resetMessages()
+    try {
+      const response = await axios.post(`sensors/${sensorID}/readings`, data)
+      return response.data
+    } catch (e) {
+      storeError.setErrorMessages(e.response.statusText, e.response.data.parameterViolations, e.response.status, 'Error creating reading!')
+      return
+    }
+  }
 
   return {
-    getSensorLastReading,
+    getSensorReadings,
     getVolume,
     getAuthUser,
     getManager,
@@ -343,6 +354,7 @@ export const useAPI = defineStore('apiStore', () => {
     getProductTotalStock,
     getProductStock,
     deleteProduct,
-    getWarehouses
+    getWarehouses,
+    createReading
   }
 })

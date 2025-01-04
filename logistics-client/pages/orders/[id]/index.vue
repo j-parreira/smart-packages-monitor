@@ -7,7 +7,7 @@
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbLink v-if="storeAuth.user?.role!=='Customer'" @click="$router.push('/orders')"> Orders </BreadcrumbLink>
+          <BreadcrumbLink v-if="storeAuth.user?.role !== 'Customer'" @click="$router.push('/orders')"> Orders </BreadcrumbLink>
           <BreadcrumbLink v-else @click="$router.push('/my-orders')"> My Orders </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
@@ -59,13 +59,11 @@
               <TableCell>{{ p.id }}</TableCell>
               <TableCell>{{ p.name }}</TableCell>
               <TableCell>
-                <Badge :variant="p.type === 'ELECTRONICS' ? 'blue' : p.type === 'FROZEN_FOOD' ? 'yellow' : p.type === 'FRUITS' ? 'green' : 'red'">
-                  {{ p.type === 'ELECTRONICS' ? 'Eletronics' : p.type === 'FROZEN_FOOD' ? 'Frozen Food' : p.type === 'FRUITS' ? 'Fruits' : 'Drinks' }}
-                </Badge>
+                {{ p.type === 'ELECTRONICS' ? 'Eletronics' : p.type === 'FROZEN_FOOD' ? 'Frozen Food' : p.type === 'FRUITS' ? 'Fruits' : 'Drinks' }}
               </TableCell>
               <TableCell>{{ order.volumes.filter((v) => v.id == p.id)[0]?.volumeCode ?? '-' }}</TableCell>
               <TableCell class="flex justify-between gap-3">
-                <Badge :variant="order.volumes.filter((v) => v.id == p.id)[0]?.status === 'PROCESSING' ? 'blue' : order.volumes.filter((v) => v.id == p.id)[0]?.status === 'DISPATCHED' ? 'green' : 'outline'">
+                <Badge :variant="order.volumes.filter((v) => v.id == p.id)[0]?.status === 'PROCESSING' ? 'blue' : order.volumes.filter((v) => v.id == p.id)[0]?.status === 'DISPATCHED' ? 'green' : order.volumes.filter((v) => v.id == p.id)[0]?.status === 'DAMAGED' ? 'red' : 'outline'">
                   {{ order.volumes.filter((v) => v.id == p.id)[0]?.status ?? 'PENDING' }}
                 </Badge>
                 <div v-if="order.volumes.filter((v) => v.id == p.id)[0]" class="text-nowrap flex flex-row items-center justify-end text-xs text-slate-500 hover:text-blue-600 cursor-pointer" @click="$router.push(`/volumes/${order.volumes.filter((v) => v.id == p.id)[0]?.id}`)">
