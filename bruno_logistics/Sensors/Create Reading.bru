@@ -1,0 +1,22 @@
+meta {
+  name: Create Reading
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{api_url}}/sensors/:id/readings
+  body: json
+  auth: none
+}
+
+params:path {
+  id: 2
+}
+
+body:json {
+  {
+    "valueOne": 19,
+    "valueTwo": 0
+  }
+}
