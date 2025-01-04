@@ -8,6 +8,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import logistics.dtos.ReadingDTO;
 import logistics.dtos.SensorDTO;
+import logistics.ejbs.ReadingBean;
 import logistics.ejbs.SensorBean;
 import logistics.entities.Sensor;
 import logistics.exceptions.MyConstraintViolationException;
@@ -25,6 +26,9 @@ public class SensorService {
 
     @EJB
     private SensorBean sensorBean;
+
+    @EJB
+    private ReadingBean readingBean;
 
     // GET /api/sensors/
     @GET
@@ -49,6 +53,18 @@ public class SensorService {
         SensorDTO sensorDTO = SensorDTO.fromEntity(sensor);
         sensorDTO.setReadings(ReadingDTO.fromEntity(sensor.getReadings()));
         return Response.ok(sensorDTO).build();
+    }
+
+    // GET /api/sensors/{id}/readings
+    @POST
+    @Path("{id}/readings")
+    public Response createReading(@PathParam("id") long id, ReadingDTO readingDTO) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
+        var reading = readingBean.create(
+                id,
+                readingDTO.getValueOne(),
+                readingDTO.getValueTwo()
+        );
+        return Response.ok(ReadingDTO.fromEntity(reading)).build();
     }
 
     // POST /api/sensors/
