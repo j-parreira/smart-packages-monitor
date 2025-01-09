@@ -40,13 +40,6 @@ public class ReadingService {
         return Response.ok(ReadingDTO.fromEntity(reading)).build();
     }
 
-    // GET /api/readings/sensor/{sensorId}
-    @GET
-    @Path("sensor/{sensorId}")
-    public Response getSensorReadings(@PathParam("sensorId") long sensorId) throws MyEntityNotFoundException {
-        return Response.ok(ReadingDTO.fromEntity(readingBean.findBySensor(sensorId))).build();
-    }
-
     // POST /api/readings/
     @POST
     @Path("/")
