@@ -22,6 +22,8 @@ public class ReadingBean {
     private EntityManager entityManager;
     @EJB
     private SensorBean sensorBean;
+    @EJB
+    private EmailBean EmailBean;
 
     public boolean exists(Long id) {
         Query query = entityManager.createQuery("SELECT COUNT(r.id) FROM Reading r WHERE r.id = :id", Long.class);
@@ -37,7 +39,8 @@ public class ReadingBean {
             if (sensor.getType()!= SensorType.GPS && (valueOne > sensor.getMaxThreshold() || valueOne < sensor.getMinThreshold())) {
                 sensor.getVolume().setStatus(VolumeStatus.DAMAGED);
                 sensor.getVolume().getSensors().forEach(s -> s.setActive(false));
-                //TODO: send email to customer/manager - volume is damaged
+                EmailBean.send(sensor.getVolume().getOrder().getCustomer().getEmail(), "Volume: " + sensor.getVolume().getVolumeCode() + " - Status: " + sensor.getVolume().getStatus().toString(), "Hello " + sensor.getVolume().getOrder().getCustomer().getName() + "\nYour volume " + sensor.getVolume().getVolumeCode() + " from your order " + sensor.getVolume().getOrder().getId().toString() + " with " + sensor.getVolume().getProduct().getName() + " changed to " + sensor.getVolume().getStatus().toString() + "\nThank you for your purchase.");
+                EmailBean.send(sensor.getVolume().getDispatchedBy().getEmail(), "Volume: " + sensor.getVolume().getVolumeCode() + " - Status: " + sensor.getVolume().getStatus().toString(), "Hello " + sensor.getVolume().getDispatchedBy() + "\nThe volume " + sensor.getVolume().getVolumeCode() + " from order " + sensor.getVolume().getOrder().getId().toString() + " with " + sensor.getVolume().getProduct().getName() + " changed to " + sensor.getVolume().getStatus().toString() + "\nPlease contact the transportation company.");
             }
             entityManager.persist(reading);
             entityManager.flush();

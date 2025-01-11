@@ -31,6 +31,8 @@ public class VolumeBean {
     private EmployeeBean employeeBean;
     @EJB
     private OrderBean orderBean;
+    @EJB
+    private EmailBean EmailBean;
 
     public boolean exists(Long id) {
         Query query = entityManager.createQuery("SELECT COUNT(v.id) FROM Volume v WHERE v.id = :id", Long.class);
@@ -71,8 +73,7 @@ public class VolumeBean {
                 order.setStatus(OrderStatus.DISPATCHED);
             }
             ;
-            //TODO: send email to customer/manager - volume is dispatched
-
+            EmailBean.send(order.getCustomer().getEmail(), "Volume: " + volume.getVolumeCode() + " - Status: " + volume.getStatus().toString(), "Hello " + order.getCustomer().getName() + "\nYour volume " + volume.getVolumeCode() + " from your order " + order.getId().toString() + " with " + volume.getProduct().getName() + " changed to " + volume.getStatus().toString() + "\nThank you for your purchase.");
             entityManager.persist(volume);
             entityManager.flush();
             return volume;
@@ -104,6 +105,7 @@ public class VolumeBean {
             Volume volume = find(id);
             volume.setStatus(status);
             volume.setUpdatedAt(new Date());
+            EmailBean.send(volume.getOrder().getCustomer().getEmail(), "Volume: " + volume.getVolumeCode() + " - Status: " + volume.getStatus().toString(), "Hello " + volume.getOrder().getCustomer().getName() + "\nYour volume " + volume.getVolumeCode() + " from your order " + volume.getOrder().getId().toString() + " with " + volume.getProduct().getName() + " changed to " + volume.getStatus().toString() + "\nThank you for your purchase.");
             entityManager.merge(volume);
             entityManager.flush();
             return volume;

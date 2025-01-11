@@ -39,8 +39,6 @@ public class CustomerService {
     // GET /api/customers/{id}
     @GET
     @Path("{id}")
-    @Authenticated
-    @RolesAllowed({"Manager", "Employee", "Customer"})
     public Response getCustomer(@PathParam("id") long id) throws MyEntityNotFoundException {
         var customer = customerBean.find(id);
         return Response.ok(CustomerDTO.fromEntity(customer)).build();
@@ -61,6 +59,8 @@ public class CustomerService {
     // POST /api/customers/
     @POST
     @Path("/")
+    @Authenticated
+    @RolesAllowed({"Manager", "Employee", "Customer"})
     public Response createCustomer(CustomerDTO customerDTO) throws MyConstraintViolationException, MyEntityExistsException, MyEntityNotFoundException {
         var customer = customerBean.create(
                 customerDTO.getName(),

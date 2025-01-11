@@ -28,6 +28,8 @@ public class OrderBean {
     private ProductBean ProductBean;
     @EJB
     private VolumeBean volumeBean;
+    @EJB
+    private EmailBean EmailBean;
 
     public boolean exists(Long id) {
         Query query = entityManager.createQuery("SELECT COUNT(o.id) FROM Order o WHERE o.id = :id", Long.class);
@@ -54,8 +56,7 @@ public class OrderBean {
             for (var product : products) {
                 product.addOrder(order);
             }
-            //TODO: send email to customer/manager - order created
-
+            EmailBean.send(order.getCustomer().getEmail(), "Order: " + order.getId().toString() + " - Status: " + order.getStatus().toString(), "Hello " + order.getCustomer().getName() + "\nYour order status is: " + order.getStatus().toString() + "\nThank you for your purchase.");
             entityManager.persist(order);
             entityManager.flush();
             return order;
@@ -101,8 +102,7 @@ public class OrderBean {
             Order order = find(id);
             order.setVolumes(volumes);
             order.setStatus(status);
-            //TODO: send email to customer/manager - order arrived
-
+            EmailBean.send(order.getCustomer().getEmail(), "Order: " + order.getId().toString() + " - Status: " + order.getStatus().toString(), "Hello " + order.getCustomer().getName() + "\nYour order status changed to: " + order.getStatus().toString() + "\nThank you for your purchase.");
             entityManager.merge(order);
             entityManager.flush();
             return order;
