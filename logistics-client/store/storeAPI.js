@@ -329,7 +329,7 @@ export const useAPI = defineStore('apiStore', () => {
       return
     }
   }
-  const createRandomReading = async (sensorID, sensorType, min, max) => {
+  const createRandomReading = async (sensorID, sensorType, min, max, canFail = false) => {
     storeError.resetMessages()
     try {
       const randomIntFromInterval = (min, max) => {
@@ -340,6 +340,8 @@ export const useAPI = defineStore('apiStore', () => {
         return result
       }
 
+      const minimun = canFail ? (min - 20 > 0 ? min - 20 : 0) : min
+      const maximum = canFail ? (max + 20 > 100 ? 100 : max + 20) : max
       const readingData =
         sensorType === 'GPS'
           ? {
@@ -347,14 +349,13 @@ export const useAPI = defineStore('apiStore', () => {
               valueTwo: randomIntFromInterval(-180, 180)
             }
           : {
-              valueOne: randomIntFromInterval(min, max),
+              valueOne: randomIntFromInterval(minimun, maximum),
               valueTwo: 0
             }
 
       const response = await createReading(sensorID, readingData)
       return response.data
     } catch (e) {
-      storeError.setErrorMessages(e.response.statusText, e.response.data.parameterViolations, e.response.status, 'Error creating reading!')
       return
     }
   }
@@ -412,7 +413,29 @@ export const useAPI = defineStore('apiStore', () => {
       return false
     }
   }
+  const getSensorsActive = async () => {
+    storeError.resetMessages()
+    try {
+      const response = await axios.get(`sensors/active`)
+      return response.data
+    } catch (e) {
+      storeError.setErrorMessages(e.response.statusText, e.response.data.parameterViolations, e.response.status, 'Error getting active sensors data!')
+      return false
+    }
+  }
+  const updateOrder = async (orderID) => {
+    storeError.resetMessages()
+    try {
+      const response = await axios.put(`orders/${orderID}`, { status: 'DELIVERED' })
+      return response.data
+    } catch (e) {
+      storeError.setErrorMessages(e.response.data, e.response.data.parameterViolations, e.response.status, 'Error updating order data!')
+      return false
+    }
+  }
   return {
+    updateOrder,
+    getSensorsActive,
     getSensorReadings,
     getVolume,
     getAuthUser,
@@ -441,6 +464,7 @@ export const useAPI = defineStore('apiStore', () => {
     getWarehouses,
     createReading,
     dispatchVolume,
-    createOrder
+    createOrder,
+    createRandomReading
   }
 })
