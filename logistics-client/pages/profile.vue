@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full p-3 bg-slate-50 border-b top-0">
+  <div class="w-full p-3 bg-slate-50 border-b top-0 flex justify-between items-center">
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
@@ -8,6 +8,13 @@
         <BreadcrumbSeparator />
         <BreadcrumbItem>
           <BreadcrumbPage>Profile</BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
+    <Breadcrumb>
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink @click="$router.back"> Back </BreadcrumbLink>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>

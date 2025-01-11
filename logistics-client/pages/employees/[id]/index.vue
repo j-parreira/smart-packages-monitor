@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full p-3 bg-slate-50 border-b top-0">
+  <div class="w-full p-3 bg-slate-50 border-b top-0 flex justify-between items-center">
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
@@ -12,6 +12,13 @@
         <BreadcrumbSeparator />
         <BreadcrumbItem>
           <BreadcrumbPage>{{ employee.name }}</BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
+    <Breadcrumb>
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink @click="$router.back"> Back </BreadcrumbLink>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
@@ -46,16 +53,7 @@
                         </div>
                         <div class="flex flex-row items-center gap-3">
                           <span class="w-1/2 text-right"> Warehouse </span>
-                          <Select v-model="user.warehouseId" label="Warehouse">
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem v-for="w in warehouses" :key="w.id" :value="String(w.id)">
-                                {{ w.id }}
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <Input v-model="user.warehouseId" label="Email" disabled />
                         </div>
                         <div class="flex flex-row items-center gap-3">
                           <span class="w-1/2 text-right"> Password </span>

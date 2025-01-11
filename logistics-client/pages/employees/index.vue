@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full p-3 bg-slate-50 border-b">
+  <div class="w-full p-3 bg-slate-50 border-b flex justify-between items-center">
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
@@ -8,6 +8,13 @@
         <BreadcrumbSeparator />
         <BreadcrumbItem>
           <BreadcrumbPage>Employees</BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
+    <Breadcrumb>
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink @click="$router.back"> Back </BreadcrumbLink>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
@@ -35,7 +42,9 @@
               <TableCell>{{ e.email }}</TableCell>
               <TableCell class="flex justify-between gap-2">
                 {{ e.warehouseId }}
-                <div class="text-nowrap flex flex-row items-center justify-end text-xs text-slate-500 hover:text-blue-600 cursor-pointer" @click="$router.push(`/employees/${e.id}`)">
+                <div
+                  class="text-nowrap flex flex-row items-center justify-end text-xs text-slate-500 hover:text-blue-600 cursor-pointer"
+                  @click="$router.push(`/employees/${e.id}`)">
                   Show Details
                   <Icon name="stash:new-window-page-light" class="w-6 h-6" mode="svg" />
                 </div>
@@ -51,16 +60,20 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useAPI } from '~/store/storeAPI'
-
+import { useRouter } from 'vue-router'
 const employees = ref([])
 const isLoading = ref(true)
 const api = useAPI()
-
+const router = useRouter()
 const fetchData = async () => {
   employees.value = await api.getEmployees()
 }
 onMounted(async () => {
-  await fetchData()
+  try {
+    await fetchData()
+  } catch (error) {
+    router.push('/error/403')
+  }
   isLoading.value = false
 })
 </script>

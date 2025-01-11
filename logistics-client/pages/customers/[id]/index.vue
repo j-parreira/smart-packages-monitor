@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full p-3 bg-slate-50 border-b top-0">
+  <div class="w-full p-3 bg-slate-50 border-b top-0 flex justify-between items-center">
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
@@ -12,6 +12,13 @@
         <BreadcrumbSeparator />
         <BreadcrumbItem>
           <BreadcrumbPage>{{ customer.name }}</BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
+    <Breadcrumb>
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink @click="$router.back"> Back </BreadcrumbLink>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
@@ -108,15 +115,19 @@
             <TableRow v-for="order in customer.orders" :key="order.id">
               <TableCell>{{ order.id }}</TableCell>
               <TableCell>
-                <Badge :variant="order.status === 'PROCESSING' ? 'blue' : order.status === 'DISPATCHED' ? 'yellow' : 'green'">
+                <Badge
+                  :variant="order.status === 'PROCESSING' ? 'blue' : order.status === 'DISPATCHED' ? 'yellow' : 'green'">
                   {{ order.status }}
                 </Badge>
               </TableCell>
-              <TableCell>{{ format(parse(order.createdAt, 'dd-MM-yyyy HH:mm:ss', new Date()), 'dd-MM-yyyy') }}</TableCell>
+              <TableCell>{{ format(parse(order.createdAt, 'dd-MM-yyyy HH:mm:ss', new Date()), 'dd-MM-yyyy') }}
+              </TableCell>
               <TableCell>{{ format(parse(order.createdAt, 'dd-MM-yyyy HH:mm:ss', new Date()), 'HH:mm') }}</TableCell>
               <TableCell class="flex justify-between gap-2">
                 {{ order.paymentType }}
-                <div class="text-nowrap flex flex-row items-center justify-end text-xs text-slate-500 hover:text-blue-600 cursor-pointer" @click="$router.push(`/orders/${order.id}`)">
+                <div
+                  class="text-nowrap flex flex-row items-center justify-end text-xs text-slate-500 hover:text-blue-600 cursor-pointer"
+                  @click="$router.push(`/orders/${order.id}`)">
                   Show Details
                   <Icon name="stash:new-window-page-light" class="w-6 h-6" />
                 </div>
@@ -156,9 +167,8 @@ const user = ref({
 })
 
 const deleteCustomer = async () => {
-  if(!confirm('Are you sure you want to delete this customer?')) return
+  if (!confirm('Are you sure you want to delete this customer?')) return
   await api.deleteCustomer(route.params.id)
-  router.push('/customers')
 }
 
 const updateCustomer = async () => {

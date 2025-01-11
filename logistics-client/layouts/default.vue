@@ -1,26 +1,56 @@
 <script setup>
 import MenuItem from '@/components/MenuItem.vue'
 import Card from '@/components/ui/card/Card.vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '~/store/storeAuth.js'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { ref, onMounted, onBeforeMount } from 'vue'
+import { ShoppingBasket } from 'lucide-vue-next'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAPI } from '~/store/storeAPI'
+import { useAuthStore } from '~/store/storeAuth.js'
+import { useCart } from '~/store/storeCart'
+import { useToast } from '~/components/ui/toast/use-toast'
 
+const storeCart = useCart()
 const router = useRouter()
 const storeAuth = useAuthStore()
 const isLoading = ref(true)
+const api = useAPI()
+const { toast } = useToast()
 
 function logout() {
   storeAuth.logout()
+  localStorage.removeItem('cart')
+  storeCart.cart = []
   router.push('/')
+}
+
+const cartCheckout = ref({
+  paymentType: null,
+})
+
+const checkout = async () => {
+  cartCheckout.value.customerId = storeAuth.user?.id
+  cartCheckout.value.products = storeCart.cart.map(p => ({ id: p.id }))
+  await api.createOrder(cartCheckout.value)
+  storeCart.clearCart()
+  toast({
+    title: 'Order created successfully',
+    description: 'Your order was created successfully',
+    variant: 'green',
+  })
 }
 
 onMounted(async () => {
   if (localStorage.getItem('token')) {
     await storeAuth.checkAuth()
+    if (localStorage.getItem('cart')) {
+      storeCart.loadCart()
+    }
   }
   isLoading.value = false
 })
+
+
 
 const names = {
   DA: 'Diogo Abegão',
@@ -56,7 +86,8 @@ const hideFullName = (id) => {
           <div v-else>
             <div class="flex items-center gap-3">
               <DropdownMenu>
-                <DropdownMenuTrigger class="border-l border-b hover:bg-slate-50 px-3 h-14 flex items-center gap-3 hover:cursor-pointer justify-center">
+                <DropdownMenuTrigger
+                  class="border-l border-b hover:bg-slate-50 px-3 h-14 flex items-center gap-3 hover:cursor-pointer justify-center">
                   <img src="/assets/img/avatar-none.png" alt="avatar" class="h-10 w-10 rounded-full" />
                   <div class="flex flex-col items-start">
                     <div class="text-blue-950 font-medium">{{ storeAuth.user?.name ?? 'Username' }}</div>
@@ -66,8 +97,12 @@ const hideFullName = (id) => {
                 <DropdownMenuContent>
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem @click="router.push('/profile')">Profile</DropdownMenuItem>
-                  <DropdownMenuItem @click="router.push('/my-orders')" v-if="storeAuth.user?.role === 'Customer'">Orders</DropdownMenuItem>
+                  <DropdownMenuItem v-if="storeAuth.user?.role === 'Employee'"
+                    @click="router.push('/employees/' + storeAuth.user?.id)">Profile</DropdownMenuItem>
+                  <DropdownMenuItem v-if="storeAuth.user?.role === 'Manager'" @click="router.push('/profile')">Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem v-if="storeAuth.user?.role === 'Customer'"
+                    @click="router.push('/customers/' + storeAuth.user?.id)">Profile</DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem @click="logout" class="hover:cursor-pointer">Logout</DropdownMenuItem>
                 </DropdownMenuContent>
@@ -81,12 +116,80 @@ const hideFullName = (id) => {
       </div>
 
       <!-- Authenticated -->
-      <div class="flex items-center text-sm justify-end gap-5 h-10 p-3 border-b" v-if="storeAuth.user && storeAuth.user?.role !== 'Customer'">
+      <div class="flex items-center text-sm justify-end gap-5 h-10 p-3 border-b"
+        v-if="storeAuth.user && storeAuth.user?.role !== 'Customer'">
         <MenuItem :item="{ label: 'Customers', to: '/customers' }" />
-        <MenuItem :item="{ label: 'Employees', to: '/employees' }" />
+        <MenuItem v-if="storeAuth.user?.role === 'Manager'" :item="{ label: 'Employees', to: '/employees' }" />
         <MenuItem :item="{ label: 'Orders', to: '/orders' }" />
         <MenuItem :item="{ label: 'Products', to: '/products' }" />
       </div>
+      <!-- Authenticated -->
+      <div class="flex items-center text-sm justify-end gap-5 min-h-10 p-3 border-b"
+        v-if="storeAuth.user && storeAuth.user?.role == 'Customer'">
+        <MenuItem :item="{ label: 'My Orders', to: '/my-orders' }" />
+        <MenuItem :item="{ label: 'Store', to: '/store' }" />
+        <Dialog>
+          <DialogTrigger>
+            <Button variant="blue" class="cursor-default">
+              <ShoppingBasket class="h-6 w-6" />
+              <span class="text-blue-950 font-bold">{{ storeCart.cart.length ?? 0 }}</span>
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>My Cart</DialogTitle>
+              <DialogDescription>
+                Resume of your cart
+              </DialogDescription>
+            </DialogHeader>
+            <div class="border rounded-lg">
+              <Table v-if="storeCart.cart.length > 0">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead class="w-1/2">Product</TableHead>
+                    <TableHead class="w-1/4">Type</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow v-for="p in storeCart.cart" :key="p.id">
+                    <TableCell>{{ p.name }}</TableCell>
+                    <TableCell>{{ p.type }}</TableCell>
+                    <TableCell class="text-xs text-red-600 cursor-pointer text-end"
+                      @click="storeCart.removeFromCart(p)">Remove</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell colspan="3">
+                      <div class="grid grid-cols-2 gap-3 items-center">
+                        <Label class="text-end">Payment Type</Label>
+                        <Select v-model="cartCheckout.paymentType">
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="MBWAY">MBWAY</SelectItem>
+                            <SelectItem value="MB">MB</SelectItem>
+                            <SelectItem value="PAYPAL">PAYPAL</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell colspan="3" class="text-end">
+                      <DialogClose as-child>
+                        <Button :disabled="!cartCheckout.paymentType" variant="blue" @click="checkout()">Finish</Button>
+                      </DialogClose>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+              <div v-else class="text-center p-3">No products in the cart</div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+      </div>
+
 
       <div class="flex-grow flex flex-col items-center justify-center">
         <slot />
@@ -94,15 +197,24 @@ const hideFullName = (id) => {
 
       <div class="w-full bg-white border-t">
         <div class="p-3 bg-white md:flex md:items-center md:justify-between">
-          <span class="flex text-sm text-gray-500 justify-center text-center">IPLeiria | Enterprise Applications Development | 2024-2025 </span>
+          <span class="flex text-sm text-gray-500 justify-center text-center">IPLeiria | Enterprise Applications
+            Development | 2024-2025 </span>
           <div class="flex justify-center space-x-2 rtl:space-x-reverse">
-            <a id="DA" href="https://www.linkedin.com/in/diogo-abegao/" class="text-gray-400 hover:text-blue-800 text-sm p-1" @mouseover="showFullName('DA')" @mouseleave="hideFullName('DA')"> DA </a>
+            <a id="DA" href="https://www.linkedin.com/in/diogo-abegao/"
+              class="text-gray-400 hover:text-blue-800 text-sm p-1" @mouseover="showFullName('DA')"
+              @mouseleave="hideFullName('DA')"> DA </a>
             <div class="text-gray-400 text-sm p-1">|</div>
-            <a id="JP" href="https://www.linkedin.com/in/joao-parreira-dev/" class="text-gray-400 hover:text-blue-800 text-sm p-1" @mouseover="showFullName('JP')" @mouseleave="hideFullName('JP')"> JP </a>
+            <a id="JP" href="https://www.linkedin.com/in/joao-parreira-dev/"
+              class="text-gray-400 hover:text-blue-800 text-sm p-1" @mouseover="showFullName('JP')"
+              @mouseleave="hideFullName('JP')"> JP </a>
             <div class="text-gray-400 text-sm p-1">|</div>
-            <a id="MO" href="https://www.linkedin.com/in/marcelo-oliveira-89602b212/" class="text-gray-400 hover:text-blue-800 text-sm p-1" @mouseover="showFullName('MO')" @mouseleave="hideFullName('MO')"> MO </a>
+            <a id="MO" href="https://www.linkedin.com/in/marcelo-oliveira-89602b212/"
+              class="text-gray-400 hover:text-blue-800 text-sm p-1" @mouseover="showFullName('MO')"
+              @mouseleave="hideFullName('MO')"> MO </a>
             <div class="text-gray-400 text-sm p-1">|</div>
-            <a id="PB" href="https://www.linkedin.com/in/pedrobarbeiro/" class="text-gray-400 hover:text-blue-800 text-sm p-1" @mouseover="showFullName('PB')" @mouseleave="hideFullName('PB')"> PB </a>
+            <a id="PB" href="https://www.linkedin.com/in/pedrobarbeiro/"
+              class="text-gray-400 hover:text-blue-800 text-sm p-1" @mouseover="showFullName('PB')"
+              @mouseleave="hideFullName('PB')"> PB </a>
           </div>
         </div>
       </div>

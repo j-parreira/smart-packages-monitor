@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full p-3 bg-slate-50 border-b top-0">
+  <div class="w-full p-3 bg-slate-50 border-b top-0 flex justify-between items-center">
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
@@ -7,11 +7,14 @@
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbPage>Volumes</BreadcrumbPage>
+          <BreadcrumbPage>Volume Details</BreadcrumbPage>
         </BreadcrumbItem>
-        <BreadcrumbSeparator />
+      </BreadcrumbList>
+    </Breadcrumb>
+    <Breadcrumb>
+      <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbPage>{{ volume.id }}</BreadcrumbPage>
+          <BreadcrumbLink @click="$router.back"> Back </BreadcrumbLink>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
@@ -37,7 +40,7 @@
             <TableRow>
               <TableHead class="bg-slate-50 w-1/2 border-r text-right">Status</TableHead>
               <TableCell>
-                <Badge :variant="volume.status === 'PROCESSING' ? 'blue' : volume.status === 'DISPATCHED' ? 'green' : 'outline'">
+                <Badge :variant="volume.status === 'PROCESSING' ? 'blue' : volume.status === 'DISPATCHED' ? 'green' : volume.status === 'DAMAGED' ? 'red' : 'outline'">
                   {{ volume.status ?? 'PENDING' }}
                 </Badge>
               </TableCell>
@@ -54,6 +57,15 @@
               <TableHead class="bg-slate-50 w-1/2 border-r text-right">Product</TableHead>
               <TableCell>{{ product?.name }}</TableCell>
             </TableRow>
+            <TableRow>
+              <TableHead class="bg-slate-50 w-1/2 border-r text-right">Order</TableHead>
+              <TableCell class="flex items-center justify-between">
+                <div class="flex flex-row items-center hover:text-blue-600 cursor-pointer" @click="$router.push(`/orders/${volume.orderId}`)">
+                  {{ volume.orderId }}
+                  <Icon name="stash:new-window-page-light" class="w-6 h-6" mode="svg" />
+                </div>
+              </TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </div>
@@ -61,18 +73,34 @@
         <Table>
           <TableBody>
             <TableRow>
-              <TableHead colspan="8" class="bg-slate-50 text-center">Sensors</TableHead>
+              <TableHead colspan="7" class="bg-slate-50">
+                <TableCell class="w-full pl-0">Sensors</TableCell>
+                <TableCell class="p-0">
+                  <Button variant="outline" @click="fetchData">
+                    <RefreshCw class="w-4 h-4" />
+                    Refresh
+                  </Button>
+                </TableCell>
+              </TableHead>
             </TableRow>
-            <TableRow>
+            <TableRow v-if="volume.sensors?.length === 0">
+              <TableCell colspan="7" class="text-center">No sensors found</TableCell>
+            </TableRow>
+            <TableRow v-if="!isLoadingReadings && volume.sensors?.length > 0">
               <TableHead class="bg-slate-50">Sensor ID</TableHead>
               <TableHead class="bg-slate-50">Type</TableHead>
               <TableHead class="bg-slate-50">Status</TableHead>
               <TableHead class="bg-slate-50">Max Threshold</TableHead>
               <TableHead class="bg-slate-50">Min Threshold</TableHead>
               <TableHead class="bg-slate-50">Last Reading</TableHead>
-              <TableHead class="bg-slate-50" colspan="2">Last Reading Timestamp</TableHead>
+              <TableHead class="bg-slate-50">Last Reading Timestamp</TableHead>
             </TableRow>
-            <TableRow v-for="s in volume.sensors" :key="s.id">
+            <TableRow v-if="isLoadingReadings">
+              <TableCell colspan="7" class="text-center">
+                <Icon name="eos-icons:three-dots-loading" class="text-blue-950 w-12 h-12" />
+              </TableCell>
+            </TableRow>
+            <TableRow v-else v-for="s in volume.sensors" :key="s.id">
               <TableCell>{{ s.id }}</TableCell>
               <TableCell>{{ s.type }}</TableCell>
               <TableCell>
@@ -83,8 +111,8 @@
               <TableCell>{{ s.maxThreshold || '-' }}</TableCell>
               <TableCell>{{ s.minThreshold || '-' }}</TableCell>
               <TableCell>{{ s.type == 'GPS' ? `LAT ${s.lastReading?.valueOne} LONG ${s.lastReading?.valueTwo}` : s.lastReading?.valueOne }}</TableCell>
-              <TableCell>{{ s.lastReading?.timestamp }}</TableCell>
-              <TableCell>
+              <TableCell class="flex items-center justify-between">
+                {{ s.lastReading?.timestamp }}
                 <AlertDialog>
                   <AlertDialogTrigger>
                     <div class="text-nowrap flex flex-row items-center justify-end text-xs text-slate-500 hover:text-blue-600 cursor-pointer">
@@ -104,7 +132,7 @@
                             </TableRow>
                             <TableRow v-for="r in s.readings" :key="r.id" class="w-full">
                               <TableCell>
-                                <Badge :variant="r.valueOne > s.maxThreshold || r.valueOne < s.minThreshold ? 'red' : 'green'">
+                                <Badge :variant="s.type == 'GPS' ? 'ghost' : r.valueOne > s.maxThreshold || r.valueOne < s.minThreshold ? 'red' : 'green'">
                                   {{ s.type == 'GPS' ? `LAT ${r.valueOne} LONG ${r.valueTwo}` : r.valueOne }}
                                 </Badge>
                               </TableCell>
@@ -132,6 +160,7 @@
 </template>
 
 <script setup>
+import { ArrowRight, RefreshCw } from 'lucide-vue-next'
 import { onMounted } from 'vue'
 import { useAPI } from '~/store/storeAPI'
 
@@ -140,15 +169,22 @@ const api = useAPI()
 const volume = ref([])
 const isLoading = ref(true)
 const product = ref(null)
-const readings = ref([])
+const isLoadingReadings = ref(false)
 
 const fetchData = async () => {
+  isLoadingReadings.value = true
   volume.value = await api.getVolume(route.params.id)
   product.value = await api.getProduct(volume.value.productId)
   for (const s of volume.value.sensors) {
     s.readings = await api.getSensorReadings(s.id)
     s.lastReading = s.readings[0]
   }
+  isLoadingReadings.value = false
+}
+
+const toProperCase = (str) => {
+  if (!str) return ''
+  return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
 }
 
 onMounted(async () => {

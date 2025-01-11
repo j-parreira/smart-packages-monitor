@@ -4,13 +4,12 @@ import axios from 'axios'
 import { useErrorStore } from './error.js'
 import { useToast } from '@/components/ui/toast/use-toast'
 import { useAuthStore } from './storeAuth.js'
-
+import { toRaw } from 'vue'
 export const useAPI = defineStore('apiStore', () => {
   const { toast } = useToast()
   const storeError = useErrorStore()
   const storeAuth = useAuthStore()
   const router = useRouter()
-
   /* Auth */
   const getAuthUser = async () => {
     storeError.resetMessages()
@@ -133,6 +132,9 @@ export const useAPI = defineStore('apiStore', () => {
         description: 'Failed to delete customer! ' + e.response.data,
         variant: 'red'
       })
+      if (e.response.status == 403) {
+        router.push('/error/403')
+      }
       return false
     }
   }
@@ -327,7 +329,89 @@ export const useAPI = defineStore('apiStore', () => {
       return
     }
   }
+  const createRandomReading = async (sensorID, sensorType, min, max) => {
+    storeError.resetMessages()
+    try {
+      const randomIntFromInterval = (min, max) => {
+        let result = 0
+        do {
+          result = Math.floor(Math.random() * max) + min
+        } while (result < min || result > max)
+        return result
+      }
 
+      const readingData =
+        sensorType === 'GPS'
+          ? {
+              valueOne: randomIntFromInterval(-90, 90),
+              valueTwo: randomIntFromInterval(-180, 180)
+            }
+          : {
+              valueOne: randomIntFromInterval(min, max),
+              valueTwo: 0
+            }
+
+      const response = await createReading(sensorID, readingData)
+      return response.data
+    } catch (e) {
+      storeError.setErrorMessages(e.response.statusText, e.response.data.parameterViolations, e.response.status, 'Error creating reading!')
+      return
+    }
+  }
+  const dispatchVolume = async (data) => {
+    storeError.resetMessages()
+    try {
+      let sensors = []
+      for (const sensor of data.sensorsAdded) {
+        const data_s = data.sensors.find((s) => s.type === sensor)
+        // console.log(sensor, sensorData.maxThreshold, sensorData.minThreshold)
+        const sensorData = {
+          type: sensor,
+          maxThreshold: data_s.maxThreshold,
+          minThreshold: data_s.minThreshold,
+          timeInterval: 1000,
+          active: false
+        }
+        const response = await axios.post(`sensors`, sensorData)
+        sensors.push(response.data)
+      }
+      const volumeData = {
+        type: data.volumeType,
+        productId: data.productId,
+        sensors: sensors,
+        dispatchedByEmployeeId: data.dispatchedByEmployeeId,
+        status: 'DISPATCHED',
+        orderId: data.orderId
+      }
+
+      const response = await axios.post(`volumes`, volumeData)
+      for (const sensor of sensors) {
+        await axios.put(`sensors/${sensor.id}`, { volumeId: response.data.id, active: true })
+        createRandomReading(sensor.id, sensor.type, sensor.minThreshold, sensor.maxThreshold)
+      }
+
+      toast({
+        description: 'Volume dispatched successfully!',
+        variant: 'green'
+      })
+      console.log(response.data)
+
+      return response.data
+    } catch (e) {
+      storeError.setErrorMessages(e.response.data, e.response.data.parameterViolations, e.response.status, 'Error dispatching volume!')
+      return false
+    }
+  }
+  const createOrder = async (data) => {
+    storeError.resetMessages()
+    try {
+      const response = await axios.post(`orders`, data)
+      return response.data
+    } catch (e) {
+      storeError.setErrorMessages(e.response.data, e.response.data.parameterViolations, e.response.status, 'Error creating order!')
+      return false
+    }
+  }
   return {
     getSensorReadings,
     getVolume,
@@ -355,6 +439,8 @@ export const useAPI = defineStore('apiStore', () => {
     getProductStock,
     deleteProduct,
     getWarehouses,
-    createReading
+    createReading,
+    dispatchVolume,
+    createOrder
   }
 })

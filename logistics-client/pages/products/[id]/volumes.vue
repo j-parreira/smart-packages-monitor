@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full p-3 bg-slate-50 border-b">
+  <div class="w-full p-3 bg-slate-50 border-b flex justify-between items-center">
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
@@ -16,6 +16,13 @@
         <BreadcrumbSeparator />
         <BreadcrumbItem>
           <BreadcrumbPage>Volumes</BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
+    <Breadcrumb>
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink @click="$router.back"> Back </BreadcrumbLink>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
@@ -48,8 +55,8 @@
               <TableCell> {{ v.type }} </TableCell>
               <TableCell> {{ v.volumeCode }} </TableCell>
               <TableCell>
-                <Badge :variant="v.status === 'PROCESSING' ? 'blue' : v.status === 'DISPATCHED' ? 'green' : 'outline'">
-                  {{ v.status }}
+                <Badge :variant="v.status === 'PROCESSING' ? 'blue' : v.status === 'DISPATCHED' ? 'green' : v.status === 'DAMAGED' ? 'red': 'outline'">
+                  {{ v.status ?? 'PENDING' }}
                 </Badge>
               </TableCell>
               <TableCell class="hover:text-blue-600 cursor-pointer text-slate-600" @click="$router.push(`/employees/${v.dispatchedByEmployeeId}`)">{{ employees.filter((c) => c.id == v.dispatchedByEmployeeId)[0].name }}</TableCell>

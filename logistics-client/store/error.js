@@ -1,9 +1,11 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { useToast } from '@/components/ui/toast/use-toast'
+import { useRouter } from 'vue-router'
+
 export const useErrorStore = defineStore('error', () => {
   const { toast } = useToast()
-
+  const router = useRouter()
   const _message = ref('')
   const _fieldErrorMessages = ref([])
   const _statusCode = ref(0)
@@ -55,6 +57,7 @@ export const useErrorStore = defineStore('error', () => {
         break
       case 403:
         toastMessage = mainMessage ?? `You are forbidden to access the server resource! `
+        router.push('/error/403')
         break
       case 404:
         toastMessage = mainMessage ?? 'Server resource not found!'
