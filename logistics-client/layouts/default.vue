@@ -16,7 +16,7 @@ const storeAuth = useAuthStore()
 const isLoading = ref(true)
 const api = useAPI()
 const { toast } = useToast()
-
+const activeSensors = ref(0)
 function logout() {
   storeAuth.logout()
   localStorage.removeItem('cart')
@@ -47,11 +47,24 @@ onMounted(async () => {
       storeCart.loadCart()
     }
   }
+  if (storeAuth.user) {
+    const sensors = await api.getSensorsActive()
+    activeSensors.value = sensors.length
+  }
   isLoading.value = false
 })
 
-
-
+const sendNewReadings = async () => {
+  const sensors = await api.getSensorsActive()
+  activeSensors.value = sensors.length
+  for (const sensor of sensors) {
+    api.createRandomReading(sensor.id, sensor.type, sensor.minThreshold, sensor.maxThreshold, true)
+  }
+  toast({
+    description: 'New readings were sent to all active sensors',
+    variant: 'blue',
+  })
+}
 const names = {
   DA: 'Diogo Abegão',
   JP: 'João Parreira',
@@ -69,6 +82,7 @@ const hideFullName = (id) => {
 </script>
 
 <template>
+
   <div class="bg-blue-50 min-h-screen">
     <Card class="flex flex-col container min-h-screen p-0 rounded-none">
       <div class="flex items-center justify-between h-14 p-3 pr-0 border-b">
@@ -195,10 +209,18 @@ const hideFullName = (id) => {
         <slot />
       </div>
 
+      <div v-if="storeAuth.user"
+        class="flex items-center justify-center h-10 p-3 border-t bg-blue-100 text-sm text-blue-800">
+        Create random readings for all active sensors
+        <Button @click="sendNewReadings()" variant='blue' class="ml-3">Send Readings</Button>
+      </div>
+
       <div class="w-full bg-white border-t">
+
         <div class="p-3 bg-white md:flex md:items-center md:justify-between">
-          <span class="flex text-sm text-gray-500 justify-center text-center">IPLeiria | Enterprise Applications
-            Development | 2024-2025 </span>
+          <span class="flex text-sm text-gray-500 justify-center text-center">
+            IPLeiria | Enterprise Applications Development | 2024-2025
+          </span>
           <div class="flex justify-center space-x-2 rtl:space-x-reverse">
             <a id="DA" href="https://www.linkedin.com/in/diogo-abegao/"
               class="text-gray-400 hover:text-blue-800 text-sm p-1" @mouseover="showFullName('DA')"

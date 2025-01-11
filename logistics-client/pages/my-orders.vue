@@ -33,6 +33,7 @@
             <TableHead>Order Date</TableHead>
             <TableHead>Order Time</TableHead>
             <TableHead>Payment Type</TableHead>
+            <TableHead></TableHead>
           </TableRow>
           <TableBody>
             <TableRow v-for="o in orders" :key="o.id">
@@ -44,8 +45,11 @@
               </TableCell>
               <TableCell>{{ format(parse(o.createdAt, 'dd-MM-yyyy HH:mm:ss', new Date()), 'dd-MM-yyyy') }}</TableCell>
               <TableCell>{{ format(parse(o.createdAt, 'dd-MM-yyyy HH:mm:ss', new Date()), 'HH:mm') }}</TableCell>
-              <TableCell class="flex justify-between gap-2">
+              <TableCell>
                 {{ o.paymentType }}
+              </TableCell>
+              <TableCell class="flex justify-end gap-2">
+                <Button v-if="o.status === 'DISPATCHED'" class="mr-2" size="sm" variant="green" @click="confirmDelivery(o.id)">Confirm Delivery</Button>
                 <div class="text-nowrap flex flex-row items-center justify-end text-xs text-slate-500 hover:text-blue-600 cursor-pointer" @click="$router.push(`/orders/${o.id}`)">
                   Show Details
                   <Icon name="stash:new-window-page-light" class="w-6 h-6" mode="svg" />
@@ -71,6 +75,11 @@ const customers = ref([])
 
 const isLoading = ref(true)
 const api = useAPI()
+
+const confirmDelivery = async (orderId) => {
+  await api.updateOrder(orderId)
+  await fetchData()
+}
 
 const fetchData = async () => {
   orders.value = await api.getOrders()

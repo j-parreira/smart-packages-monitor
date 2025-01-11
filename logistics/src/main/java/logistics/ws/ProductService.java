@@ -39,7 +39,7 @@ public class ProductService {
     // GET /api/products/{id}
     @GET
     @Path("{id}")
-    @RolesAllowed({"Manager","Employee"})
+    @RolesAllowed({"Manager","Employee","Customer"})
     public Response getProduct(@PathParam("id") long id) throws MyEntityNotFoundException {
         var product = productBean.find(id);
         return Response.ok(ProductDTO.fromEntity(product)).build();
