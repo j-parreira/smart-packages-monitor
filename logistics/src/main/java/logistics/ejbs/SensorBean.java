@@ -83,4 +83,8 @@ public class SensorBean {
             throw new MyConstraintViolationException(e);
         }
     }
+
+    public List<Sensor> findActive() {
+        return entityManager.createNamedQuery("getActiveSensors", Sensor.class).getResultList();
+    }
 }

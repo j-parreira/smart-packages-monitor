@@ -18,7 +18,11 @@ import java.util.Objects;
         @NamedQuery(
                 name = "getAllSensorsInVolume",
                 query = "SELECT s FROM Sensor s WHERE s.volume.id = :volumeId"
-        )
+        ),
+        @NamedQuery(
+                name = "getActiveSensors",
+                query = "SELECT s FROM Sensor s WHERE s.isActive = true"
+        ),
 })
 @Table(name = "sensors", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"volume_id", "type"})

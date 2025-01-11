@@ -9,6 +9,7 @@ import logistics.enums.*;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Logger;
 
 
@@ -16,6 +17,8 @@ import java.util.logging.Logger;
 @Singleton
 public class ConfigBean {
     private static final Logger logger = Logger.getLogger("ejbs.ConfigBean");
+
+    private Random random = new Random();
 
     @EJB
     private WarehouseBean warehouseBean;
@@ -63,9 +66,9 @@ public class ConfigBean {
 
         // Create Managers
         try {
-            managerBean.create("Manager 1", "m1@mail.pt", "123", warehouses.get(0).getId(), "Office 1");
-            managerBean.create("Manager 2", "m2@mail.pt", "123", warehouses.get(1).getId(), "Office 2");
-            managerBean.create("Manager 3", "m3@mail.pt", "123", warehouses.get(2).getId(), "Office 3");
+            managerBean.create("Noah Johnson", "m1@mail.pt", "123", warehouses.get(0).getId(), "Office 1");
+            managerBean.create("Emma Carter", "m2@mail.pt", "123", warehouses.get(1).getId(), "Office 2");
+            managerBean.create("Liam Martinez", "m3@mail.pt", "123", warehouses.get(2).getId(), "Office 3");
         } catch (Exception e) {
             System.err.println("Some exception happened while creating managers");
             logger.severe(e.getMessage());
@@ -74,12 +77,21 @@ public class ConfigBean {
 
         // Create Employees
         try {
-            employeeBean.create("Employee 1", "e1@mail.pt", "123", warehouses.get(0).getId());
-            employeeBean.create("Employee 2", "e2@mail.pt", "123", warehouses.get(0).getId());
-            employeeBean.create("Employee 3", "e3@mail.pt", "123", warehouses.get(1).getId());
-            employeeBean.create("Employee 4", "e4@mail.pt", "123", warehouses.get(1).getId());
-            employeeBean.create("Employee 5", "e5@mail.pt", "123", warehouses.get(2).getId());
-            employeeBean.create("Employee 6", "e6@mail.pt", "123", warehouses.get(2).getId());
+            employeeBean.create("Noah Johnson", "e1@mail.pt", "123", warehouses.get(0).getId());
+            employeeBean.create("Emma Carter", "e2@mail.pt", "123", warehouses.get(1).getId());
+            employeeBean.create("Liam Martinez", "e3@mail.pt", "123", warehouses.get(2).getId());
+            employeeBean.create("Olivia Brown", "e4@mail.pt", "123", warehouses.get(0).getId());
+            employeeBean.create("Mason Harris", "e5@mail.pt", "123", warehouses.get(1).getId());
+            employeeBean.create("Sophia Moore", "e6@mail.pt", "123", warehouses.get(2).getId());
+            employeeBean.create("Elijah Lee", "e7@mail.pt", "123", warehouses.get(0).getId());
+            employeeBean.create("Isabella White", "e8@mail.pt", "123", warehouses.get(1).getId());
+            employeeBean.create("Lucas Garcia", "e9@mail.pt", "123", warehouses.get(2).getId());
+            employeeBean.create("Mia Taylor", "e10@mail.pt", "123", warehouses.get(0).getId());
+            employeeBean.create("James Wilson", "e11@mail.pt", "123", warehouses.get(1).getId());
+            employeeBean.create("Amelia Thomas", "e12@mail.pt", "123", warehouses.get(2).getId());
+            employeeBean.create("Ethan Jackson", "e13@mail.pt", "123", warehouses.get(0).getId());
+            employeeBean.create("Charlotte Adams", "e14@mail.pt", "123", warehouses.get(1).getId());
+            employeeBean.create("Alexander King", "e15@mail.pt", "123", warehouses.get(2).getId());
         } catch (Exception e) {
             System.err.println("Some exception happened while creating employees");
             logger.severe(e.getMessage());
@@ -88,12 +100,21 @@ public class ConfigBean {
 
         // Create Customers
         try {
-            customerBean.create("Customer 1", "c1@mail.pt", "123", "Rua Carlos I");
-            customerBean.create("Customer 2", "c2@mail.pt", "123", "Rua Carlos II");
-            customerBean.create("Customer 3", "c3@mail.pt", "123", "Rua Carlos III");
-            customerBean.create("Customer 4", "c4@mail.pt", "123", "Rua Carlos IV");
-            customerBean.create("Customer 5", "c5@mail.pt", "123", "Rua Carlos V");
-            customerBean.create("Customer 6", "c6@mail.pt", "123", "Rua Carlos VI");
+            customerBean.create("John Doe", "c1@mail.pt", "123", "123 Elm St");
+            customerBean.create("Jane Smith", "c2@mail.pt", "123", "456 Oak St");
+            customerBean.create("Michael Johnson", "c3@mail.pt", "123", "789 Pine St");
+            customerBean.create("Emily Davis", "c4@mail.pt", "123", "101 Maple St");
+            customerBean.create("David Wilson", "c5@mail.pt", "123", "112 Birch St");
+            customerBean.create("Olivia Brown", "c6@mail.pt", "123", "131 Cedar St");
+            customerBean.create("Liam Garcia", "c7@mail.pt", "123", "415 Redwood St");
+            customerBean.create("Sophia Martinez", "c8@mail.pt", "123", "161 Willow St");
+            customerBean.create("James Taylor", "c9@mail.pt", "123", "718 Ash St");
+            customerBean.create("Ava Anderson", "c10@mail.pt", "123", "920 Spruce St");
+            customerBean.create("William Thomas", "c11@mail.pt", "123", "234 Oakwood St");
+            customerBean.create("Isabella Moore", "c12@mail.pt", "123", "876 Pinehurst St");
+            customerBean.create("Ethan Jackson", "c13@mail.pt", "123", "432 Maplewood St");
+            customerBean.create("Mia White", "c14@mail.pt", "123", "654 Cherry St");
+            customerBean.create("Benjamin Harris", "c15@mail.pt", "123", "987 Birchwood St");
         } catch (Exception e) {
             System.err.println("Some exception happened while creating customers");
             logger.severe(e.getMessage());
@@ -102,14 +123,21 @@ public class ConfigBean {
 
         // Create Products
         try {
-            productBean.create("Product 1", ProductType.ELECTRONICS);
-            productBean.create("Product 2", ProductType.ELECTRONICS);
-            productBean.create("Product 3", ProductType.FROZEN_FOOD);
-            productBean.create("Product 4", ProductType.FROZEN_FOOD);
-            productBean.create("Product 5", ProductType.FRUITS);
-            productBean.create("Product 6", ProductType.FRUITS);
-            productBean.create("Product 7", ProductType.CARBONATED_DRINKS);
-            productBean.create("Product 8", ProductType.CARBONATED_DRINKS);
+            productBean.create("TV LED ABC 49", ProductType.ELECTRONICS);
+            productBean.create("TV LED XPT 65", ProductType.ELECTRONICS);
+            productBean.create("Smartphone Model Z", ProductType.ELECTRONICS);
+            productBean.create("Laptop ABC Pro 15", ProductType.ELECTRONICS);
+            productBean.create("Bluetooth Speaker XYZ", ProductType.ELECTRONICS);
+            productBean.create("ABC Ice Cream Box", ProductType.FROZEN_FOOD);
+            productBean.create("XPT Frozen Shrimp", ProductType.FROZEN_FOOD);
+            productBean.create("Chocolate Cake Frozen", ProductType.FROZEN_FOOD);
+            productBean.create("Frozen Pizza Large", ProductType.FROZEN_FOOD);
+            productBean.create("1Kg Apple", ProductType.FRUITS);
+            productBean.create("1Kg Orange", ProductType.FRUITS);
+            productBean.create("1Kg Banana", ProductType.FRUITS);
+            productBean.create("1Kg Grapes", ProductType.FRUITS);
+            productBean.create("Orange Juice Pack (6x)", ProductType.CARBONATED_DRINKS);
+            productBean.create("Cola Pack (6x)", ProductType.CARBONATED_DRINKS);
         } catch (Exception e) {
             System.err.println("Some exception happened while creating products");
             logger.severe(e.getMessage());
@@ -118,40 +146,26 @@ public class ConfigBean {
 
         // Create Stocks
         try {
-            stockBean.create(products.get(0).getId(), warehouses.get(0).getId(), 15L);
-            stockBean.create(products.get(0).getId(), warehouses.get(1).getId(), 20L);
-            stockBean.create(products.get(1).getId(), warehouses.get(1).getId(), 5L);
-            stockBean.create(products.get(1).getId(), warehouses.get(2).getId(), 10L);
-            stockBean.create(products.get(2).getId(), warehouses.get(0).getId(), 15L);
-            stockBean.create(products.get(2).getId(), warehouses.get(2).getId(), 20L);
-            stockBean.create(products.get(3).getId(), warehouses.get(1).getId(), 5L);
-            stockBean.create(products.get(3).getId(), warehouses.get(2).getId(), 10L);
-            stockBean.create(products.get(4).getId(), warehouses.get(0).getId(), 15L);
-            stockBean.create(products.get(4).getId(), warehouses.get(1).getId(), 20L);
-            stockBean.create(products.get(5).getId(), warehouses.get(0).getId(), 5L);
-            stockBean.create(products.get(5).getId(), warehouses.get(1).getId(), 10L);
-            stockBean.create(products.get(6).getId(), warehouses.get(2).getId(), 15L);
-            stockBean.create(products.get(6).getId(), warehouses.get(0).getId(), 20L);
-            stockBean.create(products.get(7).getId(), warehouses.get(1).getId(), 5L);
-            stockBean.create(products.get(7).getId(), warehouses.get(2).getId(), 10L);
+            for (Product product : products) {
+                stockBean.create(product.getId(), warehouses.get(0).getId(), random.nextLong(5, 10));
+                stockBean.create(product.getId(), warehouses.get(1).getId(), random.nextLong(5, 10));
+                stockBean.create(product.getId(), warehouses.get(2).getId(), random.nextLong(5, 10));
+            }
         } catch (Exception e) {
             System.err.println("Some exception happened while creating stocks");
             logger.severe(e.getMessage());
         }
         List<Stock> stocks = stockBean.findAll();
 
-        List<Long> productIds = new LinkedList<>();
-        for (Product product : products) {
-            productIds.add(product.getId());
-        }
         // Create Orders
         try {
-            orderBean.create(customers.get(0).getId(), productIds, PaymentType.MBWAY);
-            orderBean.create(customers.get(1).getId(), productIds, PaymentType.MB);
-            orderBean.create(customers.get(2).getId(), productIds, PaymentType.PAYPAL);
-            orderBean.create(customers.get(3).getId(), productIds, PaymentType.MBWAY);
-            orderBean.create(customers.get(4).getId(), productIds, PaymentType.MBWAY);
-            orderBean.create(customers.get(5).getId(), productIds, PaymentType.MBWAY);
+            for (Customer customer : customers) {
+                List<Long> productIds = new LinkedList<>();
+                for (Product product : products) {
+                    if (random.nextBoolean()) productIds.add(product.getId());
+                }
+                orderBean.create(customer.getId(), productIds, PaymentType.values()[random.nextInt(3)]);
+            }
 
         } catch (Exception e) {
             System.err.println("Some exception happened while creating orders");

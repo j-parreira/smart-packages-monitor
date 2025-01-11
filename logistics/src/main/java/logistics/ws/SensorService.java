@@ -1,5 +1,6 @@
 package logistics.ws;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
@@ -32,22 +33,16 @@ public class SensorService {
 
     // GET /api/sensors/
     @GET
-    @Path("/")
+    @Path("/active")
+    @RolesAllowed({"Manager", "Employee", "Customer"})
     public Response getAllSensors() {
-        return Response.ok(SensorDTO.fromEntity(sensorBean.findAll())).build();
-    }
-
-    // GET /api/sensors/{id}
-    @GET
-    @Path("{id}")
-    public Response getSensor(@PathParam("id") long id) throws MyEntityNotFoundException {
-        var sensor = sensorBean.find(id);
-        return Response.ok(SensorDTO.fromEntity(sensor)).build();
+        return Response.ok(SensorDTO.fromEntity(sensorBean.findActive())).build();
     }
 
     // GET /api/sensors/{id}/readings
     @GET
     @Path("{id}/readings")
+    @RolesAllowed({"Manager", "Employee", "Customer"})
     public Response getSensorReadings(@PathParam("id") long id) throws MyEntityNotFoundException {
         Sensor sensor = sensorBean.findWithReadings(id);
         SensorDTO sensorDTO = SensorDTO.fromEntity(sensor);
@@ -58,6 +53,7 @@ public class SensorService {
     // GET /api/sensors/{id}/readings
     @POST
     @Path("{id}/readings")
+    @RolesAllowed({"Manager", "Employee", "Customer"})
     public Response createReading(@PathParam("id") long id, ReadingDTO readingDTO) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
         var reading = readingBean.create(
                 id,
@@ -70,6 +66,7 @@ public class SensorService {
     // POST /api/sensors/
     @POST
     @Path("/")
+    @RolesAllowed({"Manager", "Employee"})
     public Response createSensor(SensorDTO sensorDTO) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
         var sensor = sensorBean.create(
                 sensorDTO.getType(),
@@ -84,6 +81,7 @@ public class SensorService {
     // PUT /api/sensors/{id}
     @PUT
     @Path("{id}")
+    @RolesAllowed({"Manager", "Employee"})
     public Response updateSensor(@PathParam("id") long id, SensorDTO sensorDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
         var sensor = sensorBean.update(
                 id,
@@ -91,13 +89,5 @@ public class SensorService {
                 sensorDTO.isActive()
         );
         return Response.ok(SensorDTO.fromEntity(sensor)).build();
-    }
-
-    // DELETE /api/sensors/{id}
-    @DELETE
-    @Path("{id}")
-    public Response deleteSensor(@PathParam("id") long id) throws MyEntityNotFoundException, MyConstraintViolationException {
-        sensorBean.delete(id);
-        return Response.noContent().build();
     }
 }

@@ -1,5 +1,6 @@
 package logistics.ws;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
@@ -9,6 +10,7 @@ import jakarta.ws.rs.core.SecurityContext;
 import logistics.dtos.OrderDTO;
 import logistics.dtos.VolumeDTO;
 import logistics.dtos.ProductDTO;
+import logistics.ejbs.CustomerBean;
 import logistics.enums.OrderStatus;
 import logistics.exceptions.MyConstraintViolationException;
 import logistics.exceptions.MyEntityExistsException;
@@ -30,9 +32,13 @@ public class OrderService {
     @EJB
     private OrderBean orderBean;
 
+    @EJB
+    private CustomerBean customerBean;
+
     // GET /api/orders/
     @GET
     @Path("/")
+    @RolesAllowed({"Manager", "Employee", "Customer"})
     public Response getAllOrders() {
         return Response.ok(OrderDTO.fromEntity(orderBean.findAll())).build();
     }
@@ -40,16 +46,20 @@ public class OrderService {
     // GET /api/orders/{id}
     @GET
     @Path("{id}")
+    @RolesAllowed({"Manager", "Employee", "Customer"})
     public Response getOrder(@PathParam("id") long id) throws MyEntityNotFoundException {
         var order = orderBean.find(id);
+
         return Response.ok(OrderDTO.fromEntity(order)).build();
     }
 
     // GET /api/orders/{id}/products
     @GET
     @Path("{id}/products")
+    @RolesAllowed({"Manager", "Employee", "Customer"})
     public Response getOrderProducts(@PathParam("id") long id) throws MyEntityNotFoundException {
         var order = orderBean.findWithProducts(id);
+
         OrderDTO orderDTO = OrderDTO.fromEntity(order);
         orderDTO.setProducts(ProductDTO.fromEntity(order.getProducts()));
         return Response.ok(orderDTO).build();
@@ -58,8 +68,10 @@ public class OrderService {
     // GET /api/orders/{id}/volumes
     @GET
     @Path("{id}/volumes")
+    @RolesAllowed({"Manager", "Employee", "Customer"})
     public Response getOrderVolumes(@PathParam("id") long id) throws MyEntityNotFoundException {
         var order = orderBean.findWithVolumes(id);
+
         OrderDTO orderDTO = OrderDTO.fromEntity(order);
         orderDTO.setVolumes(VolumeDTO.fromEntity(order.getVolumes()));
         return Response.ok(orderDTO).build();
@@ -68,6 +80,7 @@ public class OrderService {
     // POST /api/orders/
     @POST
     @Path("/")
+    @RolesAllowed({"Customer"})
     public Response createOrder(OrderDTO orderDTO) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
         List<Long> productIds = new LinkedList<>();
         for (ProductDTO productDTO : orderDTO.getProducts()) {
@@ -79,32 +92,24 @@ public class OrderService {
                 orderDTO.getPaymentType()
         );
         return Response.status(Response.Status.CREATED)
-            .entity(OrderDTO.fromEntity(order))
-            .build();
+                .entity(OrderDTO.fromEntity(order))
+                .build();
     }
 
     // PUT /api/orders/{id}
     @PUT
     @Path("{id}")
+    @RolesAllowed({"Customer"})
     public Response updateOrder(@PathParam("id") long id, OrderDTO orderDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
         List<Long> volumeIds = new LinkedList<>();
         for (VolumeDTO volumeDTO : orderDTO.getVolumes()) {
             volumeIds.add(volumeDTO.getId());
         }
         var order = orderBean.update(
-            id,
-            volumeIds,
-            orderDTO.getStatus()
+                id,
+                volumeIds,
+                orderDTO.getStatus()
         );
         return Response.ok(OrderDTO.fromEntity(order)).build();
     }
-
-    // DELETE /api/orders/{id}
-    @DELETE
-    @Path("{id}")
-    public Response deleteOrder(@PathParam("id") long id) throws MyEntityNotFoundException, MyConstraintViolationException {
-        orderBean.delete(id);
-        return Response.noContent().build();
-    }
-
 }

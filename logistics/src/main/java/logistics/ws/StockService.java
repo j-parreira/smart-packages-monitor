@@ -1,5 +1,6 @@
 package logistics.ws;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
@@ -24,38 +25,10 @@ public class StockService {
     @EJB
     private StockBean stockBean;
 
-    // GET /api/stocks/
-    @GET
-    @Path("/")
-    public Response getAllStocks() {
-        return Response.ok(StockDTO.fromEntity(stockBean.findAll())).build();
-    }
-
-    // GET /api/stocks/{id}
-    @GET
-    @Path("{id}")
-    public Response getStock(@PathParam("id") long id) throws MyEntityNotFoundException {
-        var stock = stockBean.find(id);
-        return Response.ok(StockDTO.fromEntity(stock)).build();
-    }
-
-    // GET /api/stocks/product/{productId}
-    @GET
-    @Path("product/{productId}")
-    public Response getStockByProduct(@PathParam("productId") long productId) throws MyEntityNotFoundException {
-        return Response.ok(StockDTO.fromEntity(stockBean.findByProduct(productId))).build();
-    }
-
-    // GET /api/stocks/warehouse/{warehouseId}
-    @GET
-    @Path("warehouse/{warehouseId}")
-    public Response getStockByWarehouse(@PathParam("warehouseId") long warehouseId) throws MyEntityNotFoundException {
-        return Response.ok(StockDTO.fromEntity(stockBean.findByWarehouse(warehouseId))).build();
-    }
-
     // POST /api/stocks/
     @POST
     @Path("/")
+    @RolesAllowed({"Manager", "Employee"})
     public Response createStock(StockDTO stockDTO) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
         var stock = stockBean.create(
                 stockDTO.getProductId(),
@@ -65,24 +38,5 @@ public class StockService {
         return Response.status(Response.Status.CREATED)
                 .entity(StockDTO.fromEntity(stock))
                 .build();
-    }
-
-    // PUT /api/stocks/{id}
-    @PUT
-    @Path("{id}")
-    public Response updateStock(@PathParam("id") long id, StockDTO stockDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
-        var stock = stockBean.update(
-                id,
-                stockDTO.getQuantity()
-        );
-        return Response.ok(StockDTO.fromEntity(stock)).build();
-    }
-
-    // DELETE /api/stocks/{id}
-    @DELETE
-    @Path("{id}")
-    public Response deleteStock(@PathParam("id") long id) throws MyEntityNotFoundException, MyConstraintViolationException {
-        stockBean.delete(id);
-        return Response.noContent().build();
     }
 }

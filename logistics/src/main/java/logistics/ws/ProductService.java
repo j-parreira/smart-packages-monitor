@@ -1,5 +1,6 @@
 package logistics.ws;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
@@ -27,9 +28,10 @@ public class ProductService {
     @EJB
     private ProductBean productBean;
 
-    // GET /api/products/
+    // GET /api/products/ ##
     @GET
     @Path("/")
+    @RolesAllowed({"Manager","Employee","Customer"})
     public Response getAllProducts() {
         return Response.ok(ProductDTO.fromEntity(productBean.findAll())).build();
     }
@@ -37,6 +39,7 @@ public class ProductService {
     // GET /api/products/{id}
     @GET
     @Path("{id}")
+    @RolesAllowed({"Manager","Employee"})
     public Response getProduct(@PathParam("id") long id) throws MyEntityNotFoundException {
         var product = productBean.find(id);
         return Response.ok(ProductDTO.fromEntity(product)).build();
@@ -45,6 +48,7 @@ public class ProductService {
     // GET /api/products/{id}/totalstock
     @GET
     @Path("{id}/totalstock")
+    @RolesAllowed({"Manager","Employee","Customer"})
     public Response getProductTotalStock(@PathParam("id") long id) throws MyEntityNotFoundException {
         var totalStock = productBean.getTotalStock(id);
         return Response.ok(totalStock).build();
@@ -53,6 +57,7 @@ public class ProductService {
     // GET /api/products/{id}/orders
     @GET
     @Path("{id}/orders")
+    @RolesAllowed({"Manager","Employee"})
     public Response getProductOrders(@PathParam("id") long id) throws MyEntityNotFoundException {
         var product = productBean.findWithOrders(id);
         ProductDTO productDTO = ProductDTO.fromEntity(product);
@@ -63,6 +68,7 @@ public class ProductService {
     // GET /api/products/{id}/volumes
     @GET
     @Path("{id}/volumes")
+    @RolesAllowed({"Manager","Employee"})
     public Response getProductVolumes(@PathParam("id") long id) throws MyEntityNotFoundException {
         var product = productBean.findWithVolumes(id);
         ProductDTO productDTO = ProductDTO.fromEntity(product);
@@ -73,6 +79,7 @@ public class ProductService {
     // GET /api/products/{id}/stocks
     @GET
     @Path("{id}/stocks")
+    @RolesAllowed({"Manager","Employee"})
     public Response getProductStocks(@PathParam("id") long id) throws MyEntityNotFoundException {
         var product = productBean.findWithStocks(id);
         ProductDTO productDTO = ProductDTO.fromEntity(product);
@@ -83,6 +90,7 @@ public class ProductService {
     // POST /api/products/
     @POST
     @Path("/")
+    @RolesAllowed({"Manager","Employee"})
     public Response createProduct(ProductDTO productDTO) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
         var product = productBean.create(
                 productDTO.getName(),
@@ -96,6 +104,7 @@ public class ProductService {
     // PUT /api/products/{id}
     @PUT
     @Path("{id}")
+    @RolesAllowed({"Manager","Employee"})
     public Response updateProduct(@PathParam("id") long id, ProductDTO productDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
         var product = productBean.update(
                 id,
@@ -108,8 +117,10 @@ public class ProductService {
     // DELETE /api/products/{id}
     @DELETE
     @Path("{id}")
+    @RolesAllowed({"Manager","Employee"})
     public Response deleteProduct(@PathParam("id") long id) throws MyEntityNotFoundException, MyConstraintViolationException {
         productBean.delete(id);
         return Response.noContent().build();
     }
+
 }

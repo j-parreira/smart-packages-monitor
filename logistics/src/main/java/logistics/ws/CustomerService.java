@@ -1,5 +1,6 @@
 package logistics.ws;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
@@ -30,6 +31,7 @@ public class CustomerService {
     @GET
     @Path("/")
     @Authenticated
+    @RolesAllowed({"Manager", "Employee", "Customer"})
     public Response getAllCustomers() {
         return Response.ok(CustomerDTO.fromEntity(customerBean.findAll())).build();
     }
@@ -38,6 +40,7 @@ public class CustomerService {
     @GET
     @Path("{id}")
     @Authenticated
+    @RolesAllowed({"Manager", "Employee", "Customer"})
     public Response getCustomer(@PathParam("id") long id) throws MyEntityNotFoundException {
         var customer = customerBean.find(id);
         return Response.ok(CustomerDTO.fromEntity(customer)).build();
@@ -47,6 +50,7 @@ public class CustomerService {
     @GET
     @Path("{id}/orders")
     @Authenticated
+    @RolesAllowed({"Manager", "Employee", "Customer"})
     public Response getCustomerOrders(@PathParam("id") long id) throws MyEntityNotFoundException {
         Customer customer = customerBean.findOrders(id);
         CustomerDTO customerDTO = CustomerDTO.fromEntity(customer);
@@ -73,6 +77,7 @@ public class CustomerService {
     @PUT
     @Path("{id}")
     @Authenticated
+    @RolesAllowed({"Manager", "Employee", "Customer"})
     public Response updateCustomer(@PathParam("id") long id, CustomerDTO customerDTO) throws MyConstraintViolationException, MyEntityNotFoundException {
         var customer = customerBean.update(
                 id,
@@ -88,6 +93,7 @@ public class CustomerService {
     @DELETE
     @Path("{id}")
     @Authenticated
+    @RolesAllowed({"Manager", "Employee", "Customer"})
     public Response deleteCustomer(@PathParam("id") long id) throws MyEntityNotFoundException, MyConstraintViolationException {
         customerBean.delete(id);
         return Response.noContent().build();

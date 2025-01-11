@@ -1,5 +1,6 @@
 package logistics.ws;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -27,56 +28,12 @@ public class ManagerService {
     @EJB
     private ManagerBean managerBean;
 
-    // GET /api/managers/
-    @GET
-    @Path("/")
-    public Response getAllManagers() {
-        return Response.ok(ManagerDTO.fromEntity(managerBean.findAll())).build();
-    }
-
     // GET /api/managers/{id}
     @GET
     @Path("{id}")
+    @RolesAllowed({"Manager"})
     public Response getManager(@PathParam("id") long id) throws MyEntityNotFoundException {
         var manager = managerBean.find(id);
         return Response.ok(ManagerDTO.fromEntity(manager)).build();
-    }
-
-    // POST /api/managers/
-    @POST
-    @Path("/")
-    public Response createManager(ManagerDTO managerDTO) throws MyEntityNotFoundException, MyEntityExistsException, MyConstraintViolationException {
-        var manager = managerBean.create(
-                managerDTO.getName(),
-                managerDTO.getEmail(),
-                managerDTO.getPassword(),
-                managerDTO.getWarehouseId(),
-                managerDTO.getOffice()
-        );
-        return Response.status(Response.Status.CREATED)
-                .entity(ManagerDTO.fromEntity(manager))
-                .build();
-    }
-
-    // PUT /api/managers/{id}
-    @PUT
-    @Path("{id}")
-    public Response updateManager(@PathParam("id") long id, ManagerDTO managerDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
-        var manager = managerBean.update(
-                id,
-                managerDTO.getName(),
-                managerDTO.getPassword(),
-                managerDTO.getWarehouseId(),
-                managerDTO.getOffice()
-        );
-        return Response.ok(ManagerDTO.fromEntity(manager)).build();
-    }
-
-    // DELETE /api/managers/{id}
-    @DELETE
-    @Path("{id}")
-    public Response deleteManager(@PathParam("id") long id) throws MyEntityNotFoundException, MyConstraintViolationException {
-        managerBean.delete(id);
-        return Response.noContent().build();
     }
 }

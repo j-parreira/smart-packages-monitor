@@ -28,21 +28,6 @@ public class VolumeService {
     @EJB
     private VolumeBean volumeBean;
 
-    // GET /api/volumes/
-    @GET
-    @Path("/")
-    public Response getAllVolumes() {
-        return Response.ok(VolumeDTO.fromEntity(volumeBean.findAll())).build();
-    }
-
-    // GET /api/volumes/{id}
-    @GET
-    @Path("{id}")
-    public Response getVolume(@PathParam("id") long id) throws MyEntityNotFoundException {
-        var volume = volumeBean.find(id);
-        return Response.ok(VolumeDTO.fromEntity(volume)).build();
-    }
-
     // GET /api/volumes/{id}/sensors
     @GET
     @Path("{id}/sensors")
@@ -70,24 +55,5 @@ public class VolumeService {
                 volumeDTO.getOrderId()
         );
         return Response.ok(VolumeDTO.fromEntity(volume)).build();
-    }
-
-    // PUT /api/volumes/{id}
-    @PUT
-    @Path("{id}")
-    public Response updateVolume(@PathParam("id") long id, VolumeDTO volumeDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
-        var volume = volumeBean.update(
-                id,
-                volumeDTO.getStatus()
-        );
-        return Response.ok(VolumeDTO.fromEntity(volume)).build();
-    }
-
-    // DELETE /api/volumes/{id}
-    @DELETE
-    @Path("{id}")
-    public Response deleteVolume(@PathParam("id") long id) throws MyEntityNotFoundException, MyConstraintViolationException {
-        volumeBean.delete(id);
-        return Response.noContent().build();
     }
 }

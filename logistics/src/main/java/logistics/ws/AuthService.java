@@ -35,15 +35,6 @@ public class AuthService {
         return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    // logout
-
-    // refresh token
-
-    // password recovery
-
-    // customer registration
-
-    // user info
     @GET
     @Authenticated
     @Path("/user")
@@ -53,6 +44,6 @@ public class AuthService {
         if (user != null) {
             return Response.ok(UserDTO.from(user)).build();
         }
-        return Response.status(Response.Status.UNAUTHORIZED).build();
+        return Response.status(Response.Status.FORBIDDEN).build();
     }
 }

@@ -7,6 +7,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.validation.ConstraintViolationException;
 import logistics.entities.*;
+import logistics.enums.OrderStatus;
 import logistics.enums.VolumeStatus;
 import logistics.enums.VolumeType;
 import logistics.exceptions.MyConstraintViolationException;
@@ -34,7 +35,7 @@ public class VolumeBean {
     public boolean exists(Long id) {
         Query query = entityManager.createQuery("SELECT COUNT(v.id) FROM Volume v WHERE v.id = :id", Long.class);
         query.setParameter("id", id);
-        return (Long)query.getSingleResult() > 0L;
+        return (Long) query.getSingleResult() > 0L;
     }
 
     public Volume create(VolumeType type, Long productId, List<Long> sensorIds, Long dispatchedByEmployeeId, VolumeStatus status, Long orderId) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
@@ -46,6 +47,17 @@ public class VolumeBean {
                 sensors.add(sensor);
             }
             Employee dispatchedBy = employeeBean.find(dispatchedByEmployeeId);
+            boolean productFound = false;
+            for (Stock stock : dispatchedBy.getWarehouse().getStocks()) {
+                if (stock.getQuantity() > 0 && stock.getProduct().getId().equals(productId)) {
+                    stock.setQuantity(stock.getQuantity() - 1);
+                    productFound = true;
+                    break;
+                }
+            }
+            if (!productFound) {
+                throw new MyEntityNotFoundException("No stock available!");
+            }
             Order order = orderBean.find(orderId);
             Volume volume = new Volume(type, product, sensors, dispatchedBy, status, order);
             product.addVolume(volume);
@@ -55,6 +67,12 @@ public class VolumeBean {
                 var sensor = sensorBean.find(sensorId);
                 sensor.setVolume(volume);
             }
+            if (order.getVolumes().size() == order.getProducts().size()) {
+                order.setStatus(OrderStatus.DISPATCHED);
+            }
+            ;
+            //TODO: send email to customer/manager - volume is dispatched
+
             entityManager.persist(volume);
             entityManager.flush();
             return volume;

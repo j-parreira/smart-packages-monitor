@@ -8,6 +8,7 @@ import jakarta.persistence.Query;
 import jakarta.validation.ConstraintViolationException;
 import logistics.entities.Reading;
 import logistics.entities.Sensor;
+import logistics.enums.SensorType;
 import logistics.enums.VolumeStatus;
 import logistics.exceptions.MyConstraintViolationException;
 import logistics.exceptions.MyEntityExistsException;
@@ -33,9 +34,10 @@ public class ReadingBean {
             var sensor = sensorBean.find(sensorId);
             Reading reading = new Reading(sensor, valueOne, valueTwo);
             sensor.addReading(reading);
-            if (valueOne > sensor.getMaxThreshold() || valueOne < sensor.getMinThreshold()) {
-                sensor.setActive(false);
+            if (sensor.getType()!= SensorType.GPS && (valueOne > sensor.getMaxThreshold() || valueOne < sensor.getMinThreshold())) {
                 sensor.getVolume().setStatus(VolumeStatus.DAMAGED);
+                sensor.getVolume().getSensors().forEach(s -> s.setActive(false));
+                //TODO: send email to customer/manager - volume is damaged
             }
             entityManager.persist(reading);
             entityManager.flush();

@@ -6,8 +6,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.ws.rs.core.SecurityContext;
 import logistics.entities.Customer;
-import logistics.entities.Order;
 import logistics.exceptions.MyConstraintViolationException;
 import logistics.exceptions.MyEntityExistsException;
 import logistics.exceptions.MyEntityNotFoundException;
@@ -59,6 +59,12 @@ public class CustomerBean {
         return customer;
     }
 
+    public Customer find(String email) {
+        Query query = entityManager.createQuery("SELECT c FROM User c WHERE c.email = :email", Customer.class);
+        query.setParameter("email", email);
+        return (Customer) query.getSingleResult();
+    }
+
     public Customer findOrders(long id) throws MyEntityNotFoundException {
         var customer = this.find(id);
         Hibernate.initialize(customer.getOrders());
@@ -75,7 +81,7 @@ public class CustomerBean {
                 customer.setAddress(address);
             }
             if (!email.isBlank()) {
-                if(exists(email) && !Objects.equals(customer.getEmail(), email)) {
+                if (exists(email) && !Objects.equals(customer.getEmail(), email)) {
                     throw new MyConstraintViolationException("Account with that email already exists");
                 }
                 customer.setEmail(email);
@@ -97,7 +103,7 @@ public class CustomerBean {
             if (!entityManager.contains(customer)) {
                 customer = entityManager.merge(customer);
             }
-            if(!customer.getOrders().isEmpty()){
+            if (!customer.getOrders().isEmpty()) {
                 throw new MyConstraintViolationException("Customer has orders");
             }
             entityManager.remove(customer);

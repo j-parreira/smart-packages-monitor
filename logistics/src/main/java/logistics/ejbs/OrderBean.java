@@ -54,6 +54,8 @@ public class OrderBean {
             for (var product : products) {
                 product.addOrder(order);
             }
+            //TODO: send email to customer/manager - order created
+
             entityManager.persist(order);
             entityManager.flush();
             return order;
@@ -99,6 +101,8 @@ public class OrderBean {
             Order order = find(id);
             order.setVolumes(volumes);
             order.setStatus(status);
+            //TODO: send email to customer/manager - order arrived
+
             entityManager.merge(order);
             entityManager.flush();
             return order;
